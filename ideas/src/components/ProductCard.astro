@@ -1,0 +1,103 @@
+---
+interface SubProduct {
+  name: string;
+  desc: string;
+}
+
+interface Props {
+  id: string; // <-- Asegúrate de que esté en la interfaz
+  title: string;
+  description: string;
+  badge: string;
+  imageSrc: string;
+  hoverImageSrc: string;
+  subProducts?: SubProduct[];
+}
+
+const { id, title, description, badge, imageSrc, hoverImageSrc, subProducts = [] } = Astro.props;
+---
+<div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-[5px_5px_0px_0px_rgba(99,102,241,0.05)] hover:shadow-xl transition-all duration-300 flex flex-col group transform hover:-translate-y-1">
+  
+  <!-- Contenedor de la imagen (Ahora es un botón interactivo) -->
+  <button 
+    id={`btn-${id}`} 
+    class="relative overflow-hidden aspect-square bg-slate-100 w-full text-left cursor-pointer focus:outline-none block group/img"
+  >
+    <img 
+      src={imageSrc} 
+      alt={title} 
+      class="w-full h-full object-cover absolute inset-0 z-10 transition-opacity duration-500 group-hover/img:opacity-0"
+    />
+    <img 
+      src={hoverImageSrc || imageSrc} 
+      alt={`${title} detalle`} 
+      class="w-full h-full object-cover absolute inset-0 z-0 transition-transform duration-500 scale-100 group-hover/img:scale-105"
+    />
+    
+    <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-slate-700 text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full z-20 shadow-sm">
+      {badge}
+    </span>
+    <span class="absolute bottom-4 right-4 bg-indigo-600 text-white text-[11px] font-medium px-3 py-1.5 rounded-full z-20 shadow-md opacity-0 group-hover/img:opacity-100 transition-opacity duration-300">
+      Ver opciones 🔍
+    </span>
+  </button>
+  
+  <div class="p-6 flex flex-col flex-grow">
+    <h3 class="font-serif text-xl text-indigo-950 font-medium group-hover:text-indigo-600 transition-colors">{title}</h3>
+    <p class="text-slate-500 text-sm mt-2 flex-grow font-light leading-relaxed">{description}</p>
+    
+    <!-- SUB-CATÁLOGO DESPLEGABLE -->
+    {subProducts.length > 0 && (
+      <div id={`sub-${id}`} class="hidden mt-6 pt-4 border-t border-slate-100 space-y-3 animate-fade-in">
+        <p class="text-xs font-bold text-indigo-600 tracking-wider uppercase">¿Qué incluye esta línea?</p>
+        <div class="grid grid-cols-1 gap-2">
+          {subProducts.map((sub) => (
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 hover:border-indigo-100 transition-colors">
+              <h4 class="text-xs font-semibold text-slate-800">{sub.name}</h4>
+              <p class="text-[11px] text-slate-500 mt-0.5">{sub.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <div class="mt-6 pt-4 border-t border-slate-50">
+      <a 
+        href={`https://api.whatsapp.com/send?phone=5493412141732&text=${encodeURIComponent('¡Hola! Me interesa obtener más información y cotizar la línea de: ' + title)}`} 
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-full text-center block bg-slate-50 hover:bg-indigo-600 hover:text-white text-slate-700 text-xs font-semibold py-3 rounded-xl transition-all tracking-wider"
+        >
+        COTIZAR ESTA LÍNEA
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- LÓGICA DE INTERACCIÓN (JavaScript puro que corre en el navegador) -->
+<script define:vars={{ id }}>
+  const btn = document.getElementById(`btn-${id}`);
+  const subMenu = document.getElementById(`sub-${id}`);
+
+  if (btn && subMenu) {
+    btn.addEventListener('click', () => {
+      // Alternar la visibilidad del subcatálogo
+      subMenu.classList.toggle('hidden');
+      
+      // Scroll suave automático para centrar el producto expandido
+      if (!subMenu.classList.contains('hidden')) {
+        subMenu.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  }
+</script>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+</style>

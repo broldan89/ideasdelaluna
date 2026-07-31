@@ -1,0 +1,160 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import ProductCard from '../components/ProductCard.astro';
+---
+
+<Layout title="Ideas de la Luna | Papelería de otro planeta">
+  <Navbar />
+  <Hero />
+
+  <!-- CONTENIDO PRINCIPAL DE LA LANDING -->
+  <main class="max-w-7xl mx-auto px-6 py-12 space-y-24">
+    
+    <!-- SECCIÓN 1: UNIVERSO EMPRENDEDOR -->
+    <section id="marcas" class="scroll-mt-24">
+      <div class="max-w-xl mb-12">
+        <h2 class="text-3xl font-normal text-indigo-950">El Universo <span class="italic text-indigo-600">Emprendedor</span></h2>
+        <p class="text-slate-500 text-sm mt-2 font-light">Packaging e identidad para marcas que quieren dejar una huella imborrable al abrir sus cajas. Haz clic en la foto para ver las opciones disponibles.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <ProductCard 
+          id="stickers"
+          title="Stickers & Etiquetas"
+          description="En plancha o troquelados individuales. Papel brillante, mate o vinilo resistente al agua."
+          badge="Identidad"
+          imageSrc="catalog/sticker_5.jpeg"
+          hoverImageSrc= "/catalog/sticker_1.jpeg"
+          subProducts={[
+            { name: "Planchas A4 troqueladas", desc: "Ideales para cerrar bolsas y rotular cajas rápidamente." },
+            { name: "Stickers individuales (Die-cut)", desc: "Cortados uno a uno con la forma de tu logo." },
+            { name: "Etiquetas transparentes", desc: "Vinilo premium invisible, ideal para frascos o cosmética." }
+          ]}
+        />
+        
+        <ProductCard 
+          id="tarjetas"
+          title="Tarjetas Profesionales"
+          description="Papel pesado de alta calidad (300g) con terminaciones mate suaves al tacto para conectar con tus clientes."
+          badge="Packaging"
+          imageSrc="/catalog/tarjetas_profesionales.jpeg"
+          hoverImageSrc="/catalog/WhatsApp Image 2026-07-20 at 22.38.50 (1).jpeg"
+          subProducts={[
+            { name: "Tarjetas Personales", desc: "Ideales para emprendedores y profesionales." },
+            { name: "Tags colgantes con hilo", desc: "Para ropa o productos artesanales, perforadas y listas." }
+          ]}
+        />
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: PARA EVENTOS -->
+    <section id="eventos" class="scroll-mt-24">
+      <div class="max-w-xl mb-12">
+        <h2 class="text-3xl font-normal text-indigo-950">Fases de <span class="italic text-indigo-600">Celebración</span></h2>
+        <p class="text-slate-500 text-sm mt-2 font-light">Papelería fina y detalles completamente personalizados para eventos que merecen ser recordados para siempre.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <ProductCard 
+          id="invitaciones"
+          title="Invitaciones Especiales"
+          description="Diseños únicos en papeles texturados con detalles en foil dorado o plata metalizado."
+          badge="Premium"
+          imageSrc="/catalog/invitaciones.jpeg"
+          hoverImageSrc="/catalog/invitaciones.jpeg"
+          subProducts={[
+            { name: "Tarjetas de Invitación", desc: "Impresión en papeles especiales, texturados o vegetales de alta calidad." },
+            { name: "Sobres artesanales", desc: "Con o sin liner personalizado impreso en el interior." }
+          ]}
+        />
+        
+        <ProductCard 
+          id="souvenirs"
+          title="Tags & Detalles"
+          description="Pequeños complementos que hacen la diferencia: indicadores de sitio, menús impresos y etiquetas colgantes."
+          badge="Eventos"
+          imageSrc="https://images.unsplash.com/photo-1513151233558-d860c5398git176?q=80&w=600"
+          hoverImageSrc="https://images.unsplash.com/photo-1542435503-956c469947f6?q=80&w=600"
+        />
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: LÍNEA PROPIA -->
+    <section id="tienda" class="scroll-mt-24 mb-12">
+      <div class="max-w-xl mb-12">
+        <h2 class="text-3xl font-normal text-indigo-950">La Tienda de la <span class="italic text-indigo-600">Luna</span></h2>
+        <p class="text-slate-500 text-sm mt-2 font-light">Nuestra línea exclusiva de papelería de diseño lista para usar, organizar tus días o hacer un regalo especial.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <ProductCard 
+          id="cuadernos"
+          title="Cuadernos Artesanales"
+          description="Anillados o con costura expuesta a mano. Hojas punticuladas ideales para bullet journal o bocetos."
+          badge="Línea Propia"
+          imageSrc="/catalog/cuaderno.jpeg"
+          hoverImageSrc="/catalog/cuaderno.jpeg"
+          subProducts={[
+            { name: "Cuadernos A5 Anillados", desc: "Tapa dura laminada, cierre elástico y sobre interno." },
+            { name: "Bitácoras de viaje", desc: "Encuadernación flexible y lomo cosido a la vista." }
+          ]}
+        />
+        
+        <ProductCard 
+          id="planners"
+          title="Agendas & Planners"
+          description="Organizadores perpetuos y blocs de notas semanales para despejar la mente y estructurar tus metas."
+          badge="Diseño"
+          imageSrc="catalog/libreta.jpeg"
+          hoverImageSrc="catalog/libreta.jpeg"
+        />
+      </div>
+    </section>
+  </main>
+
+  <!-- SEPARADOR ESTILO PAPEL TROZADO A MANO -->
+  <div class="w-full overflow-hidden leading-[0] rotate-180 bg-transparent -mb-1">
+    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-full h-14 fill-indigo-950">
+      <path d="M0,0 L1200,0 L1200,20 L1180,45 L1150,25 L1100,55 L1060,30 L1020,50 L980,20 L940,45 L900,15 L850,50 L800,25 L750,55 L700,30 L650,50 L600,20 L550,45 L500,15 L450,55 L400,25 L350,50 L300,20 L250,45 L200,15 L150,55 L100,30 L50,50 L0,20 Z"></path>
+    </svg>
+  </div>
+
+  <!-- FOOTER / CONTACTO (Corregido y Limpio) -->
+  <footer id="contacto" class="bg-indigo-950 text-white py-16 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-serif mb-4">¿Tenés una idea fuera de órbita?</h2>
+      <p class="text-indigo-200 text-sm max-w-sm mx-auto font-light mb-12">Hablemos de tu proyecto y creemos algo mágico juntos.</p>
+      
+      <!-- CONTENEDOR DE BOTONES (flex para responsive) -->
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
+        
+        <!-- BOTÓN WHATSAPP GENERAL: Mensaje abierto para cualquier consulta -->
+        <a 
+  href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Vi%20tu%20web%20y%20me%20gustar%C3%ADa%20hacerte%20una%20consulta." 
+  target="_blank"
+  rel="noopener noreferrer"
+  class="w-full sm:w-auto inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-8 py-4 rounded-full shadow-lg transition-all text-sm tracking-wider gap-2.5"
+>
+  <span class="text-base">💬</span>
+  Escríbenos por WhatsApp
+</a>
+
+        <!-- BOTÓN INSTAGRAM: Igual que antes, perfecto -->
+        <a 
+          href="https://www.instagram.com/ideas.de.la.luna/" 
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-90 text-white font-semibold px-8 py-4 rounded-full shadow-lg transition-all text-sm tracking-wider gap-2.5"
+        >
+          <span class="text-base">📸</span>
+          Seguinos en Instagram
+        </a>
+
+      </div>
+
+      <p class="text-xs text-indigo-300/50 mt-16 font-light">© 2026 Ideas de la Luna. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+</Layout>
