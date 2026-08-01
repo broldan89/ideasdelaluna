@@ -30,6 +30,8 @@ import GalleryModal from '../components/GalleryModal.astro';
 <style is:global>
 	body {
 		font-family: 'Plus Jakarta Sans', sans-serif;
+		position: relative;
+		z-index: 0;
 	}
 	h1, h2, h3, .font-serif {
 		font-family: 'Playfair Display', serif;
@@ -59,7 +61,7 @@ import GalleryModal from '../components/GalleryModal.astro';
 		transition: background-color 1s ease-in-out;
 	}
 
-	/* TRAMA PUNTEADA VISIBLE EN TODO EL SITIO */
+	/* TRAMA PUNTEADA UBICADA DETRÁS DEL CONTENIDO */
 	body::before {
 		content: "";
 		position: fixed;
@@ -67,10 +69,9 @@ import GalleryModal from '../components/GalleryModal.astro';
 		left: 0;
 		width: 100vw;
 		height: 100vh;
-		/* Incrementamos un poco el contraste del punto (opacidad 0.25) */
-		background-image: radial-gradient(rgba(79, 70, 229, 0.25) 1.5px, transparent 1.5px);
+		background-image: radial-gradient(rgba(99, 102, 241, 0.2) 1.5px, transparent 1.5px);
 		background-size: 24px 24px;
-		pointer-events: none; /* Sigue permitiendo clicks sin interrupción */
-		z-index: 10; /* Eleva los puntos sobre los contenedores del sitio */
+		pointer-events: none;
+		z-index: -1; /* Pasa la trama al fondo detrás de todas las secciones */
 	}
 </style>
