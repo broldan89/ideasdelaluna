@@ -151,6 +151,19 @@
             <p class="text-[10px] text-center text-slate-400 mt-2 font-light">
               Envía la configuración y el archivo subido a la nube directamente.
             </p>
+
+            <!-- INFORMACIÓN DE PAGO -->
+            <div class="mt-4 p-3 bg-white/80 rounded-xl border border-indigo-100 text-[11px] text-slate-600 space-y-1">
+              <p class="font-semibold text-indigo-950 flex items-center gap-1">
+                <span>📌</span> Información de Pago (Transferencia):
+              </p>
+              <p>• <strong>Alias:</strong> <span class="select-all bg-indigo-50 px-1 py-0.5 rounded text-indigo-900 font-mono">IDEASDELALUNA.MP</span></p>
+              <p>• <strong>Titular:</strong> Ideas de la Luna</p>
+              <p class="text-[10px] text-slate-400 italic font-light pt-1">
+                *Recordá enviar el comprobante por WhatsApp al realizar la orden.
+              </p>
+            </div>
+
           </div>
 
         </div>
@@ -241,11 +254,11 @@
     if (!dropzone || !pdfInput) return;
 
     dropzone.addEventListener('click', () => pdfInput.click());
-    
+
     pdfInput.addEventListener('change', async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file && file.type === 'application/pdf') {
-        procesarPDF(file);
+        await procesarPDF(file);
       }
     });
 
@@ -277,7 +290,7 @@
         const pdfjsLib = await cargarPdfJS();
         const buffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
-        
+
         estado.paginas = pdf.numPages;
         estado.nombreArchivo = file.name;
 
@@ -286,7 +299,7 @@
         const cleanFileName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
         const filePath = `${Date.now()}_${cleanFileName}.${fileExt}`;
 
-        const { data, error } = await supabase.storage
+        const { error } = await supabase.storage
           .from('pdfs-cotizador')
           .upload(filePath, file, {
             cacheControl: '3600',
@@ -311,37 +324,38 @@
 
         calcularTotales();
       } catch (err) {
-        console.error(err);
-        if (fileName && fileStatus) {
-          fileName.textContent = '❌ Error al procesar el PDF';
-          fileStatus.textContent = 'Asegúrate de subir un PDF válido y tener conexión.';
-        }
+  console.error(err);
+  if (fileName && fileStatus) {
+    fileName.textContent = '❌ Error al procesar el PDF';
+    fileStatus.textContent = 'Asegúrate de subir un PDF válido y tener conexión.';
+  }
+}
       }
     }
 
-    document.querySelectorAll('.opt-impresion').forEach(btn => {
+    document.querySelectorAll('.opt-impresion').forEach((btn) => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.opt-impresion').forEach(b => {
+        document.querySelectorAll('.opt-impresion').forEach((b) => {
           b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
           b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
         });
         btn.classList.add('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
         btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
-        
+
         estado.impresion = btn.getAttribute('data-type') || 'simple';
         calcularTotales();
       });
     });
 
-    document.querySelectorAll('.opt-color').forEach(btn => {
+    document.querySelectorAll('.opt-color').forEach((btn) => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.opt-color').forEach(b => {
+        document.querySelectorAll('.opt-color').forEach((b) => {
           b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
           b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
         });
         btn.classList.add('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
         btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
-        
+
         estado.color = btn.getAttribute('data-color') || 'bn';
         calcularTotales();
       });
@@ -367,16 +381,26 @@
       const subtotalHojas = hojas * tarifaHoja;
 
       let costoEncuadernacion = 0;
-      if (estado.encuadernacion === 'abrochado') costoEncuadernacion = TARIFAS.abrochado;
-      if (estado.encuadernacion === 'espiralado') costoEncuadernacion = TARIFAS.espiralado;
+      if (estado.encuadernacion === 'abrochado') {
+        costoEncuadernacion = TARIFAS.abrochado;
+      }
+      if (estado.encuadernacion === 'espiralado') {
+        costoEncuadernacion = TARIFAS.espiralado;
+      }
 
       const total = subtotalHojas + costoEncuadernacion;
 
-      (document.getElementById('resPaginas') as HTMLElement).textContent = `${estado.paginas} págs`;
-      (document.getElementById('resHojas') as HTMLElement).textContent = `${hojas} hojas`;
-      (document.getElementById('resCostoHoja') as HTMLElement).textContent = `$${tarifaHoja} c/u`;
-      (document.getElementById('resEncuadernacion') as HTMLElement).textContent = `$${costoEncuadernacion}`;
-      (document.getElementById('totalPrecio') as HTMLElement).textContent = `$${total.toLocaleString('es-AR')}`;
+      const elPaginas = document.getElementById('resPaginas');
+      const elHojas = document.getElementById('resHojas');
+      const elCostoHoja = document.getElementById('resCostoHoja');
+      const elEncuadernacion = document.getElementById('resEncuadernacion');
+      const elTotal = document.getElementById('totalPrecio');
+
+      if (elPaginas) elPaginas.textContent = `${estado.paginas} págs`;
+      if (elHojas) elHojas.textContent = `${hojas} hojas`;
+      if (elCostoHoja) elCostoHoja.textContent = `$${tarifaHoja} c/u`;
+      if (elEncuadernacion) elEncuadernacion.textContent = `$${costoEncuadernacion}`;
+      if (elTotal) elTotal.textContent = `$${total.toLocaleString('es-AR')}`;
 
       if (btnEnviarWhatsApp) {
         btnEnviarWhatsApp.disabled = false;
@@ -390,9 +414,10 @@
           `🖨️ Modalidad: *${estado.impresion === 'doble' ? 'Doble Faz' : 'Simple Faz'}*\n` +
           `🎨 Tipo: *${estado.color === 'bn' ? 'Blanco y Negro' : 'Color'}*\n` +
           `📚 Acabado: *${estado.encuadernacion}*\n\n` +
-          `💰 *Total Estimado: $${total.toLocaleString('es-AR')}*\n\n` +
+          `💰 *Total a Abonar: $${total.toLocaleString('es-AR')}*\n` +
+          `💳 *Método de pago:* Transferencia / CBU / Alias\n\n` +
           `⬇️ Link de descarga del PDF:\n${estado.archivoUrl}\n\n` +
-          `¿Cómo coordinamos el pago y el retiro/envío?`
+          `¿Me confirman si recibieron el archivo para enviarles el comprobante?`
         );
 
         btnEnviarWhatsApp.onclick = () => {
@@ -400,8 +425,6 @@
         };
       }
     }
-  }
-
   if (typeof window !== 'undefined') {
     document.addEventListener('DOMContentLoaded', initCotizador);
   }
