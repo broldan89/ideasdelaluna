@@ -1,3 +1,6 @@
+---
+---
+
 <section id="cotizador" class="max-w-4xl mx-auto px-6 py-16 scroll-mt-20">
   <!-- ENCABEZADO -->
   <div class="text-center mb-10">
@@ -12,7 +15,7 @@
     </p>
   </div>
 
-  <!-- TARJETA DEL COTIZADOR (Estilo Papel Flotante) -->
+  <!-- TARJETA DEL COTIZADOR -->
   <div class="cotizador-card-wrapper">
     <div class="cotizador-card bg-white p-6 sm:p-10 text-left">
       
@@ -22,27 +25,28 @@
         <div class="space-y-6">
           
           <!-- DROPZONE / CARGA DE ARCHIVO -->
-<div>
-  <span class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
-    1. Cargar Documento (PDF)
-  </span>
+          <div>
+            <span class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
+              1. Cargar Documento (PDF)
+            </span>
 
-  <!-- Input oculto fuera del contenedor para evitar conflictos de anidamiento -->
-  <input type="file" id="pdfInput" accept="application/pdf" class="hidden" />
-  
-  <div 
-    id="dropzone"
-    class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/40 hover:bg-indigo-50 transition-all rounded-2xl p-6 text-center cursor-pointer flex flex-col items-center justify-center min-h-[140px] select-none"
-  >
-    <span class="text-3xl mb-2 pointer-events-none">📄</span>
-    <p id="fileName" class="text-xs font-medium text-indigo-950 pointer-events-none">
-      Haz clic o arrastra tu PDF aquí
-    </p>
-    <p id="fileStatus" class="text-[11px] text-slate-400 font-light mt-1 pointer-events-none">
-      Formatos aceptados: .pdf
-    </p>
-  </div>
-</div>
+            <!-- Label nativo vinculado por id 'pdfInput' -->
+            <label 
+              for="pdfInput"
+              id="dropzone"
+              class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/40 hover:bg-indigo-50 transition-all rounded-2xl p-6 text-center cursor-pointer flex flex-col items-center justify-center min-h-[140px] block select-none"
+            >
+              <input type="file" id="pdfInput" accept="application/pdf" class="hidden" />
+              <span class="text-3xl mb-2 pointer-events-none">📄</span>
+              <p id="fileName" class="text-xs font-medium text-indigo-950 pointer-events-none">
+                Haz clic o arrastra tu PDF aquí
+              </p>
+              <p id="fileStatus" class="text-[11px] text-slate-400 font-light mt-1 pointer-events-none">
+                Formatos aceptados: .pdf
+              </p>
+            </label>
+          </div>
+
           <!-- OPCIÓN: TIPO DE IMPRESIÓN -->
           <div>
             <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
@@ -89,7 +93,7 @@
             </div>
           </div>
 
-          <!-- OPCIÓN: ENCUADERNACIÓN / TERMINACIÓN -->
+          <!-- OPCIÓN: ENCUADERNACIÓN -->
           <div>
             <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
               4. Terminación / Acabado
@@ -106,7 +110,7 @@
 
         </div>
 
-        <!-- COLUMNA DERECHA: DESGLOSE Y RESUMEN -->
+        <!-- COLUMNA DERECHA: DESGLOSE -->
         <div class="bg-indigo-50/50 rounded-2xl p-6 flex flex-col justify-between border border-indigo-100/60">
           <div>
             <h3 class="font-serif font-medium text-indigo-950 text-lg mb-4 pb-2 border-b border-indigo-100">
@@ -193,7 +197,6 @@
 <script>
   import { createClient } from '@supabase/supabase-js';
 
-  // 🔊 SINTETIZADOR WEB AUDIO API
   const playClickSound = () => {
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -242,7 +245,6 @@
 
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
   const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   function cargarPdfJS() {
@@ -262,12 +264,13 @@
           reject('No se pudo inicializar PDF.js');
         }
       };
-      script.onerror = () => reject('Error al cargar PDF.js');
+      script.onerror = () => reject('Error al cargar CDN de PDF.js');
       document.head.appendChild(script);
     });
   }
 
   function initCotizador() {
+    console.log('🚀 Inicializando Cotizador...');
     const TARIFAS = {
       bn_simple: 80,
       bn_doble: 120,
@@ -293,26 +296,28 @@
     const selectEncuadernacion = document.getElementById('selectEncuadernacion') as HTMLSelectElement;
     const btnEnviarWhatsApp = document.getElementById('btnEnviarWhatsApp') as HTMLButtonElement;
 
-    if (!dropzone || !pdfInput) return;
+    if (!dropzone || !pdfInput) {
+      console.warn('⚠️ Elementos dropzone o pdfInput no encontrados en el DOM.');
+      return;
+    }
 
-    // AL HACER CLIC: Al usar <label for="pdfInput"> el navegador abre la ventana nativamente. 
-    // Solo reproducimos el sonido.
+    // Sonido al interactuar con el contenedor
     dropzone.addEventListener('click', () => {
       playClickSound();
-      pdfInput.value = ''; // Resetear para permitir volver a cargar el mismo archivo si se desea
-      pdfInput.click();
     });
 
-    // EVENTO DE SELECCIÓN DE ARCHIVO
+    // Evento de selección de archivo nativo
     pdfInput.addEventListener('change', async (e) => {
-      const target = e.target as HTMLInputElement;
-      const file = target.files?.[0];
+      console.log('📁 Evento change detectado en pdfInput');
+      const file = (e.target as HTMLInputElement).files?.[0];
       if (file && file.type === 'application/pdf') {
         await procesarPDF(file);
+      } else if (file) {
+        alert('Por favor selecciona un archivo PDF válido.');
       }
     });
 
-    // EVENTOS DE DRAG & DROP
+    // Drag & Drop
     dropzone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropzone.classList.add('bg-indigo-100/50');
@@ -322,17 +327,18 @@
       dropzone.classList.remove('bg-indigo-100/50');
     });
 
-    dropzone.addEventListener('drop', (e) => {
+    dropzone.addEventListener('drop', async (e) => {
       e.preventDefault();
       dropzone.classList.remove('bg-indigo-100/50');
       const file = e.dataTransfer?.files[0];
       if (file && file.type === 'application/pdf') {
         playClickSound();
-        procesarPDF(file);
+        await procesarPDF(file);
       }
     });
 
     async function procesarPDF(file: File) {
+      console.log('📄 Procesando archivo:', file.name);
       if (fileName && fileStatus) {
         fileName.textContent = `⏳ Leyendo y subiendo "${file.name}"...`;
         fileStatus.textContent = 'Procesando archivo...';
@@ -345,12 +351,14 @@
 
         estado.paginas = pdf.numPages;
         estado.nombreArchivo = file.name;
+        console.log(`✅ Páginas detectadas: ${pdf.numPages}`);
 
         // Subir a Supabase Storage
         const fileExt = file.name.split('.').pop();
         const cleanFileName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
         const filePath = `${Date.now()}_${cleanFileName}.${fileExt}`;
 
+        console.log('☁️ Subiendo a Supabase Storage...');
         const { error } = await supabase.storage
           .from('pdfs-cotizador')
           .upload(filePath, file, {
@@ -358,7 +366,10 @@
             upsert: false
           });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error al subir a Supabase:', error);
+          throw error;
+        }
 
         const { data: publicUrlData } = supabase.storage
           .from('pdfs-cotizador')
@@ -373,15 +384,15 @@
 
         calcularTotales();
       } catch (err) {
-        console.error(err);
+        console.error('❌ Error general en procesarPDF:', err);
         if (fileName && fileStatus) {
           fileName.textContent = '❌ Error al procesar el PDF';
-          fileStatus.textContent = 'Asegúrate de subir un PDF válido y tener conexión.';
+          fileStatus.textContent = 'Revisá la consola del navegador para más detalle.';
         }
       }
     }
 
-    // BOTONES DE MODALIDAD
+    // Modalidad de Impresión
     document.querySelectorAll('.opt-impresion').forEach((btn) => {
       btn.addEventListener('click', () => {
         playClickSound();
@@ -397,7 +408,7 @@
       });
     });
 
-    // BOTONES DE COLOR
+    // Tipo de Color
     document.querySelectorAll('.opt-color').forEach((btn) => {
       btn.addEventListener('click', () => {
         playClickSound();
@@ -413,7 +424,7 @@
       });
     });
 
-    // SELECT DE ENCUADERNACIÓN
+    // Encuadernación
     selectEncuadernacion?.addEventListener('change', (e) => {
       playClickSound();
       estado.encuadernacion = (e.target as HTMLSelectElement).value;
@@ -480,7 +491,7 @@
     }
   }
 
-  // Inicialización compatible con navegación SPA de Astro
+  // Ejecución asegurada en Astro
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initCotizador);
   } else {
