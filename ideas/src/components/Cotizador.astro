@@ -149,7 +149,7 @@
               <span>💬</span> Encargar por WhatsApp
             </button>
             <p class="text-[10px] text-center text-slate-400 mt-2 font-light">
-              Envía la configuración armada directamente a nuestro chat.
+              Envía la configuración y el archivo subido a la nube directamente.
             </p>
           </div>
 
@@ -181,7 +181,15 @@
 </style>
 
 <script>
-  // Carga de la librería PDF.js desde CDN nativo para evitar líos de bundling en Netlify
+  import { createClient } from '@supabase/supabase-js';
+
+  // Variables de entorno públicas de Supabase
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
+  const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Carga de la librería PDF.js mediante CDN
   function cargarPdfJS() {
     return new Promise((resolve, reject) => {
       if ((window as any).pdfjsLib) {
@@ -199,7 +207,7 @@
           reject('No se pudo inicializar PDF.js');
         }
       };
-      script.onerror = () => reject('Error al cargar PDF.js desde CDN');
+      script.onerror = () => reject('Error al cargar PDF.js');
       document.head.appendChild(script);
     });
   }
@@ -217,6 +225,7 @@
     let estado = {
       paginas: 0,
       nombreArchivo: '',
+      archivoUrl: '',
       impresion: 'simple',
       color: 'bn',
       encuadernacion: 'ninguno'
@@ -260,34 +269,52 @@
 
     async function procesarPDF(file: File) {
       if (fileName && fileStatus) {
-        fileName.textContent = `⏳ Leyendo "${file.name}"...`;
-        fileStatus.textContent = 'Cargando lector de PDF...';
+        fileName.textContent = `⏳ Leyendo y subiendo "${file.name}"...`;
+        fileStatus.textContent = 'Procesando archivo...';
       }
 
       try {
         const pdfjsLib = await cargarPdfJS();
-
-        if (fileName && fileStatus) {
-          fileStatus.textContent = 'Calculando páginas...';
-        }
-
         const buffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
         
         estado.paginas = pdf.numPages;
         estado.nombreArchivo = file.name;
 
+        // Subir a Supabase Storage
+        const fileExt = file.name.split('.').pop();
+        const cleanFileName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
+        const filePath = `${Date.now()}_${cleanFileName}.${fileExt}`;
+
+        const { data, error } = await supabase.storage
+          .from('pdfs-cotizador')
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (error) {
+          throw error;
+        }
+
+        // Generar URL Pública
+        const { data: publicUrlData } = supabase.storage
+          .from('pdfs-cotizador')
+          .getPublicUrl(filePath);
+
+        estado.archivoUrl = publicUrlData.publicUrl;
+
         if (fileName && fileStatus) {
           fileName.textContent = `✅ ${file.name}`;
-          fileStatus.textContent = `${pdf.numPages} páginas detectadas.`;
+          fileStatus.textContent = `${pdf.numPages} págs. (Listo para encargar)`;
         }
 
         calcularTotales();
       } catch (err) {
         console.error(err);
         if (fileName && fileStatus) {
-          fileName.textContent = '❌ Error al leer el PDF';
-          fileStatus.textContent = 'Asegúrate de subir un archivo PDF válido.';
+          fileName.textContent = '❌ Error al procesar el PDF';
+          fileStatus.textContent = 'Asegúrate de subir un PDF válido y tener conexión.';
         }
       }
     }
@@ -357,14 +384,15 @@
         btnEnviarWhatsApp.classList.add('bg-[#10B981]', 'hover:bg-[#059669]', 'hover:-translate-y-0.5');
 
         const msj = encodeURIComponent(
-          `Hola! Estuve cotizando en la web mi pedido:\n\n` +
+          `Hola! Quiero encargar el siguiente pedido cotizado desde la web:\n\n` +
           `📄 Archivo: *${estado.nombreArchivo}*\n` +
           `📊 Páginas: *${estado.paginas}* (${hojas} hojas)\n` +
           `🖨️ Modalidad: *${estado.impresion === 'doble' ? 'Doble Faz' : 'Simple Faz'}*\n` +
           `🎨 Tipo: *${estado.color === 'bn' ? 'Blanco y Negro' : 'Color'}*\n` +
           `📚 Acabado: *${estado.encuadernacion}*\n\n` +
           `💰 *Total Estimado: $${total.toLocaleString('es-AR')}*\n\n` +
-          `¿Cómo hago para enviarles el archivo y confirmar el pago?`
+          `⬇️ Link de descarga del PDF:\n${estado.archivoUrl}\n\n` +
+          `¿Cómo coordinamos el pago y el retiro/envío?`
         );
 
         btnEnviarWhatsApp.onclick = () => {
@@ -374,7 +402,6 @@
     }
   }
 
-  // Carga inicial
   if (typeof window !== 'undefined') {
     document.addEventListener('DOMContentLoaded', initCotizador);
   }
