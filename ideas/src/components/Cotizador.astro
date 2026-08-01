@@ -196,7 +196,7 @@
 <script>
   import { createClient } from '@supabase/supabase-js';
 
-  // 🔊 SINTETIZADOR WEB AUDIO API (Efectos de sonido al instante)
+  // 🔊 SINTETIZADOR WEB AUDIO API (Sonidos al instante sin MP3)
   const playClickSound = () => {
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -229,8 +229,7 @@
 
       osc.type = 'sine';
       const now = ctx.currentTime;
-      
-      // Frecuencia en ascenso (Efecto "Woosh / Despegue" de envío)
+
       osc.frequency.setValueAtTime(320, now);
       osc.frequency.exponentialRampToValueAtTime(880, now + 0.22);
 
@@ -244,13 +243,11 @@
     } catch (e) {}
   };
 
-  // Variables de entorno públicas de Supabase
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
   const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Carga de la librería PDF.js mediante CDN
   function cargarPdfJS() {
     return new Promise((resolve, reject) => {
       if ((window as any).pdfjsLib) {
@@ -301,9 +298,12 @@
 
     if (!dropzone || !pdfInput) return;
 
-    dropzone.addEventListener('click', () => {
-      playClickSound(); // 🎵 Click al abrir selector
-      pdfInput.click();
+    // FIX DEL CLIC: Si el clic proviene directamente del input, prevenimos la propagación en bucle
+    dropzone.addEventListener('click', (e) => {
+      if (e.target !== pdfInput) {
+        playClickSound();
+        pdfInput.click();
+      }
     });
 
     pdfInput.addEventListener('change', async (e) => {
@@ -327,7 +327,7 @@
       dropzone.classList.remove('bg-indigo-100/50');
       const file = e.dataTransfer?.files[0];
       if (file && file.type === 'application/pdf') {
-        playClickSound(); // 🎵 Click al soltar archivo
+        playClickSound();
         procesarPDF(file);
       }
     });
@@ -358,11 +358,8 @@
             upsert: false
           });
 
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
 
-        // Generar URL Pública
         const { data: publicUrlData } = supabase.storage
           .from('pdfs-cotizador')
           .getPublicUrl(filePath);
@@ -384,9 +381,10 @@
       }
     }
 
+    // BOTONES DE MODALIDAD
     document.querySelectorAll('.opt-impresion').forEach((btn) => {
       btn.addEventListener('click', () => {
-        playClickSound(); // 🎵 Click en tipo de impresión
+        playClickSound();
         document.querySelectorAll('.opt-impresion').forEach((b) => {
           b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
           b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
@@ -399,9 +397,10 @@
       });
     });
 
+    // BOTONES DE COLOR
     document.querySelectorAll('.opt-color').forEach((btn) => {
       btn.addEventListener('click', () => {
-        playClickSound(); // 🎵 Click en opción de color
+        playClickSound();
         document.querySelectorAll('.opt-color').forEach((b) => {
           b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
           b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
@@ -414,8 +413,9 @@
       });
     });
 
+    // SELECT DE ENCUADERNACIÓN
     selectEncuadernacion?.addEventListener('change', (e) => {
-      playClickSound(); // 🎵 Click en encuadernación
+      playClickSound();
       estado.encuadernacion = (e.target as HTMLSelectElement).value;
       calcularTotales();
     });
@@ -435,12 +435,8 @@
       const subtotalHojas = hojas * tarifaHoja;
 
       let costoEncuadernacion = 0;
-      if (estado.encuadernacion === 'abrochado') {
-        costoEncuadernacion = TARIFAS.abrochado;
-      }
-      if (estado.encuadernacion === 'espiralado') {
-        costoEncuadernacion = TARIFAS.espiralado;
-      }
+      if (estado.encuadernacion === 'abrochado') costoEncuadernacion = TARIFAS.abrochado;
+      if (estado.encuadernacion === 'espiralado') costoEncuadernacion = TARIFAS.espiralado;
 
       const total = subtotalHojas + costoEncuadernacion;
 
@@ -475,16 +471,20 @@
         );
 
         btnEnviarWhatsApp.onclick = () => {
-          playSendSound(); // 🚀 🎵 ¡EFECTO DE SONIDO DE ENVÍO!
+          playSendSound();
           setTimeout(() => {
             window.open(`https://api.whatsapp.com/send?phone=5493412141732&text=${msj}`, '_blank');
-          }, 150); // Pequeña pausa de 150ms para escuchar el sonido antes de abrir la pestaña
+          }, 150);
         };
       }
     }
   }
 
-  if (typeof window !== 'undefined') {
+  // Ejecución segura tanto en carga inicial como en navegaciones Astro
+  if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initCotizador);
+  } else {
+    initCotizador();
   }
+  document.addEventListener('astro:page-load', initCotizador);
 </script>
