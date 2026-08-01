@@ -35,14 +35,6 @@ import GalleryModal from '../components/GalleryModal.astro';
 		font-family: 'Playfair Display', serif;
 	}
 	
-	/* TEXTURA DE PAPEL SUTIL */
-	.bg-texture {
-		background-color: #faf9f6;
-		background-image: radial-gradient(#e5e5e5 0.5px, transparent 0.5px), radial-gradient(#e5e5e5 0.5px, #faf9f6 0.5px);
-		background-size: 20px 20px;
-		background-position: 0 0, 10px 10px;
-	}
-
 	/* ANIMACIÓN DE FONDOS PASTELES */
 	@keyframes cambioPastel {
 		0% {
@@ -67,7 +59,7 @@ import GalleryModal from '../components/GalleryModal.astro';
 		transition: background-color 1s ease-in-out;
 	}
 
-	/* TRAMA PUNTEADA SOBREPUESTA */
+	/* TRAMA PUNTEADA VISIBLE EN TODO EL SITIO */
 	body::before {
 		content: "";
 		position: fixed;
@@ -75,9 +67,10 @@ import GalleryModal from '../components/GalleryModal.astro';
 		left: 0;
 		width: 100vw;
 		height: 100vh;
-		background-image: radial-gradient(rgba(99, 102, 241, 0.18) 1.5px, transparent 1.5px);
+		/* Incrementamos un poco el contraste del punto (opacidad 0.25) */
+		background-image: radial-gradient(rgba(79, 70, 229, 0.25) 1.5px, transparent 1.5px);
 		background-size: 24px 24px;
-		pointer-events: none;
-		z-index: 0;
+		pointer-events: none; /* Sigue permitiendo clicks sin interrupción */
+		z-index: 10; /* Eleva los puntos sobre los contenedores del sitio */
 	}
 </style>
