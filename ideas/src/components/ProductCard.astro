@@ -11,18 +11,20 @@ interface Props {
   badge: string;
   imageSrc: string;
   hoverImageSrc: string;
+  galleryImages?: string[]; // <-- Nueva lista de imágenes para el carrusel
   subProducts?: SubProduct[];
 }
 
-const { id, title, description, badge, imageSrc, hoverImageSrc, subProducts = [] } = Astro.props;
+const { id, title, description, badge, imageSrc, hoverImageSrc, galleryImages = [], subProducts = [] } = Astro.props;
+
+// Si no pasas galleryImages, usamos por defecto la imagen principal y la de hover
+const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverImageSrc].filter(Boolean);
 ---
 
 <div class="bg-[#FAF8FC]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#EBE3F0] shadow-[0_4px_15px_rgba(100,70,150,0.03)] hover:shadow-md transition-all duration-300 flex flex-col group transform hover:-translate-y-1 w-full max-w-[320px]">
   
-  <button 
-    id={`btn-${id}`} 
-    class="relative overflow-hidden aspect-[16/10] bg-slate-100 w-full text-left cursor-pointer focus:outline-none block group/img"
-  >
+  <!-- CONTENEDOR DE LA IMAGEN CON BOTÓN DE GALERÍA -->
+  <div class="relative overflow-hidden aspect-[16/10] bg-slate-100 w-full group/img">
     <img 
       src={imageSrc} 
       alt={title} 
@@ -37,13 +39,26 @@ const { id, title, description, badge, imageSrc, hoverImageSrc, subProducts = []
     <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-700 text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full z-20 shadow-sm">
       {badge}
     </span>
-    <span class="absolute bottom-3 right-3 bg-indigo-600 text-white text-[10px] font-medium px-2.5 py-1 rounded-full z-20 shadow-md opacity-0 group-hover/img:opacity-100 transition-opacity duration-300">
-      Ver opciones 🔍
-    </span>
-  </button>
+
+    <!-- BOTÓN COOL PARA ABRIR CARRUSEL -->
+    <button 
+      id={`gallery-btn-${id}`}
+      type="button"
+      class="absolute bottom-3 right-3 bg-white/90 hover:bg-indigo-600 text-indigo-950 hover:text-white text-[10px] font-semibold px-3 py-1.5 rounded-full z-20 shadow-md backdrop-blur-md transition-all duration-300 flex items-center gap-1.5 hover:scale-105"
+    >
+      <span>📸</span> Ver Galería
+    </button>
+  </div>
   
   <div class="p-4 flex flex-col flex-grow">
-    <h3 class="font-serif text-lg text-indigo-950 font-medium group-hover:text-indigo-600 transition-colors">{title}</h3>
+    <!-- TÍTULO QUE DESPLIEGA LOS SUB-PRODUCTOS EN LA TARJETA -->
+    <button id={`toggle-btn-${id}`} class="text-left w-full focus:outline-none group/title">
+      <h3 class="font-serif text-lg text-indigo-950 font-medium group-hover/title:text-indigo-600 transition-colors flex items-center justify-between">
+        {title}
+        <span class="text-xs text-indigo-400 group-hover/title:translate-y-0.5 transition-transform">▼</span>
+      </h3>
+    </button>
+
     <p class="text-slate-500 text-xs mt-1.5 flex-grow font-light leading-relaxed">{description}</p>
     
     <!-- SUB-CATÁLOGO DESPLEGABLE -->
@@ -67,27 +82,32 @@ const { id, title, description, badge, imageSrc, hoverImageSrc, subProducts = []
         target="_blank"
         rel="noopener noreferrer"
         class="w-full text-center block bg-slate-50 hover:bg-indigo-600 hover:text-white text-slate-700 text-xs font-semibold py-2.5 rounded-lg transition-all tracking-wider"
-        >
+      >
         COTIZAR ESTA LÍNEA
       </a>
     </div>
   </div>
 </div>
 
-<!-- LÓGICA DE INTERACCIÓN -->
-<script define:vars={{ id }}>
-  const btn = document.getElementById(`btn-${id}`);
+<script define:vars={{ id, title, allImages }}>
+  const galleryBtn = document.getElementById(`gallery-btn-${id}`);
+  const toggleBtn = document.getElementById(`toggle-btn-${id}`);
   const subMenu = document.getElementById(`sub-${id}`);
 
-  if (btn && subMenu) {
-    btn.addEventListener('click', () => {
+  // Disparar el modal del carrusel
+  galleryBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    window.dispatchEvent(new CustomEvent('open-gallery', {
+      detail: { title, images: allImages }
+    }));
+  });
+
+  // Desplegar información inferior en la tarjeta
+  toggleBtn?.addEventListener('click', () => {
+    if (subMenu) {
       subMenu.classList.toggle('hidden');
-      
-      if (!subMenu.classList.contains('hidden')) {
-        subMenu.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    });
-  }
+    }
+  });
 </script>
 
 <style>

@@ -3,13 +3,13 @@ import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
 import Hero from '../components/Hero.astro';
 import ProductCard from '../components/ProductCard.astro';
+import GalleryModal from '../components/GalleryModal.astro'; // 1. IMPORTAR MODAL
 ---
 
 <Layout title="Ideas de la Luna | Papelería de otro planeta">
   <Navbar />
   <Hero />
 
-  <!-- CONTENIDO PRINCIPAL DE LA LANDING -->
   <main class="max-w-7xl mx-auto px-6 py-12 space-y-24">
     
     <!-- SECCIÓN 1: UNIVERSO EMPRENDEDOR -->
@@ -19,15 +19,19 @@ import ProductCard from '../components/ProductCard.astro';
         <p class="text-slate-500 text-sm mt-2 font-light">Packaging e identidad para marcas que quieren dejar una huella imborrable al abrir sus cajas. Haz clic en la foto para ver las opciones disponibles.</p>
       </div>
       
-      <!-- GRID DE TARJETAS (1 col móvil, 2 en tablet/desktop) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-fit">
         <ProductCard 
           id="stickers"
           title="Stickers & Etiquetas"
           description="En plancha o troquelados individuales. Papel brillante, mate o vinilo resistente al agua."
           badge="Identidad"
-          imageSrc="catalog/sticker_5.jpeg"
-          hoverImageSrc= "/catalog/sticker_1.jpeg"
+          imageSrc="/catalog/sticker_5.jpeg"
+          hoverImageSrc="/catalog/sticker_1.jpeg"
+          galleryImages={[
+            "/catalog/sticker_5.jpeg",
+            "/catalog/sticker_1.jpeg",
+            "/catalog/tarjetas_profesionales.jpeg"
+          ]}
           subProducts={[
             { name: "Planchas A4 troqueladas", desc: "Ideales para cerrar bolsas y rotular cajas rápidamente." },
             { name: "Stickers individuales (Die-cut)", desc: "Cortados uno a uno con la forma de tu logo." },
@@ -41,7 +45,11 @@ import ProductCard from '../components/ProductCard.astro';
           description="Papel pesado de alta calidad (300g) con terminaciones mate suaves al tacto para conectar con tus clientes."
           badge="Packaging"
           imageSrc="/catalog/tarjetas_profesionales.jpeg"
-          hoverImageSrc="/catalog/WhatsApp Image 2026-07-20 at 22.38.50 (1).jpeg"
+          hoverImageSrc="/catalog/tarjetas_profesionales2.jpeg"
+          galleryImages={[
+            "/catalog/tarjetas_profesionales.jpeg",
+            "/catalog/tarjetas_profesionales2.jpeg"
+          ]}
           subProducts={[
             { name: "Tarjetas Personales", desc: "Ideales para emprendedores y profesionales." },
             { name: "Tags colgantes con hilo", desc: "Para ropa o productos artesanales, perforadas y listas." }
@@ -108,14 +116,22 @@ import ProductCard from '../components/ProductCard.astro';
           title="Agendas & Planners"
           description="Organizadores perpetuos y blocs de notas semanales para despejar la mente y estructurar tus metas."
           badge="Diseño"
-          imageSrc="catalog/libreta.jpeg"
-          hoverImageSrc="catalog/libreta.jpeg"
+          imageSrc="/catalog/libreta.jpeg"
+          hoverImageSrc="/catalog/libreta.jpeg"
+          galleryImages={[
+            "/catalog/sticker_5.jpeg",
+            "/catalog/sticker_1.jpeg",
+            "/catalog/tarjetas_profesionales.jpeg"
+          ]}
+          subProducts={[
+            { name: "Agendas Personalizadas", desc: "Tapa dura laminada, cierre elástico y sobre interno." },
+            { name: "Bitácoras de viaje", desc: "Encuadernación flexible y lomo cosido a la vista." }
+          ]}
         />
       </div>
     </section>
   </main>
 
-  <!-- SEPARADOR ESTILO PAPEL TROZADO A MANO (Ajustado color fill-[#2D2342]) -->
   <div class="w-full overflow-hidden leading-[0] rotate-180 bg-transparent -mb-1">
     <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-full h-14 fill-[#2D2342]">
       <path d="M0,0 L1200,0 L1200,20 L1180,45 L1150,25 L1100,55 L1060,30 L1020,50 L980,20 L940,45 L900,15 L850,50 L800,25 L750,55 L700,30 L650,50 L600,20 L550,45 L500,15 L450,55 L400,25 L350,50 L300,20 L250,45 L200,15 L150,55 L100,30 L50,50 L0,20 Z"></path>
@@ -131,10 +147,7 @@ import ProductCard from '../components/ProductCard.astro';
         Hablemos de tu proyecto y creemos algo mágico juntos.
       </p>
       
-      <!-- CONTENEDOR DE BOTONES -->
       <div class="flex flex-col sm:flex-row justify-center items-center gap-5">
-        
-        <!-- BOTÓN WHATSAPP -->
         <a 
           href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Vi%20tu%20web%20y%20me%20gustar%C3%ADa%20hacerte%20una%20consulta." 
           target="_blank"
@@ -145,7 +158,6 @@ import ProductCard from '../components/ProductCard.astro';
           Escríbenos por WhatsApp
         </a>
 
-        <!-- BOTÓN INSTAGRAM -->
         <a 
           href="https://www.instagram.com/ideas.de.la.luna/" 
           target="_blank"
@@ -155,7 +167,6 @@ import ProductCard from '../components/ProductCard.astro';
           <span class="text-base">📸</span>
           Seguinos en Instagram
         </a>
-
       </div>
 
       <p class="text-xs text-[#BBAACF]/60 mt-16 font-light">
@@ -163,4 +174,7 @@ import ProductCard from '../components/ProductCard.astro';
       </p>
     </div>
   </footer>
+
+  <!-- 2. RENDERIZAR MODAL AL FINAL -->
+  <GalleryModal />
 </Layout>
