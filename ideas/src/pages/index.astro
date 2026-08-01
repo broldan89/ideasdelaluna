@@ -19,7 +19,7 @@ import ProductCard from '../components/ProductCard.astro';
         <p class="text-slate-500 text-sm mt-2 font-light">Packaging e identidad para marcas que quieren dejar una huella imborrable al abrir sus cajas. Haz clic en la foto para ver las opciones disponibles.</p>
       </div>
       
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="bg-white rounded-2xl p-6 shadow-[0_10px_25px_rgba(100,70,150,0.06)] border border-[#F1E8F5] transition-all hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(100,70,150,0.12)]">
         <ProductCard 
           id="stickers"
           title="Stickers & Etiquetas"
@@ -56,7 +56,7 @@ import ProductCard from '../components/ProductCard.astro';
         <p class="text-slate-500 text-sm mt-2 font-light">Papelería fina y detalles completamente personalizados para eventos que merecen ser recordados para siempre.</p>
       </div>
       
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="bg-white rounded-2xl p-6 shadow-[0_10px_25px_rgba(100,70,150,0.06)] border border-[#F1E8F5] transition-all hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(100,70,150,0.12)]">
         <ProductCard 
           id="invitaciones"
           title="Invitaciones Especiales"
@@ -88,7 +88,7 @@ import ProductCard from '../components/ProductCard.astro';
         <p class="text-slate-500 text-sm mt-2 font-light">Nuestra línea exclusiva de papelería de diseño lista para usar, organizar tus días o hacer un regalo especial.</p>
       </div>
       
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="bg-white rounded-2xl p-6 shadow-[0_10px_25px_rgba(100,70,150,0.06)] border border-[#F1E8F5] transition-all hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(100,70,150,0.12)]">
         <ProductCard 
           id="cuadernos"
           title="Cuadernos Artesanales"
@@ -121,40 +121,45 @@ import ProductCard from '../components/ProductCard.astro';
     </svg>
   </div>
 
-  <!-- FOOTER / CONTACTO (Corregido y Limpio) -->
-  <footer id="contacto" class="bg-indigo-950 text-white py-16 px-6">
-    <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-3xl font-serif mb-4">¿Tenés una idea fuera de órbita?</h2>
-      <p class="text-indigo-200 text-sm max-w-sm mx-auto font-light mb-12">Hablemos de tu proyecto y creemos algo mágico juntos.</p>
+  <footer id="contacto" class="bg-[#2D2342] text-[#F7F2FA] py-16 px-6 relative">
+  <div class="max-w-4xl mx-auto text-center">
+    <h2 class="text-3xl font-serif mb-4 text-white font-medium tracking-wide">
+      ¿Tenés una idea fuera de órbita?
+    </h2>
+    <p class="text-[#E2D9EE] text-sm max-w-sm mx-auto font-light mb-10 leading-relaxed">
+      Hablemos de tu proyecto y creemos algo mágico juntos.
+    </p>
+    
+    <!-- CONTENEDOR DE BOTONES -->
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-5">
       
-      <!-- CONTENEDOR DE BOTONES (flex para responsive) -->
-      <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
-        
-        <!-- BOTÓN WHATSAPP GENERAL: Mensaje abierto para cualquier consulta -->
-        <a 
-  href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Vi%20tu%20web%20y%20me%20gustar%C3%ADa%20hacerte%20una%20consulta." 
-  target="_blank"
-  rel="noopener noreferrer"
-  class="w-full sm:w-auto inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-8 py-4 rounded-full shadow-lg transition-all text-sm tracking-wider gap-2.5"
->
-  <span class="text-base">💬</span>
-  Escríbenos por WhatsApp
-</a>
+      <!-- BOTÓN WHATSAPP -->
+      <a 
+        href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Vi%20tu%20web%20y%20me%20gustar%C3%ADa%20hacerte%20una%20consulta." 
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-full sm:w-auto inline-flex items-center justify-center bg-[#10B981] hover:bg-[#059669] text-white font-medium px-8 py-3.5 rounded-full shadow-md hover:shadow-lg transition-all text-sm tracking-wide gap-2.5"
+      >
+        <span class="text-base">💬</span>
+        Escríbenos por WhatsApp
+      </a>
 
-        <!-- BOTÓN INSTAGRAM: Igual que antes, perfecto -->
-        <a 
-          href="https://www.instagram.com/ideas.de.la.luna/" 
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-90 text-white font-semibold px-8 py-4 rounded-full shadow-lg transition-all text-sm tracking-wider gap-2.5"
-        >
-          <span class="text-base">📸</span>
-          Seguinos en Instagram
-        </a>
+      <!-- BOTÓN INSTAGRAM -->
+      <a 
+        href="https://www.instagram.com/ideas.de.la.luna/" 
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-[#A855F7] to-[#EC4899] hover:opacity-95 text-white font-medium px-8 py-3.5 rounded-full shadow-md hover:shadow-lg transition-all text-sm tracking-wide gap-2.5"
+      >
+        <span class="text-base">📸</span>
+        Seguinos en Instagram
+      </a>
 
-      </div>
-
-      <p class="text-xs text-indigo-300/50 mt-16 font-light">© 2026 Ideas de la Luna. Todos los derechos reservados.</p>
     </div>
-  </footer>
+
+    <p class="text-xs text-[#BBAACF]/60 mt-16 font-light">
+      © 2026 Ideas de la Luna. Todos los derechos reservados.
+    </p>
+  </div>
+</footer>
 </Layout>
