@@ -138,67 +138,72 @@ import GalleryModal from '../components/GalleryModal.astro';
   <!-- SECCIÓN PREGUNTAS FRECUENTES -->
   <Faq />
 
-  <!-- SEPARADOR ESTILO PAPEL RASGADO (Integrado al color del footer) -->
-  <div class="w-full overflow-hidden leading-[0] rotate-180 bg-transparent -mb-1">
-    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-full h-12 fill-white/80">
-      <path d="M0,0 L1200,0 L1200,20 L1180,45 L1150,25 L1100,55 L1060,30 L1020,50 L980,20 L940,45 L900,15 L850,50 L800,25 L750,55 L700,30 L650,50 L600,20 L550,45 L500,15 L450,55 L400,25 L350,50 L300,20 L250,45 L200,15 L150,55 L100,30 L50,50 L0,20 Z"></path>
-    </svg>
-  </div>
-
-  <!-- FOOTER LIMPIO E INTEGRADO -->
-  <footer id="contacto" class="bg-white/80 backdrop-blur-md text-indigo-950 pb-16 pt-4 px-6 relative border-t border-indigo-50/50">
-    <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
-      
-      <!-- LOGO INTEGRADO NATURALMENTE (Sin contenedores ni sombras pesadas) -->
-      <div class="mb-5 flex justify-center">
-        <img 
-          src="/logo.png" 
-          alt="Ideas de la Luna Logo" 
-          class="h-20 w-auto object-contain transition-transform duration-300 hover:scale-105 opacity-90" 
-        />
-      </div>
-
-      <!-- TÍTULO Y DESCRIPCIÓN -->
-      <h2 class="text-3xl font-serif mb-2 text-indigo-950 font-medium tracking-wide">
-        ¿Tenés una idea fuera de órbita?
-      </h2>
-      <p class="text-slate-500 text-sm max-w-sm mx-auto font-light mb-8 leading-relaxed">
-        Hablemos de tu proyecto y creemos algo mágico juntos.
-      </p>
-      
-      <!-- BOTONES DE CONTACTO -->
-      <div class="flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-auto">
-        
-        <!-- BOTÓN WHATSAPP -->
-        <a 
-          href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Vi%20tu%20web%20y%20me%20gustar%C3%ADa%20hacerte%20una%20consulta." 
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-full sm:w-auto inline-flex items-center justify-center bg-[#10B981] hover:bg-[#059669] text-white font-semibold px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5 hover:-translate-y-0.5"
-        >
-          <span class="text-base">💬</span>
-          Escríbenos por WhatsApp
-        </a>
-
-        <!-- BOTÓN INSTAGRAM -->
-        <a 
-          href="https://www.instagram.com/ideas.de.la.luna/" 
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-[#A855F7] to-[#EC4899] hover:opacity-95 text-white font-semibold px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5 hover:-translate-y-0.5"
-        >
-          <span class="text-base">📸</span>
-          Seguinos en Instagram
-        </a>
-
-      </div>
-
-      <!-- COPYRIGHT -->
-      <p class="text-xs text-slate-400 mt-14 font-light">
-        © 2026 Ideas de la Luna. Todos los derechos reservados.
-      </p>
+  <!-- FOOTER CON SOMBRA DE PAPEL SOBREPUESTO -->
+  <div class="paper-footer-wrapper relative z-20">
+    
+    <!-- SEPARADOR ESTILO PAPEL RASGADO -->
+    <div class="w-full overflow-hidden leading-[0] rotate-180 bg-transparent -mb-1">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-full h-12 fill-white/95">
+        <path d="M0,0 L1200,0 L1200,20 L1180,45 L1150,25 L1100,55 L1060,30 L1020,50 L980,20 L940,45 L900,15 L850,50 L800,25 L750,55 L700,30 L650,50 L600,20 L550,45 L500,15 L450,55 L400,25 L350,50 L300,20 L250,45 L200,15 L150,55 L100,30 L50,50 L0,20 Z"></path>
+      </svg>
     </div>
-  </footer>
+
+    <!-- FOOTER LIMPIO E INTEGRADO -->
+    <footer id="contacto" class="bg-white/95 backdrop-blur-md text-indigo-950 pb-16 pt-4 px-6 relative">
+      <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
+        
+        <!-- LOGO INTEGRADO -->
+        <div class="mb-5 flex justify-center">
+          <img 
+            src="/logo.png" 
+            alt="Ideas de la Luna Logo" 
+            class="h-20 w-auto object-contain transition-transform duration-300 hover:scale-105 opacity-90" 
+          />
+        </div>
+
+        <!-- TÍTULO Y DESCRIPCIÓN -->
+        <h2 class="text-3xl font-serif mb-2 text-indigo-950 font-medium tracking-wide">
+          ¿Tenés una idea fuera de órbita?
+        </h2>
+        <p class="text-slate-500 text-sm max-w-sm mx-auto font-light mb-8 leading-relaxed">
+          Hablemos de tu proyecto y creemos algo mágico juntos.
+        </p>
+        
+        <!-- BOTONES DE CONTACTO -->
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-auto">
+          
+          <!-- BOTÓN WHATSAPP -->
+          <a 
+            href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Vi%20tu%20web%20y%20me%20gustar%C3%ADa%20hacerte%20una%20consulta." 
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto inline-flex items-center justify-center bg-[#10B981] hover:bg-[#059669] text-white font-semibold px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5 hover:-translate-y-0.5"
+          >
+            <span class="text-base">💬</span>
+            Escríbenos por WhatsApp
+          </a>
+
+          <!-- BOTÓN INSTAGRAM -->
+          <a 
+            href="https://www.instagram.com/ideas.de.la.luna/" 
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-[#A855F7] to-[#EC4899] hover:opacity-95 text-white font-semibold px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5 hover:-translate-y-0.5"
+          >
+            <span class="text-base">📸</span>
+            Seguinos en Instagram
+          </a>
+
+        </div>
+
+        <!-- COPYRIGHT -->
+        <p class="text-xs text-slate-400 mt-14 font-light">
+          © 2026 Ideas de la Luna. Todos los derechos reservados.
+        </p>
+      </div>
+    </footer>
+
+  </div>
 
   <GalleryModal />
 </Layout>

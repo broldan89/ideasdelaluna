@@ -1,31 +1,62 @@
 ---
 ---
-<nav class="sticky top-0 z-50 bg-[#faf9f6]/80 backdrop-blur-md border-b border-slate-100 px-6 py-4">
-  <div class="max-w-7xl mx-auto flex justify-between items-center">
-    
-    <!-- LOGO + NOMBRE -->
-    <a href="#" class="flex items-center gap-3 group">
-      <img 
-        src="/logo.png" 
-        alt="Logo Ideas de la Luna" 
-        class="h-10 w-10 rounded-full object-cover shadow-sm border border-slate-200 group-hover:scale-105 transition-transform"
-      />
-      <span class="text-xl font-serif font-bold tracking-wide text-indigo-950">
-        Ideas de la <span class="text-indigo-600">Luna</span>.
-      </span>
-    </a>
-    
-    <!-- MENÚ DE NAVEGACIÓN -->
-    <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-600">
-      <a href="#marcas" class="hover:text-indigo-600 transition-colors">Para Marcas</a>
-      <a href="#eventos" class="hover:text-indigo-600 transition-colors">Para Eventos</a>
-      <a href="#tienda" class="hover:text-indigo-600 transition-colors">Línea Propia</a>
-    </div>
 
-    <!-- BOTÓN DE ACCIÓN -->
-    <a href="#contacto" class="bg-indigo-950 text-white px-4 py-2 rounded-full text-xs font-semibold tracking-wider hover:bg-indigo-900 transition-all shadow-sm">
-      PRESUPUESTAR
-    </a>
+<header class="sticky top-0 z-50 paper-navbar-wrapper">
+  <div class="paper-navbar bg-white/95 backdrop-blur-md px-6 py-3.5 transition-all duration-300">
+    <nav class="max-w-7xl mx-auto flex items-center justify-between">
+      
+      <!-- LOGO / NOMBRE -->
+      <a href="#" class="flex items-center gap-2.5 group">
+        <img 
+          src="/logo.png" 
+          alt="Ideas de la Luna Logo" 
+          class="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
+        />
+        <span class="font-serif font-medium text-lg text-indigo-950 tracking-wide">
+          Ideas de la <span class="italic text-indigo-600">Luna</span>
+        </span>
+      </a>
 
+      <!-- ENLACES DE NAVEGACIÓN -->
+      <div class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-medium text-slate-600">
+        <a href="#marcas" class="hover:text-indigo-600 transition-colors">Marcas</a>
+        <a href="#eventos" class="hover:text-indigo-600 transition-colors">Eventos</a>
+        <a href="#tienda" class="hover:text-indigo-600 transition-colors">Tienda</a>
+        <a href="#faq" class="hover:text-indigo-600 transition-colors">FAQ</a>
+      </div>
+
+      <!-- BOTÓN CTA / CONTACTO -->
+      <a 
+        href="#contacto" 
+        class="bg-indigo-950 hover:bg-indigo-900 text-white font-medium text-xs px-5 py-2.5 rounded-full transition-all duration-200 shadow-sm hover:shadow hover:-translate-y-0.5 tracking-wider"
+      >
+        Contacto
+      </a>
+
+    </nav>
   </div>
-</nav>
+</header>
+
+<style>
+  /* Wrapper sticky con la sombra que proyecta el papel rasgado del Navbar hacia abajo */
+  .paper-navbar-wrapper {
+    filter: 
+      drop-shadow(0px 8px 12px rgba(45, 35, 66, 0.08)) 
+      drop-shadow(0px 2px 4px rgba(45, 35, 66, 0.04));
+  }
+
+  /* Corte trozado de papel ÚNICAMENTE en el borde inferior del Navbar */
+  .paper-navbar {
+    clip-path: polygon(
+      0% 0%, 
+      100% 0%, 
+      100% calc(100% - 4px), 
+      97% 100%, 94% calc(100% - 3px), 91% 100%, 88% calc(100% - 2px), 85% 100%, 82% calc(100% - 4px), 
+      79% 100%, 76% calc(100% - 2px), 73% 100%, 70% calc(100% - 3px), 67% 100%, 64% calc(100% - 1px), 
+      61% 100%, 58% calc(100% - 3px), 55% 100%, 52% calc(100% - 2px), 49% 100%, 46% calc(100% - 4px), 
+      43% 100%, 40% calc(100% - 2px), 37% 100%, 34% calc(100% - 3px), 31% 100%, 28% calc(100% - 1px), 
+      25% 100%, 22% calc(100% - 3px), 19% 100%, 16% calc(100% - 2px), 13% 100%, 10% calc(100% - 4px), 
+      7% 100%, 4% calc(100% - 2px), 0% 100%
+    );
+  }
+</style>
