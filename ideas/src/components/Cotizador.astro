@@ -1,0 +1,360 @@
+---
+---
+
+<section id="cotizador" class="max-w-4xl mx-auto px-6 py-16 scroll-mt-20">
+  <!-- ENCABEZADO -->
+  <div class="text-center mb-10">
+    <span class="text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">
+      Calculadora al instante
+    </span>
+    <h2 class="text-3xl sm:text-4xl font-serif text-indigo-950 font-medium mt-4">
+      Cotiza tu <span class="italic text-indigo-600">Documento o Apunte</span>
+    </h2>
+    <p class="text-slate-500 text-sm mt-2 font-light max-w-md mx-auto">
+      Subí tu archivo PDF, elegí las terminaciones y obtené el presupuesto exacto en segundos.
+    </p>
+  </div>
+
+  <!-- TARJETA DEL COTIZADOR (Estilo Papel Flotante) -->
+  <div class="cotizador-card-wrapper">
+    <div class="cotizador-card bg-white p-6 sm:p-10 text-left">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- COLUMNA IZQUIERDA: CARGA Y OPCIONES -->
+        <div class="space-y-6">
+          
+          <!-- DROPZONE / CARGA DE ARCHIVO -->
+          <div>
+            <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
+              1. Cargar Documento (PDF)
+            </label>
+            <div 
+              id="dropzone"
+              class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/40 hover:bg-indigo-50 transition-all rounded-2xl p-6 text-center cursor-pointer flex flex-col items-center justify-center min-h-[140px]"
+            >
+              <input type="file" id="pdfInput" accept="application/pdf" class="hidden" />
+              <span class="text-3xl mb-2">📄</span>
+              <p id="fileName" class="text-xs font-medium text-indigo-950">
+                Haz clic o arrastra tu PDF aquí
+              </p>
+              <p id="fileStatus" class="text-[11px] text-slate-400 font-light mt-1">
+                Formatos aceptados: .pdf
+              </p>
+            </div>
+          </div>
+
+          <!-- OPCIÓN: TIPO DE IMPRESIÓN -->
+          <div>
+            <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
+              2. Modalidad de Impresión
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <button 
+                type="button" 
+                data-type="simple" 
+                class="opt-impresion active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-2.5 px-3 rounded-xl font-medium transition-all text-center"
+              >
+                Simple Faz
+              </button>
+              <button 
+                type="button" 
+                data-type="doble" 
+                class="opt-impresion border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 text-xs py-2.5 px-3 rounded-xl font-medium transition-all text-center"
+              >
+                Doble Faz
+              </button>
+            </div>
+          </div>
+
+          <!-- OPCIÓN: COLOR / B&N -->
+          <div>
+            <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
+              3. Tipo de Color
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <button 
+                type="button" 
+                data-color="bn" 
+                class="opt-color active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-2.5 px-3 rounded-xl font-medium transition-all text-center"
+              >
+                Blanco y Negro
+              </button>
+              <button 
+                type="button" 
+                data-color="color" 
+                class="opt-color border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 text-xs py-2.5 px-3 rounded-xl font-medium transition-all text-center"
+              >
+                Color
+              </button>
+            </div>
+          </div>
+
+          <!-- OPCIÓN: ENCUADERNACIÓN / TERMINACIÓN -->
+          <div>
+            <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
+              4. Terminación / Acabado
+            </label>
+            <select 
+              id="selectEncuadernacion" 
+              class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-500 font-medium cursor-pointer"
+            >
+              <option value="ninguno">Sin encuadernar (Suelto)</option>
+              <option value="abrochado">Abrochado / Abrochado Doble (+$200)</option>
+              <option value="espiralado">Espiralado con tapas transparentes (+$1.200)</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- COLUMNA DERECHA: DESGLOSE Y RESUMEN -->
+        <div class="bg-indigo-50/50 rounded-2xl p-6 flex flex-col justify-between border border-indigo-100/60">
+          <div>
+            <h3 class="font-serif font-medium text-indigo-950 text-lg mb-4 pb-2 border-b border-indigo-100">
+              Resumen del Pedido
+            </h3>
+
+            <div class="space-y-3 text-xs font-light text-slate-600">
+              <div class="flex justify-between">
+                <span>Páginas detectadas:</span>
+                <span id="resPaginas" class="font-semibold text-indigo-950">0 págs</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Hojas a utilizar:</span>
+                <span id="resHojas" class="font-semibold text-indigo-950">0 hojas</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Costo por hoja:</span>
+                <span id="resCostoHoja" class="font-semibold text-indigo-950">$0</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Encuadernación:</span>
+                <span id="resEncuadernacion" class="font-semibold text-indigo-950">$0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- MONTO TOTAL & BOTÓN DE CONTACTO -->
+          <div class="mt-8 pt-4 border-t border-indigo-100">
+            <div class="flex justify-between items-baseline mb-6">
+              <span class="text-xs uppercase tracking-wider font-semibold text-slate-500">Total Estimado:</span>
+              <span id="totalPrecio" class="text-3xl font-serif font-bold text-indigo-950">$0</span>
+            </div>
+
+            <button 
+              id="btnEnviarWhatsApp"
+              disabled
+              class="w-full bg-slate-300 text-white cursor-not-allowed font-semibold py-3.5 px-4 rounded-full text-xs tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
+            >
+              <span>💬</span> Encargar por WhatsApp
+            </button>
+            <p class="text-[10px] text-center text-slate-400 mt-2 font-light">
+              Envía la configuración armada directamente a nuestro chat.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Sombra flotante para el cotizador */
+  .cotizador-card-wrapper {
+    filter: 
+      drop-shadow(3px 12px 16px rgba(45, 35, 66, 0.10)) 
+      drop-shadow(1px 4px 5px rgba(45, 35, 66, 0.05));
+  }
+
+  /* Clip-path recortado de papel rasgado */
+  .cotizador-card {
+    clip-path: polygon(
+      0% 4px, 8% 0px, 16% 3px, 24% 1px, 32% 4px, 40% 0px, 48% 3px, 56% 1px, 64% 4px, 72% 0px, 80% 3px, 88% 1px, 96% 3px, 100% 1px,
+      calc(100% - 2px) 15%, 100% 30%, calc(100% - 3px) 45%, 100% 60%, calc(100% - 2px) 75%, 100% 90%, calc(100% - 1px) 100%,
+      92% calc(100% - 3px), 84% 100%, 76% calc(100% - 2px), 68% 100%, 60% calc(100% - 4px), 52% 100%, 44% calc(100% - 2px), 36% 100%, 28% calc(100% - 3px), 20% 100%, 12% calc(100% - 1px), 4% 100%, 0% calc(100% - 2px),
+      2px 85%, 0% 70%, 3px 55%, 1px 40%, 3px 25%, 1px 10%
+    );
+  }
+</style>
+
+<script>
+  import * as pdfjsLib from 'pdfjs-dist';
+
+  // Configuración del Worker de PDF.js mediante CDN seguro
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+
+  // TARIFAS BASE (Podes ajustar estos números según tus costos)
+  const TARIFAS = {
+    bn_simple: 80,       // $80 por hoja
+    bn_doble: 120,       // $120 por hoja (imprime 2 págs)
+    color_simple: 250,   // $250 por hoja
+    color_doble: 380,    // $380 por hoja
+    abrochado: 200,      // $200
+    espiralado: 1200     // $1200
+  };
+
+  // ESTADO DEL PEDIDO
+  let estado = {
+    paginas: 0,
+    nombreArchivo: '',
+    impresion: 'simple', // 'simple' | 'doble'
+    color: 'bn',         // 'bn' | 'color'
+    encuadernacion: 'ninguno' // 'ninguno' | 'abrochado' | 'espiralado'
+  };
+
+  // ELEMENTOS DOM
+  const dropzone = document.getElementById('dropzone');
+  const pdfInput = document.getElementById('pdfInput') as HTMLInputElement;
+  const fileName = document.getElementById('fileName');
+  const fileStatus = document.getElementById('fileStatus');
+  const selectEncuadernacion = document.getElementById('selectEncuadernacion') as HTMLSelectElement;
+  const btnEnviarWhatsApp = document.getElementById('btnEnviarWhatsApp') as HTMLButtonElement;
+
+  // Carga de archivo
+  dropzone?.addEventListener('click', () => pdfInput?.click());
+  
+  pdfInput?.addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file && file.type === 'application/pdf') {
+      procesarPDF(file);
+    }
+  });
+
+  // Drag and Drop
+  dropzone?.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('bg-indigo-100/50');
+  });
+
+  dropzone?.addEventListener('dragleave', () => {
+    dropzone.classList.remove('bg-indigo-100/50');
+  });
+
+  dropzone?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('bg-indigo-100/50');
+    const file = e.dataTransfer?.files[0];
+    if (file && file.type === 'application/pdf') {
+      procesarPDF(file);
+    }
+  });
+
+  // Función para leer PDF
+  async function procesarPDF(file: File) {
+    if (fileName && fileStatus) {
+      fileName.textContent = `⏳ Leyendo "${file.name}"...`;
+      fileStatus.textContent = 'Calculando páginas...';
+    }
+
+    try {
+      const buffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+      
+      estado.paginas = pdf.numPages;
+      estado.nombreArchivo = file.name;
+
+      if (fileName && fileStatus) {
+        fileName.textContent = `✅ ${file.name}`;
+        fileStatus.textContent = `${pdf.numPages} páginas detectadas.`;
+      }
+
+      calcularTotales();
+    } catch (err) {
+      if (fileName && fileStatus) {
+        fileName.textContent = '❌ Error al leer el PDF';
+        fileStatus.textContent = 'Asegúrate de subír un archivo PDF válido.';
+      }
+    }
+  }
+
+  // BOTONES DE OPCIONES (Simple/Doble y B&N/Color)
+  document.querySelectorAll('.opt-impresion').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.opt-impresion').forEach(b => {
+        b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
+        b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
+      });
+      btn.classList.add('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
+      btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
+      
+      estado.impresion = btn.getAttribute('data-type') || 'simple';
+      calcularTotales();
+    });
+  });
+
+  document.querySelectorAll('.opt-color').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.opt-color').forEach(b => {
+        b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
+        b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
+      });
+      btn.classList.add('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
+      btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
+      
+      estado.color = btn.getAttribute('data-color') || 'bn';
+      calcularTotales();
+    });
+  });
+
+  selectEncuadernacion?.addEventListener('change', (e) => {
+    estado.encuadernacion = (e.target as HTMLSelectElement).value;
+    calcularTotales();
+  });
+
+  // CÁLCULO DE PRECIOS
+  function calcularTotales() {
+    if (estado.paginas === 0) return;
+
+    // Calcular cantidad de hojas
+    const hojas = estado.impresion === 'doble' ? Math.ceil(estado.paginas / 2) : estado.paginas;
+
+    // Seleccionar tarifa
+    let tarifaHoja = 0;
+    if (estado.color === 'bn') {
+      tarifaHoja = estado.impresion === 'doble' ? TARIFAS.bn_doble : TARIFAS.bn_simple;
+    } else {
+      tarifaHoja = estado.impresion === 'doble' ? TARIFAS.color_doble : TARIFAS.color_simple;
+    }
+
+    const subtotalHojas = hojas * tarifaHoja;
+
+    // Costo encuadernación
+    let costoEncuadernacion = 0;
+    if (estado.encuadernacion === 'abrochado') costoEncuadernacion = TARIFAS.abrochado;
+    if (estado.encuadernacion === 'espiralado') costoEncuadernacion = TARIFAS.espiralado;
+
+    const total = subtotalHojas + costoEncuadernacion;
+
+    // Actualizar Resumen en Pantalla
+    (document.getElementById('resPaginas') as HTMLElement).textContent = `${estado.paginas} págs`;
+    (document.getElementById('resHojas') as HTMLElement).textContent = `${hojas} hojas`;
+    (document.getElementById('resCostoHoja') as HTMLElement).textContent = `$${tarifaHoja} c/u`;
+    (document.getElementById('resEncuadernacion') as HTMLElement).textContent = `$${costoEncuadernacion}`;
+    (document.getElementById('totalPrecio') as HTMLElement).textContent = `$${total.toLocaleString('es-AR')}`;
+
+    // Habilitar botón de WhatsApp con mensaje prefijado
+    if (btnEnviarWhatsApp) {
+      btnEnviarWhatsApp.disabled = false;
+      btnEnviarWhatsApp.classList.remove('bg-slate-300', 'cursor-not-allowed');
+      btnEnviarWhatsApp.classList.add('bg-[#10B981]', 'hover:bg-[#059669]', 'hover:-translate-y-0.5');
+
+      const msj = encodeURIComponent(
+        `Hola! Estuve cotizando en la web mi pedido:\n\n` +
+        `📄 Archivo: *${estado.nombreArchivo}*\n` +
+        `📊 Páginas: *${estado.paginas}* (${hojas} hojas)\n` +
+        `🖨️ Modalidad: *${estado.impresion === 'doble' ? 'Doble Faz' : 'Simple Faz'}*\n` +
+        `🎨 Tipo: *${estado.color === 'bn' ? 'Blanco y Negro' : 'Color'}*\n` +
+        `📚 Acabado: *${estado.encuadernacion}*\n\n` +
+        `💰 *Total Estimado: $${total.toLocaleString('es-AR')}*\n\n` +
+        `¿Cómo hago para enviarles el archivo y confirmar el pago?`
+      );
+
+      btnEnviarWhatsApp.onclick = () => {
+        window.open(`https://api.whatsapp.com/send?phone=5493412141732&text=${msj}`, '_blank');
+      };
+    }
+  }
+</script>

@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import TopBar from '../components/TopBar.astro';
 import Navbar from '../components/Navbar.astro';
 import Hero from '../components/Hero.astro';
+import Cotizador from '../components/Cotizador.astro';
 import ProductCard from '../components/ProductCard.astro';
 import Faq from '../components/Faq.astro';
 import GalleryModal from '../components/GalleryModal.astro';
@@ -12,6 +13,9 @@ import GalleryModal from '../components/GalleryModal.astro';
   <TopBar />
   <Navbar />
   <Hero />
+
+  <!-- CALCULADORA / COTIZADOR AUTOMÁTICO DE IMPRESIONES -->
+  <Cotizador />
 
   <main class="max-w-7xl mx-auto px-6 py-12 space-y-24">
     
@@ -207,3 +211,12 @@ import GalleryModal from '../components/GalleryModal.astro';
 
   <GalleryModal />
 </Layout>
+
+<style>
+  /* Sombra profunda tipo capa de papel flotante para todo el footer */
+  .paper-footer-wrapper {
+    filter: 
+      drop-shadow(0px -10px 18px rgba(35, 25, 60, 0.12)) 
+      drop-shadow(0px -2px 6px rgba(35, 25, 60, 0.08));
+  }
+</style>
