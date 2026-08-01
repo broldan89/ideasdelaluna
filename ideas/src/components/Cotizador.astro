@@ -181,14 +181,30 @@
 </style>
 
 <script>
-  // Carga dinámica de PDF.js solo cuando el componente ya está montado en el navegador
-  async function initCotizador() {
-    const pdfjsLib = await import('pdfjs-dist');
-    
-    // Configuración del Worker de PDF.js desde CDN
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+  // Carga de la librería PDF.js desde CDN nativo para evitar líos de bundling en Netlify
+  function cargarPdfJS() {
+    return new Promise((resolve, reject) => {
+      if ((window as any).pdfjsLib) {
+        resolve((window as any).pdfjsLib);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      script.onload = () => {
+        const pdfjs = (window as any)['pdfjs-dist/build/pdf'] || (window as any).pdfjsLib;
+        if (pdfjs) {
+          pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+          resolve(pdfjs);
+        } else {
+          reject('No se pudo inicializar PDF.js');
+        }
+      };
+      script.onerror = () => reject('Error al cargar PDF.js desde CDN');
+      document.head.appendChild(script);
+    });
+  }
 
-    // TARIFAS BASE
+  function initCotizador() {
     const TARIFAS = {
       bn_simple: 80,
       bn_doble: 120,
@@ -245,10 +261,16 @@
     async function procesarPDF(file: File) {
       if (fileName && fileStatus) {
         fileName.textContent = `⏳ Leyendo "${file.name}"...`;
-        fileStatus.textContent = 'Calculando páginas...';
+        fileStatus.textContent = 'Cargando lector de PDF...';
       }
 
       try {
+        const pdfjsLib = await cargarPdfJS();
+
+        if (fileName && fileStatus) {
+          fileStatus.textContent = 'Calculando páginas...';
+        }
+
         const buffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
         
@@ -262,6 +284,7 @@
 
         calcularTotales();
       } catch (err) {
+        console.error(err);
         if (fileName && fileStatus) {
           fileName.textContent = '❌ Error al leer el PDF';
           fileStatus.textContent = 'Asegúrate de subir un archivo PDF válido.';
@@ -351,7 +374,7 @@
     }
   }
 
-  // Inicializar solo en el cliente
+  // Carga inicial
   if (typeof window !== 'undefined') {
     document.addEventListener('DOMContentLoaded', initCotizador);
   }
