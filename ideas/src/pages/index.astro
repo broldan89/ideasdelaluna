@@ -16,12 +16,12 @@ import Faq from '../components/Faq.astro';
   <main class="relative overflow-x-hidden perspective-container">
 
     <!-- HERO CON ENTRADA CON ZOOM SUAVE -->
-    <div class="orbit-card opacity-0 scale-95 translate-y-6 transition-all duration-1000 ease-out">
+    <div class="orbit-card opacity-0 scale-95 translate-y-6 transition-all duration-500 ease-out">
       <Hero />
     </div>
 
     <!-- COTIZADOR AUTOMÁTICO DE IMPRESIONES -->
-    <div class="orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-1000 ease-out my-8">
+    <div class="orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out my-8">
       <Cotizador />
     </div>
 
@@ -29,7 +29,7 @@ import Faq from '../components/Faq.astro';
     <div class="max-w-6xl mx-auto space-y-20 sm:space-y-28 py-8 sm:py-12 px-4 sm:px-6">
       
       <!-- SECCIÓN 1: UNIVERSO EMPRENDEDOR -->
-      <section id="marcas" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-1000 ease-out">
+      <section id="marcas" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
         <div class="max-w-xl mb-6 sm:mb-8">
           <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
             El Universo <span class="italic text-indigo-600">Emprendedor</span>
@@ -79,7 +79,7 @@ import Faq from '../components/Faq.astro';
       </section>
 
       <!-- SECCIÓN 2: PARA EVENTOS -->
-      <section id="eventos" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-1000 ease-out">
+      <section id="eventos" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
         <div class="max-w-xl mb-6 sm:mb-8">
           <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
             Fases de <span class="italic text-indigo-600">Celebración</span>
@@ -115,7 +115,7 @@ import Faq from '../components/Faq.astro';
       </section>
 
       <!-- SECCIÓN 3: LÍNEA PROPIA -->
-      <section id="tienda" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-1000 ease-out">
+      <section id="tienda" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
         <div class="max-w-xl mb-6 sm:mb-8">
           <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
             La Tienda de la <span class="italic text-indigo-600">Luna</span>
@@ -161,7 +161,7 @@ import Faq from '../components/Faq.astro';
     </div>
 
     <!-- FAQ -->
-    <div class="orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-1000 ease-out my-12">
+    <div class="orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out my-12">
       <Faq />
     </div>
 
@@ -222,35 +222,20 @@ import Faq from '../components/Faq.astro';
   </main>
 </Layout>
 
-<!-- SCRIPT DE INTERSECCIÓN 3D -->
+<!-- SCRIPT DE INTERSECCIÓN 3D REVERSIBLE -->
 <script>
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.remove('opacity-0', 'rotate-x-3', 'translate-y-12', 'scale-95');
-        entry.target.classList.add('opacity-100', 'rotate-x-0', 'translate-y-0', 'scale-100');
-      }
-    });
-  }, { threshold: 0.15 });
-
-  document.querySelectorAll('.orbit-card').forEach(el => observer.observe(el));
-</script>
-
-<script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Al entrar en pantalla: se endereza, escala al 100% y se hace visible
         entry.target.classList.remove('opacity-0', 'rotate-x-3', 'translate-y-12', 'scale-95');
         entry.target.classList.add('opacity-100', 'rotate-x-0', 'translate-y-0', 'scale-100');
       } else {
-        // Al salir de pantalla (arriba o abajo): vuelve al estado inicial para animar otra vez
         entry.target.classList.remove('opacity-100', 'rotate-x-0', 'translate-y-0', 'scale-100');
         entry.target.classList.add('opacity-0', 'rotate-x-3', 'translate-y-12', 'scale-95');
       }
     });
   }, { 
-    threshold: 0.15 // Se activa cuando el 15% de la sección entra/sale
+    threshold: 0.15
   });
 
   document.querySelectorAll('.orbit-card').forEach(el => observer.observe(el));
