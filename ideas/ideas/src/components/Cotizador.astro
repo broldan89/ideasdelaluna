@@ -340,12 +340,11 @@
     async function procesarPDF(file: File) {
       console.log('📄 Procesando archivo:', file.name);
       if (fileName && fileStatus) {
-        fileName.textContent = `⏳ Leyendo "${file.name}"...`;
+        fileName.textContent = `⏳ Leyendo y subiendo "${file.name}"...`;
         fileStatus.textContent = 'Procesando archivo...';
       }
 
       try {
-        // 1. Lectura del PDF
         const pdfjsLib = await cargarPdfJS();
         const buffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
@@ -354,46 +353,41 @@
         estado.nombreArchivo = file.name;
         console.log(`✅ Páginas detectadas: ${pdf.numPages}`);
 
-        // Actualizamos la UI inmediatamente con el éxito de la lectura
+        // Subir a Supabase Storage
+        const fileExt = file.name.split('.').pop();
+        const cleanFileName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
+        const filePath = `${Date.now()}_${cleanFileName}.${fileExt}`;
+
+        console.log('☁️ Subiendo a Supabase Storage...');
+        const { error } = await supabase.storage
+          .from('pdfs-cotizador')
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (error) {
+          console.error('Error al subir a Supabase:', error);
+          throw error;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from('pdfs-cotizador')
+          .getPublicUrl(filePath);
+
+        estado.archivoUrl = publicUrlData.publicUrl;
+
         if (fileName && fileStatus) {
           fileName.textContent = `✅ ${file.name}`;
           fileStatus.textContent = `${pdf.numPages} págs. (Listo para encargar)`;
         }
 
-        // 2. Intento de subida a Supabase (de forma no bloqueante)
-        if (supabase) {
-          try {
-            console.log('☁️ Subiendo a Supabase Storage...');
-            const fileExt = file.name.split('.').pop();
-            const cleanFileName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
-            const filePath = `${Date.now()}_${cleanFileName}.${fileExt}`;
-
-            const { error } = await supabase.storage
-              .from('pdfs-cotizador')
-              .upload(filePath, file, { cacheControl: '3600', upsert: false });
-
-            if (error) {
-              console.warn('⚠️ No se pudo subir a Supabase (revisar permisos RLS):', error.message);
-            } else {
-              const { data: publicUrlData } = supabase.storage
-                .from('pdfs-cotizador')
-                .getPublicUrl(filePath);
-              estado.archivoUrl = publicUrlData.publicUrl;
-              console.log('🔗 Archivo subido con éxito:', estado.archivoUrl);
-            }
-          } catch (supaErr) {
-            console.warn('⚠️ Excepción al intentar subir a Supabase:', supaErr);
-          }
-        }
-
-        // 3. Calculamos totales sin importar si la subida a la nube funcionó o no
         calcularTotales();
-
       } catch (err) {
-        console.error('❌ Error crítico al leer el PDF:', err);
+        console.error('❌ Error general en procesarPDF:', err);
         if (fileName && fileStatus) {
           fileName.textContent = '❌ Error al procesar el PDF';
-          fileStatus.textContent = 'Verifica que sea un archivo PDF válido.';
+          fileStatus.textContent = 'Revisá la consola del navegador para más detalle.';
         }
       }
     }
@@ -474,10 +468,6 @@
         btnEnviarWhatsApp.classList.remove('bg-slate-300', 'cursor-not-allowed');
         btnEnviarWhatsApp.classList.add('bg-[#10B981]', 'hover:bg-[#059669]', 'hover:-translate-y-0.5');
 
-        const linkTexto = estado.archivoUrl 
-          ? `⬇️ Link de descarga del PDF:\n${estado.archivoUrl}\n\n` 
-          : `📎 *(Te adjunto el archivo PDF por esta misma conversación)*\n\n`;
-
         const msj = encodeURIComponent(
           `Hola! Quiero encargar el siguiente pedido cotizado desde la web:\n\n` +
           `📄 Archivo: *${estado.nombreArchivo}*\n` +
@@ -487,8 +477,8 @@
           `📚 Acabado: *${estado.encuadernacion}*\n\n` +
           `💰 *Total a Abonar: $${total.toLocaleString('es-AR')}*\n` +
           `💳 *Método de pago:* Transferencia / CBU / Alias\n\n` +
-          linkTexto +
-          `¿Me confirman para realizar el pago y enviar el comprobante?`
+          `⬇️ Link de descarga del PDF:\n${estado.archivoUrl}\n\n` +
+          `¿Me confirman si recibieron el archivo para enviarles el comprobante?`
         );
 
         btnEnviarWhatsApp.onclick = () => {

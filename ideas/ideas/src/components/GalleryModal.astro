@@ -1,0 +1,164 @@
+---
+---
+<!-- MODAL DE GALERÍA DE TRABAJOS -->
+<div 
+  id="gallery-modal" 
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 backdrop-blur-md p-4 transition-all duration-300 opacity-0"
+>
+  <div class="relative w-full max-w-3xl bg-[#FAF8FC] rounded-3xl overflow-hidden shadow-2xl border border-white/20 flex flex-col max-h-[90vh]">
+    
+    <!-- HEADER DEL MODAL -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200/60 bg-white/50 backdrop-blur-sm">
+      <div>
+        <h3 id="modal-title" class="font-serif text-xl font-medium text-indigo-950">Galería de Trabajos</h3>
+        <p id="modal-subtitle" class="text-xs text-slate-500 font-light">Desliza para ver más opciones</p>
+      </div>
+      
+      <!-- BOTÓN CERRAR -->
+      <button 
+        id="close-modal" 
+        class="w-9 h-9 rounded-full bg-slate-200/60 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition-colors text-lg font-bold"
+        aria-label="Cerrar galería"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- CONTENEDOR DEL CARRUSEL DE FOTOS -->
+    <div class="relative flex-grow flex items-center justify-center bg-slate-900/5 min-h-[300px] md:min-h-[420px] overflow-hidden p-4">
+      
+      <!-- IMAGEN PRINCIPAL -->
+      <img 
+        id="modal-img" 
+        src="" 
+        alt="Trabajo realizado" 
+        class="max-h-[65vh] w-auto max-w-full object-contain rounded-xl shadow-md transition-all duration-300"
+      />
+
+      <!-- BOTONES NAVEGACIÓN (ANTERIOR / SIGUIENTE) -->
+      <button 
+        id="prev-slide" 
+        class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-indigo-950 shadow-lg flex items-center justify-center text-xl backdrop-blur-sm transition-all hover:scale-110"
+      >
+        ❮
+      </button>
+
+      <button 
+        id="next-slide" 
+        class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-indigo-950 shadow-lg flex items-center justify-center text-xl backdrop-blur-sm transition-all hover:scale-110"
+      >
+        ❯
+      </button>
+    </div>
+
+    <!-- FOOTER / NAVEGACIÓN POR MINIATURAS (DOTS) -->
+    <div id="modal-dots" class="flex items-center justify-center gap-2 py-4 bg-white/60">
+      <!-- Los puntos se generan dinámicamente -->
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Lógica global para controlar el carrusel
+  let currentImages: string[] = [];
+  let currentIndex = 0;
+
+  const modal = document.getElementById('gallery-modal');
+  const modalImg = document.getElementById('modal-img') as HTMLImageElement;
+  const modalTitle = document.getElementById('modal-title');
+  const closeModalBtn = document.getElementById('close-modal');
+  const prevBtn = document.getElementById('prev-slide');
+  const nextBtn = document.getElementById('next-slide');
+  const dotsContainer = document.getElementById('modal-dots');
+
+  function updateSlide() {
+    if (!modalImg || currentImages.length === 0) return;
+    
+    // Efecto suave de cambio
+    modalImg.style.opacity = '0';
+    setTimeout(() => {
+      modalImg.src = currentImages[currentIndex];
+      modalImg.style.opacity = '1';
+    }, 150);
+
+    // Actualizar estados de los dots
+    if (dotsContainer) {
+      Array.from(dotsContainer.children).forEach((dot, idx) => {
+        if (idx === currentIndex) {
+          dot.className = "w-6 h-2.5 bg-indigo-600 rounded-full transition-all";
+        } else {
+          dot.className = "w-2.5 h-2.5 bg-slate-300 hover:bg-slate-400 rounded-full transition-all cursor-pointer";
+        }
+      });
+    }
+  }
+
+  function renderDots() {
+    if (!dotsContainer) return;
+    dotsContainer.innerHTML = '';
+    currentImages.forEach((_, idx) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.addEventListener('click', () => {
+        currentIndex = idx;
+        updateSlide();
+      });
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  // Evento global para abrir el modal desde las tarjetas
+  window.addEventListener('open-gallery', ((e: CustomEvent) => {
+    const { title, images } = e.detail;
+    if (!images || images.length === 0) return;
+
+    currentImages = images;
+    currentIndex = 0;
+
+    if (modalTitle) modalTitle.textContent = title;
+    
+    renderDots();
+    updateSlide();
+
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+    }
+  }) as EventListener);
+
+  function closeModal() {
+    if (modal) {
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }, 300);
+    }
+  }
+
+  closeModalBtn?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  prevBtn?.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+    updateSlide();
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % currentImages.length;
+    updateSlide();
+  });
+
+  // Teclas para navegación
+  window.addEventListener('keydown', (e) => {
+    if (modal && !modal.classList.contains('hidden')) {
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowLeft') prevBtn?.click();
+      if (e.key === 'ArrowRight') nextBtn?.click();
+    }
+  });
+</script>

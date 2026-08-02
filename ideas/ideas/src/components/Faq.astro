@@ -1,0 +1,68 @@
+---
+const faqs = [
+  {
+    q: "¿Con cuánta anticipación debo realizar mi pedido?",
+    a: "Al ser productos artesanales y personalizados, recomendamos realizar el pedido con al menos 7 a 10 días hábiles de anticipación. Para eventos grandes, 20 días es lo ideal."
+  },
+  {
+    q: "¿Cómo les envío mi logo o diseño?",
+    a: "Una vez realizada la consulta o pedido vía WhatsApp, nos puedes enviar tus archivos en formato PDF, AI, PNG o JPG de alta calidad por mail o chat."
+  },
+  {
+    q: "¿Hacen envíos a todo el país?",
+    a: "¡Sí! Enviamos a toda la Argentina a través de Correo Argentino y cadetería local según tu zona."
+  },
+  {
+    q: "¿Tienen un mínimo de compra para stickers o papelería?",
+    a: "No exigimos mínimos gigantescos; trabajamos desde planchas individuales A4 para emprendimientos que recién empiezan."
+  }
+];
+---
+
+<section id="faq" class="max-w-3xl mx-auto px-6 py-12 scroll-mt-24">
+  <div class="text-center mb-10">
+    <h2 class="text-3xl font-serif text-indigo-950 font-medium">Preguntas <span class="italic text-indigo-600">Frecuentes</span></h2>
+    <p class="text-slate-500 text-sm mt-2 font-light">Todo lo que necesitas saber antes de despegar tu proyecto con nosotros.</p>
+  </div>
+
+  <div class="space-y-3">
+    {faqs.map((faq, index) => (
+      <div class="border border-indigo-100/80 rounded-2xl bg-white/70 backdrop-blur-sm overflow-hidden shadow-sm transition-all duration-200">
+        <button 
+          type="button"
+          class="faq-btn w-full px-6 py-4 text-left font-serif text-indigo-950 font-medium text-base flex justify-between items-center gap-4 hover:text-indigo-600 transition-colors"
+          data-target={`faq-ans-${index}`}
+        >
+          <span>{faq.q}</span>
+          <span class="text-indigo-400 text-sm font-sans transition-transform duration-300 icon">▼</span>
+        </button>
+        <div id={`faq-ans-${index}`} class="hidden px-6 pb-4 text-slate-600 text-xs font-light leading-relaxed border-t border-slate-100/60 pt-3">
+          {faq.a}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  const buttons = document.querySelectorAll('.faq-btn');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      if (!targetId) return;
+      
+      const content = document.getElementById(targetId);
+      const icon = btn.querySelector('.icon');
+
+      // Toggle visibilidad
+      if (content) {
+        const isHidden = content.classList.contains('hidden');
+        content.classList.toggle('hidden');
+        if (icon) {
+          icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+      }
+    });
+  });
+</script>
