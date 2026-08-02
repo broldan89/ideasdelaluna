@@ -1,42 +1,59 @@
 ---
 ---
-<section class="relative overflow-hidden py-20 px-6 bg-gradient-to-b from-indigo-50/50 to-transparent">
+<section class="relative overflow-hidden py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-indigo-50/50 to-transparent">
   <div class="max-w-4xl mx-auto text-center relative z-10">
-    <span class="text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">Imprenta & Papelería Creativa</span>
-    <h1 class="text-5xl md:text-6xl font-normal text-indigo-950 mt-6 leading-tight">
-      Imprimimos las ideas que <br><span class="italic font-serif text-indigo-600">orbitan</span> en tu cabeza.
+    <span class="inline-block text-[10px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50/90 border border-indigo-100/60 px-3 py-1 rounded-full shadow-sm">
+      Imprenta & Papelería Creativa
+    </span>
+
+    <h1 class="text-3xl sm:text-5xl md:text-6xl font-normal text-indigo-950 mt-4 sm:mt-6 leading-tight tracking-tight">
+      Imprimimos las ideas que <br class="hidden sm:inline" />
+      <span class="italic font-serif text-indigo-600">orbitan</span> en tu cabeza.
     </h1>
-    <p class="mt-6 text-lg text-slate-600 max-w-xl mx-auto font-light">
+
+    <p class="mt-4 sm:mt-6 text-sm sm:text-lg text-slate-600 max-w-xl mx-auto font-light leading-relaxed">
       Hacemos real lo que imaginas. Papelería y soluciones de impresión con terminaciones mágicas para marcas, eventos y personas.
     </p>
 
     <!-- Filtro rápido estilo catálogo (Trozos de papel flotantes) -->
-    <div class="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto pt-2">
+    <div class="mt-10 sm:mt-14 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6 max-w-3xl mx-auto pt-2">
       
-      <!-- TARJETA 1 (Inclinada levemente a la izquierda) -->
+      <!-- TARJETA 1 -->
       <a href="#marcas" class="paper-card-wrapper paper-rotate-left block text-left group">
-        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2">
-          <span class="text-2xl block mb-3">🚀</span>
-          <h4 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">Quiero potenciar mi marca</h4>
-          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">Packaging, stickers y tarjetas.</p>
+        <div class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 active:scale-98">
+          <span class="text-2xl block mb-2 sm:mb-3" aria-hidden="true">🚀</span>
+          <h3 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">
+            Quiero potenciar mi marca
+          </h3>
+          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">
+            Packaging, stickers y tarjetas.
+          </p>
         </div>
       </a>
       
-      <!-- TARJETA 2 (Inclinada levemente a la derecha) -->
+      <!-- TARJETA 2 -->
       <a href="#eventos" class="paper-card-wrapper paper-rotate-right block text-left group">
-        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2">
-          <span class="text-2xl block mb-3">✨</span>
-          <h3 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">Tengo un evento especial</h3>
-          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">Invitaciones, tags y cartelería.</p>
+        <div class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 active:scale-98">
+          <span class="text-2xl block mb-2 sm:mb-3" aria-hidden="true">✨</span>
+          <h3 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">
+            Tengo un evento especial
+          </h3>
+          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">
+            Invitaciones, tags y cartelería.
+          </p>
         </div>
       </a>
 
-      <!-- TARJETA 3 (Inclinación casi recta) -->
+      <!-- TARJETA 3 -->
       <a href="#tienda" class="paper-card-wrapper paper-rotate-center block text-left group">
-        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2">
-          <span class="text-2xl block mb-3">🌙</span>
-          <h3 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">Busco papelería para mí</h3>
-          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">Cuadernos, agendas y láminas.</p>
+        <div class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 active:scale-98">
+          <span class="text-2xl block mb-2 sm:mb-3" aria-hidden="true">🌙</span>
+          <h3 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">
+            Busco papelería para mí
+          </h3>
+          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">
+            Cuadernos, agendas y láminas.
+          </p>
         </div>
       </a>
 
@@ -45,31 +62,33 @@
 </section>
 
 <style>
-  /* Inclinaciones orgánicas de cada papel */
-  .paper-rotate-left {
-    transform: rotate(-1.8deg);
-  }
-  .paper-rotate-right {
-    transform: rotate(1.5deg);
-  }
-  .paper-rotate-center {
-    transform: rotate(-0.6deg);
+  /* Inclinaciones orgánicas suavizadas en desktop */
+  @media (min-width: 640px) {
+    .paper-rotate-left {
+      transform: rotate(-1.8deg);
+    }
+    .paper-rotate-right {
+      transform: rotate(1.5deg);
+    }
+    .paper-rotate-center {
+      transform: rotate(-0.6deg);
+    }
   }
 
-  /* Sombra pronunciada que respeta los bordes recortados */
+  /* Sombra pronunciada adaptada al clip-path */
   .paper-card-wrapper {
-    /* Combinación de sombra suave amplia + sombra intensa cerca del borde */
+    will-change: transform, filter;
     filter: 
-      drop-shadow(3px 12px 16px rgba(45, 35, 66, 0.12)) 
-      drop-shadow(1px 4px 5px rgba(45, 35, 66, 0.08));
+      drop-shadow(2px 8px 12px rgba(45, 35, 66, 0.08)) 
+      drop-shadow(1px 3px 4px rgba(45, 35, 66, 0.05));
     transition: filter 0.3s ease, transform 0.3s ease;
   }
 
   /* Efecto Flotante Aumentado en Hover */
   .paper-card-wrapper:hover {
     filter: 
-      drop-shadow(6px 20px 24px rgba(45, 35, 66, 0.18)) 
-      drop-shadow(2px 6px 8px rgba(45, 35, 66, 0.10));
+      drop-shadow(4px 16px 20px rgba(45, 35, 66, 0.14)) 
+      drop-shadow(2px 5px 6px rgba(45, 35, 66, 0.08));
   }
 
   /* Clip-path de corte rasgado */

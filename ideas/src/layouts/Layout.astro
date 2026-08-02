@@ -13,8 +13,8 @@ import GalleryModal from '../components/GalleryModal.astro';
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Ideas de la Luna - Papelería y soluciones de impresión con alma." />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/png" href="logo.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/png" href="/logo.png" />
 		<title>{title}</title>
 		<!-- Fuente estética y moderna -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,8 +22,14 @@ import GalleryModal from '../components/GalleryModal.astro';
 		<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 	</head>
 	
-	<body class="fondo-pastel-animado min-h-screen relative">
-  	<slot />
+	<body class="fondo-pastel-animado min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-pink-300 selection:text-slate-800">
+		<!-- Contenedor dinámico central adaptativo -->
+		<main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+			<slot />
+		</main>
+
+		<!-- Modal global de galería si aplica -->
+		<GalleryModal />
 	</body>
 </html>
 
@@ -39,18 +45,10 @@ import GalleryModal from '../components/GalleryModal.astro';
 	
 	/* ANIMACIÓN DE FONDOS PASTELES */
 	@keyframes cambioPastel {
-		0% {
-			background-color: #fdf2f8; /* Rosa pastel */
-		}
-		33% {
-			background-color: #f3e8ff; /* Lavanda pastel */
-		}
-		66% {
-			background-color: #e0f2fe; /* Celeste pastel */
-		}
-		100% {
-			background-color: #fdf2f8; /* Vuelve al Rosa pastel */
-		}
+		0% { background-color: #fdf2f8; }
+		33% { background-color: #f3e8ff; }
+		66% { background-color: #e0f2fe; }
+		100% { background-color: #fdf2f8; }
 	}
 
 	.fondo-pastel-animado {
@@ -61,17 +59,20 @@ import GalleryModal from '../components/GalleryModal.astro';
 		transition: background-color 1s ease-in-out;
 	}
 
-	/* TRAMA PUNTEADA UBICADA DETRÁS DEL CONTENIDO */
+	/* TRAMA PUNTEADA RESPONSIVE DETRÁS DEL CONTENIDO */
 	body::before {
 		content: "";
 		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		background-image: radial-gradient(rgba(99, 102, 241, 0.2) 1.5px, transparent 1.5px);
-		background-size: 24px 24px;
+		inset: 0;
+		background-image: radial-gradient(rgba(99, 102, 241, 0.18) 1.5px, transparent 1.5px);
+		background-size: 20px 20px;
 		pointer-events: none;
-		z-index: -1; /* Pasa la trama al fondo detrás de todas las secciones */
+		z-index: -1;
+	}
+
+	@media (min-width: 640px) {
+		body::before {
+			background-size: 24px 24px;
+		}
 	}
 </style>

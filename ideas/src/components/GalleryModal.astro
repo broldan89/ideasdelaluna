@@ -3,56 +3,64 @@
 <!-- MODAL DE GALERÍA DE TRABAJOS -->
 <div 
   id="gallery-modal" 
-  class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 backdrop-blur-md p-4 transition-all duration-300 opacity-0"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-2 sm:p-4 transition-all duration-300 opacity-0"
 >
-  <div class="relative w-full max-w-3xl bg-[#FAF8FC] rounded-3xl overflow-hidden shadow-2xl border border-white/20 flex flex-col max-h-[90vh]">
+  <div class="relative w-full max-w-3xl bg-[#FAF8FC] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/20 flex flex-col max-h-[92vh]">
     
     <!-- HEADER DEL MODAL -->
-    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200/60 bg-white/50 backdrop-blur-sm">
-      <div>
-        <h3 id="modal-title" class="font-serif text-xl font-medium text-indigo-950">Galería de Trabajos</h3>
-        <p id="modal-subtitle" class="text-xs text-slate-500 font-light">Desliza para ver más opciones</p>
+    <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-200/60 bg-white/60 backdrop-blur-sm">
+      <div class="pr-2">
+        <h3 id="modal-title" class="font-serif text-base sm:text-xl font-medium text-indigo-950 truncate max-w-[220px] sm:max-w-none">
+          Galería de Trabajos
+        </h3>
+        <p id="modal-subtitle" class="text-[11px] sm:text-xs text-slate-500 font-light">
+          Desliza para ver más opciones
+        </p>
       </div>
       
       <!-- BOTÓN CERRAR -->
       <button 
         id="close-modal" 
-        class="w-9 h-9 rounded-full bg-slate-200/60 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition-colors text-lg font-bold"
+        class="w-10 h-10 rounded-full bg-slate-200/70 hover:bg-slate-300 active:scale-95 text-slate-700 flex items-center justify-center transition-all text-base font-bold shrink-0"
         aria-label="Cerrar galería"
       >
         ✕
       </button>
     </div>
 
-    <!-- CONTENEDOR DEL CARRUSEL DE FOTOS -->
-    <div class="relative flex-grow flex items-center justify-center bg-slate-900/5 min-h-[300px] md:min-h-[420px] overflow-hidden p-4">
-      
+    <!-- CONTENEDOR DEL CARRUSEL DE FOTOS (SOPORTA SWIPE TÁCTIL) -->
+    <div 
+      id="carousel-touch-area"
+      class="relative flex-grow flex items-center justify-center bg-slate-900/5 min-h-[260px] sm:min-h-[420px] overflow-hidden p-2 sm:p-4 select-none touch-pan-y"
+    >
       <!-- IMAGEN PRINCIPAL -->
       <img 
         id="modal-img" 
         src="" 
         alt="Trabajo realizado" 
-        class="max-h-[65vh] w-auto max-w-full object-contain rounded-xl shadow-md transition-all duration-300"
+        class="max-h-[60vh] sm:max-h-[65vh] w-auto max-w-full object-contain rounded-xl shadow-md transition-all duration-300 pointer-events-none"
       />
 
       <!-- BOTONES NAVEGACIÓN (ANTERIOR / SIGUIENTE) -->
       <button 
         id="prev-slide" 
-        class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-indigo-950 shadow-lg flex items-center justify-center text-xl backdrop-blur-sm transition-all hover:scale-110"
+        class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 hover:bg-white active:scale-95 text-indigo-950 shadow-md flex items-center justify-center text-lg sm:text-xl backdrop-blur-sm transition-all z-10"
+        aria-label="Anterior"
       >
         ❮
       </button>
 
       <button 
         id="next-slide" 
-        class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-indigo-950 shadow-lg flex items-center justify-center text-xl backdrop-blur-sm transition-all hover:scale-110"
+        class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 hover:bg-white active:scale-95 text-indigo-950 shadow-md flex items-center justify-center text-lg sm:text-xl backdrop-blur-sm transition-all z-10"
+        aria-label="Siguiente"
       >
         ❯
       </button>
     </div>
 
     <!-- FOOTER / NAVEGACIÓN POR MINIATURAS (DOTS) -->
-    <div id="modal-dots" class="flex items-center justify-center gap-2 py-4 bg-white/60">
+    <div id="modal-dots" class="flex items-center justify-center gap-1.5 sm:gap-2 py-3 sm:py-4 bg-white/60">
       <!-- Los puntos se generan dinámicamente -->
     </div>
 
@@ -60,9 +68,12 @@
 </div>
 
 <script>
-  // Lógica global para controlar el carrusel
   let currentImages: string[] = [];
   let currentIndex = 0;
+
+  // Variables para detectar gestos swipe en teléfonos
+  let touchStartX = 0;
+  let touchEndX = 0;
 
   const modal = document.getElementById('gallery-modal');
   const modalImg = document.getElementById('modal-img') as HTMLImageElement;
@@ -71,24 +82,23 @@
   const prevBtn = document.getElementById('prev-slide');
   const nextBtn = document.getElementById('next-slide');
   const dotsContainer = document.getElementById('modal-dots');
+  const touchArea = document.getElementById('carousel-touch-area');
 
   function updateSlide() {
     if (!modalImg || currentImages.length === 0) return;
     
-    // Efecto suave de cambio
     modalImg.style.opacity = '0';
     setTimeout(() => {
       modalImg.src = currentImages[currentIndex];
       modalImg.style.opacity = '1';
     }, 150);
 
-    // Actualizar estados de los dots
     if (dotsContainer) {
       Array.from(dotsContainer.children).forEach((dot, idx) => {
         if (idx === currentIndex) {
-          dot.className = "w-6 h-2.5 bg-indigo-600 rounded-full transition-all";
+          dot.className = "w-5 sm:w-6 h-2 sm:h-2.5 bg-indigo-600 rounded-full transition-all";
         } else {
-          dot.className = "w-2.5 h-2.5 bg-slate-300 hover:bg-slate-400 rounded-full transition-all cursor-pointer";
+          dot.className = "w-2 sm:w-2.5 h-2 sm:h-2.5 bg-slate-300 hover:bg-slate-400 rounded-full transition-all cursor-pointer";
         }
       });
     }
@@ -100,6 +110,7 @@
     currentImages.forEach((_, idx) => {
       const dot = document.createElement('button');
       dot.type = 'button';
+      dot.ariaLabel = `Ir a la imagen ${idx + 1}`;
       dot.addEventListener('click', () => {
         currentIndex = idx;
         updateSlide();
@@ -124,6 +135,7 @@
     if (modal) {
       modal.classList.remove('hidden');
       modal.classList.add('flex');
+      document.body.style.overflow = 'hidden'; // Bloquea el scroll del fondo
       setTimeout(() => modal.classList.remove('opacity-0'), 10);
     }
   }) as EventListener);
@@ -131,6 +143,7 @@
   function closeModal() {
     if (modal) {
       modal.classList.add('opacity-0');
+      document.body.style.overflow = ''; // Restaura el scroll del fondo
       setTimeout(() => {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
@@ -153,7 +166,28 @@
     updateSlide();
   });
 
-  // Teclas para navegación
+  // LÓGICA SWIPE (DESLIZAR CON EL DEDO EN MÓVILES)
+  touchArea?.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  touchArea?.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, { passive: true });
+
+  function handleSwipe() {
+    const threshold = 40; // Distancia mínima en px para considerar un swipe
+    if (touchStartX - touchEndX > threshold) {
+      // Swipe a la izquierda -> Siguiente
+      nextBtn?.click();
+    } else if (touchEndX - touchStartX > threshold) {
+      // Swipe a la derecha -> Anterior
+      prevBtn?.click();
+    }
+  }
+
+  // Teclas para navegación en desktop
   window.addEventListener('keydown', (e) => {
     if (modal && !modal.classList.contains('hidden')) {
       if (e.key === 'Escape') closeModal();

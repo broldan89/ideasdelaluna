@@ -1,28 +1,28 @@
 ---
 ---
 
-<section id="cotizador" class="max-w-4xl mx-auto px-6 py-16 scroll-mt-20">
+<section id="cotizador" class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16 scroll-mt-20">
   <!-- ENCABEZADO -->
-  <div class="text-center mb-10">
-    <span class="text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">
+  <div class="text-center mb-8 sm:mb-10">
+    <span class="text-[11px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">
       Calculadora al instante
     </span>
-    <h2 class="text-3xl sm:text-4xl font-serif text-indigo-950 font-medium mt-4">
+    <h2 class="text-2xl sm:text-4xl font-serif text-indigo-950 font-medium mt-3 sm:mt-4">
       Cotiza tu <span class="italic text-indigo-600">Documento o Apunte</span>
     </h2>
-    <p class="text-slate-500 text-sm mt-2 font-light max-w-md mx-auto">
+    <p class="text-slate-500 text-xs sm:text-sm mt-2 font-light max-w-md mx-auto leading-relaxed">
       Subí tu archivo PDF, elegí las terminaciones y obtené el presupuesto exacto en segundos.
     </p>
   </div>
 
   <!-- TARJETA DEL COTIZADOR -->
   <div class="cotizador-card-wrapper">
-    <div class="cotizador-card bg-white p-6 sm:p-10 text-left">
+    <div class="cotizador-card bg-white p-5 sm:p-10 text-left rounded-2xl sm:rounded-none">
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         
         <!-- COLUMNA IZQUIERDA: CARGA Y OPCIONES -->
-        <div class="space-y-6">
+        <div class="space-y-5 sm:space-y-6">
           
           <!-- DROPZONE / CARGA DE ARCHIVO -->
           <div>
@@ -30,15 +30,14 @@
               1. Cargar Documento (PDF)
             </span>
 
-            <!-- Label nativo vinculado por id 'pdfInput' -->
             <label 
               for="pdfInput"
               id="dropzone"
-              class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/40 hover:bg-indigo-50 transition-all rounded-2xl p-6 text-center cursor-pointer flex flex-col items-center justify-center min-h-[140px] block select-none"
+              class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/40 hover:bg-indigo-50 transition-all rounded-2xl p-4 sm:p-6 text-center cursor-pointer flex flex-col items-center justify-center min-h-[130px] sm:min-h-[140px] select-none"
             >
               <input type="file" id="pdfInput" accept="application/pdf" class="hidden" />
-              <span class="text-3xl mb-2 pointer-events-none">📄</span>
-              <p id="fileName" class="text-xs font-medium text-indigo-950 pointer-events-none">
+              <span class="text-2xl sm:text-3xl mb-1.5 pointer-events-none">📄</span>
+              <p id="fileName" class="text-xs font-medium text-indigo-950 pointer-events-none break-all px-2">
                 Haz clic o arrastra tu PDF aquí
               </p>
               <p id="fileStatus" class="text-[11px] text-slate-400 font-light mt-1 pointer-events-none">
@@ -52,18 +51,18 @@
             <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
               2. Modalidad de Impresión
             </label>
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
               <button 
                 type="button" 
                 data-type="simple" 
-                class="opt-impresion active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-2.5 px-3 rounded-xl font-medium transition-all text-center"
+                class="opt-impresion active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-2.5 px-2 sm:px-3 rounded-xl font-medium transition-all text-center"
               >
                 Simple Faz
               </button>
               <button 
                 type="button" 
                 data-type="doble" 
-                class="opt-impresion border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 text-xs py-2.5 px-3 rounded-xl font-medium transition-all text-center"
+                class="opt-impresion border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 text-xs py-2.5 px-2 sm:px-3 rounded-xl font-medium transition-all text-center"
               >
                 Doble Faz
               </button>
@@ -75,18 +74,18 @@
             <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
               3. Tipo de Color
             </label>
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
               <button 
                 type="button" 
                 data-color="bn" 
-                class="opt-color active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-2.5 px-3 rounded-xl font-medium transition-all text-center"
+                class="opt-color active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-2.5 px-2 sm:px-3 rounded-xl font-medium transition-all text-center"
               >
                 Blanco y Negro
               </button>
               <button 
                 type="button" 
                 data-color="color" 
-                class="opt-color border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 text-xs py-2.5 px-3 rounded-xl font-medium transition-all text-center"
+                class="opt-color border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 text-xs py-2.5 px-2 sm:px-3 rounded-xl font-medium transition-all text-center"
               >
                 Color
               </button>
@@ -111,26 +110,26 @@
         </div>
 
         <!-- COLUMNA DERECHA: DESGLOSE -->
-        <div class="bg-indigo-50/50 rounded-2xl p-6 flex flex-col justify-between border border-indigo-100/60">
+        <div class="bg-indigo-50/50 rounded-2xl p-5 sm:p-6 flex flex-col justify-between border border-indigo-100/60">
           <div>
-            <h3 class="font-serif font-medium text-indigo-950 text-lg mb-4 pb-2 border-b border-indigo-100">
+            <h3 class="font-serif font-medium text-indigo-950 text-base sm:text-lg mb-4 pb-2 border-b border-indigo-100">
               Resumen del Pedido
             </h3>
 
-            <div class="space-y-3 text-xs font-light text-slate-600">
-              <div class="flex justify-between">
+            <div class="space-y-2.5 text-xs font-light text-slate-600">
+              <div class="flex justify-between items-center">
                 <span>Páginas detectadas:</span>
                 <span id="resPaginas" class="font-semibold text-indigo-950">0 págs</span>
               </div>
-              <div class="flex justify-between">
+              <div class="flex justify-between items-center">
                 <span>Hojas a utilizar:</span>
                 <span id="resHojas" class="font-semibold text-indigo-950">0 hojas</span>
               </div>
-              <div class="flex justify-between">
+              <div class="flex justify-between items-center">
                 <span>Costo por hoja:</span>
                 <span id="resCostoHoja" class="font-semibold text-indigo-950">$0</span>
               </div>
-              <div class="flex justify-between">
+              <div class="flex justify-between items-center">
                 <span>Encuadernación:</span>
                 <span id="resEncuadernacion" class="font-semibold text-indigo-950">$0</span>
               </div>
@@ -138,10 +137,10 @@
           </div>
 
           <!-- MONTO TOTAL & BOTÓN DE CONTACTO -->
-          <div class="mt-8 pt-4 border-t border-indigo-100">
-            <div class="flex justify-between items-baseline mb-6">
+          <div class="mt-6 pt-4 border-t border-indigo-100">
+            <div class="flex justify-between items-baseline mb-4 sm:mb-6">
               <span class="text-xs uppercase tracking-wider font-semibold text-slate-500">Total Estimado:</span>
-              <span id="totalPrecio" class="text-3xl font-serif font-bold text-indigo-950">$0</span>
+              <span id="totalPrecio" class="text-2xl sm:text-3xl font-serif font-bold text-indigo-950">$0</span>
             </div>
 
             <button 
@@ -155,14 +154,26 @@
               Envía la configuración y el archivo subido a la nube directamente.
             </p>
 
-            <!-- INFORMACIÓN DE PAGO -->
-            <div class="mt-4 p-3 bg-white/80 rounded-xl border border-indigo-100 text-[11px] text-slate-600 space-y-1">
+            <!-- INFORMACIÓN DE PAGO CON BOTÓN COPIAR -->
+            <div class="mt-4 p-3 bg-white/80 rounded-xl border border-indigo-100 text-[11px] text-slate-600 space-y-1.5">
               <p class="font-semibold text-indigo-950 flex items-center gap-1">
                 <span>📌</span> Información de Pago (Transferencia):
               </p>
-              <p>• <strong>Alias:</strong> <span class="select-all bg-indigo-50 px-1 py-0.5 rounded text-indigo-900 font-mono">IDEASDELALUNA.MP</span></p>
+              <div class="flex items-center justify-between bg-indigo-50/60 p-1.5 rounded-lg border border-indigo-100/50">
+                <p class="text-[11px]">
+                  <strong>Alias:</strong> 
+                  <span id="aliasText" class="font-mono text-indigo-900 font-bold ml-1">IDEASDELALUNA.MP</span>
+                </p>
+                <button 
+                  id="btnCopyAlias"
+                  type="button" 
+                  class="text-[10px] bg-white hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded shadow-xs border border-indigo-200 transition-colors"
+                >
+                  📋 Copiar
+                </button>
+              </div>
               <p>• <strong>Titular:</strong> Ideas de la Luna</p>
-              <p class="text-[10px] text-slate-400 italic font-light pt-1">
+              <p class="text-[10px] text-slate-400 italic font-light pt-0.5">
                 *Recordá enviar el comprobante por WhatsApp al realizar la orden.
               </p>
             </div>
@@ -184,13 +195,16 @@
       drop-shadow(1px 4px 5px rgba(45, 35, 66, 0.05));
   }
 
-  .cotizador-card {
-    clip-path: polygon(
-      0% 4px, 8% 0px, 16% 3px, 24% 1px, 32% 4px, 40% 0px, 48% 3px, 56% 1px, 64% 4px, 72% 0px, 80% 3px, 88% 1px, 96% 3px, 100% 1px,
-      calc(100% - 2px) 15%, 100% 30%, calc(100% - 3px) 45%, 100% 60%, calc(100% - 2px) 75%, 100% 90%, calc(100% - 1px) 100%,
-      92% calc(100% - 3px), 84% 100%, 76% calc(100% - 2px), 68% 100%, 60% calc(100% - 4px), 52% 100%, 44% calc(100% - 2px), 36% 100%, 28% calc(100% - 3px), 20% 100%, 12% calc(100% - 1px), 4% 100%, 0% calc(100% - 2px),
-      2px 85%, 0% 70%, 3px 55%, 1px 40%, 3px 25%, 1px 10%
-    );
+  /* Aplica el trozado de papel solo en desktop para evitar cortar márgenes en teléfonos pequeños */
+  @media (min-width: 640px) {
+    .cotizador-card {
+      clip-path: polygon(
+        0% 4px, 8% 0px, 16% 3px, 24% 1px, 32% 4px, 40% 0px, 48% 3px, 56% 1px, 64% 4px, 72% 0px, 80% 3px, 88% 1px, 96% 3px, 100% 1px,
+        calc(100% - 2px) 15%, 100% 30%, calc(100% - 3px) 45%, 100% 60%, calc(100% - 2px) 75%, 100% 90%, calc(100% - 1px) 100%,
+        92% calc(100% - 3px), 84% 100%, 76% calc(100% - 2px), 68% 100%, 60% calc(100% - 4px), 52% 100%, 44% calc(100% - 2px), 36% 100%, 28% calc(100% - 3px), 20% 100%, 12% calc(100% - 1px), 4% 100%, 0% calc(100% - 2px),
+        2px 85%, 0% 70%, 3px 55%, 1px 40%, 3px 25%, 1px 10%
+      );
+    }
   }
 </style>
 
@@ -295,20 +309,25 @@
     const fileStatus = document.getElementById('fileStatus');
     const selectEncuadernacion = document.getElementById('selectEncuadernacion') as HTMLSelectElement;
     const btnEnviarWhatsApp = document.getElementById('btnEnviarWhatsApp') as HTMLButtonElement;
+    const btnCopyAlias = document.getElementById('btnCopyAlias');
+
+    // Botón para copiar Alias MP
+    btnCopyAlias?.addEventListener('click', () => {
+      navigator.clipboard.writeText('IDEASDELALUNA.MP');
+      playClickSound();
+      btnCopyAlias.textContent = '✅ ¡Copiado!';
+      setTimeout(() => {
+        btnCopyAlias.textContent = '📋 Copiar';
+      }, 2000);
+    });
 
     if (!dropzone || !pdfInput) {
-      console.warn('⚠️ Elementos dropzone o pdfInput no encontrados en el DOM.');
       return;
     }
 
-    // Sonido al interactuar con el contenedor
-    dropzone.addEventListener('click', () => {
-      playClickSound();
-    });
+    dropzone.addEventListener('click', () => playClickSound());
 
-    // Evento de selección de archivo nativo
     pdfInput.addEventListener('change', async (e) => {
-      console.log('📁 Evento change detectado en pdfInput');
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file && file.type === 'application/pdf') {
         await procesarPDF(file);
@@ -317,7 +336,6 @@
       }
     });
 
-    // Drag & Drop
     dropzone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropzone.classList.add('bg-indigo-100/50');
@@ -338,32 +356,26 @@
     });
 
     async function procesarPDF(file: File) {
-      console.log('📄 Procesando archivo:', file.name);
       if (fileName && fileStatus) {
         fileName.textContent = `⏳ Leyendo "${file.name}"...`;
         fileStatus.textContent = 'Procesando archivo...';
       }
 
       try {
-        // 1. Lectura del PDF
         const pdfjsLib = await cargarPdfJS();
         const buffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
 
         estado.paginas = pdf.numPages;
         estado.nombreArchivo = file.name;
-        console.log(`✅ Páginas detectadas: ${pdf.numPages}`);
 
-        // Actualizamos la UI inmediatamente con el éxito de la lectura
         if (fileName && fileStatus) {
           fileName.textContent = `✅ ${file.name}`;
           fileStatus.textContent = `${pdf.numPages} págs. (Listo para encargar)`;
         }
 
-        // 2. Intento de subida a Supabase (de forma no bloqueante)
         if (supabase) {
           try {
-            console.log('☁️ Subiendo a Supabase Storage...');
             const fileExt = file.name.split('.').pop();
             const cleanFileName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
             const filePath = `${Date.now()}_${cleanFileName}.${fileExt}`;
@@ -372,25 +384,20 @@
               .from('pdfs-cotizador')
               .upload(filePath, file, { cacheControl: '3600', upsert: false });
 
-            if (error) {
-              console.warn('⚠️ No se pudo subir a Supabase (revisar permisos RLS):', error.message);
-            } else {
+            if (!error) {
               const { data: publicUrlData } = supabase.storage
                 .from('pdfs-cotizador')
                 .getPublicUrl(filePath);
               estado.archivoUrl = publicUrlData.publicUrl;
-              console.log('🔗 Archivo subido con éxito:', estado.archivoUrl);
             }
           } catch (supaErr) {
-            console.warn('⚠️ Excepción al intentar subir a Supabase:', supaErr);
+            console.warn('Excepción Supabase:', supaErr);
           }
         }
 
-        // 3. Calculamos totales sin importar si la subida a la nube funcionó o no
         calcularTotales();
 
       } catch (err) {
-        console.error('❌ Error crítico al leer el PDF:', err);
         if (fileName && fileStatus) {
           fileName.textContent = '❌ Error al procesar el PDF';
           fileStatus.textContent = 'Verifica que sea un archivo PDF válido.';
@@ -398,7 +405,6 @@
       }
     }
 
-    // Modalidad de Impresión
     document.querySelectorAll('.opt-impresion').forEach((btn) => {
       btn.addEventListener('click', () => {
         playClickSound();
@@ -414,7 +420,6 @@
       });
     });
 
-    // Tipo de Color
     document.querySelectorAll('.opt-color').forEach((btn) => {
       btn.addEventListener('click', () => {
         playClickSound();
@@ -430,7 +435,6 @@
       });
     });
 
-    // Encuadernación
     selectEncuadernacion?.addEventListener('change', (e) => {
       playClickSound();
       estado.encuadernacion = (e.target as HTMLSelectElement).value;
@@ -501,7 +505,6 @@
     }
   }
 
-  // Ejecución asegurada en Astro
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initCotizador);
   } else {

@@ -11,7 +11,7 @@ interface Props {
   badge: string;
   imageSrc: string;
   hoverImageSrc: string;
-  galleryImages?: string[]; // <-- Nueva lista de imágenes para el carrusel
+  galleryImages?: string[];
   subProducts?: SubProduct[];
 }
 
@@ -21,10 +21,10 @@ const { id, title, description, badge, imageSrc, hoverImageSrc, galleryImages = 
 const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverImageSrc].filter(Boolean);
 ---
 
-<div class="bg-[#FAF8FC]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#EBE3F0] shadow-[0_4px_15px_rgba(100,70,150,0.03)] hover:shadow-md transition-all duration-300 flex flex-col group transform hover:-translate-y-1 w-full max-w-[320px]">
+<div class="bg-[#FAF8FC]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#EBE3F0] shadow-[0_4px_15px_rgba(100,70,150,0.03)] hover:shadow-md transition-all duration-300 flex flex-col group transform sm:hover:-translate-y-1 w-full">
   
   <!-- CONTENEDOR DE LA IMAGEN CON BOTÓN DE GALERÍA -->
-  <div class="relative overflow-hidden aspect-[16/10] bg-slate-100 w-full group/img">
+  <div class="relative overflow-hidden aspect-[4/3] sm:aspect-[16/10] bg-slate-100 w-full group/img">
     <img 
       src={imageSrc} 
       alt={title} 
@@ -36,26 +36,28 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
       class="w-full h-full object-cover absolute inset-0 z-0 transition-transform duration-500 scale-100 group-hover/img:scale-105"
     />
     
-    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-700 text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full z-20 shadow-sm">
+    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-700 text-[9px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full z-20 shadow-sm">
       {badge}
     </span>
 
-    <!-- BOTÓN COOL PARA ABRIR CARRUSEL -->
+    <!-- BOTÓN PARA ABRIR CARRUSEL -->
     <button 
       id={`gallery-btn-${id}`}
       type="button"
-      class="absolute bottom-3 right-3 bg-white/90 hover:bg-indigo-600 text-indigo-950 hover:text-white text-[10px] font-semibold px-3 py-1.5 rounded-full z-20 shadow-md backdrop-blur-md transition-all duration-300 flex items-center gap-1.5 hover:scale-105"
+      class="absolute bottom-3 right-3 bg-white/90 hover:bg-indigo-600 text-indigo-950 hover:text-white text-[10px] font-semibold px-3 py-1.5 rounded-full z-20 shadow-md backdrop-blur-md transition-all duration-300 flex items-center gap-1.5 hover:scale-105 active:scale-95"
     >
       <span>📸</span> Ver Galería
     </button>
   </div>
   
-  <div class="p-4 flex flex-col flex-grow">
+  <div class="p-4 sm:p-5 flex flex-col flex-grow">
     <!-- TÍTULO QUE DESPLIEGA LOS SUB-PRODUCTOS EN LA TARJETA -->
-    <button id={`toggle-btn-${id}`} class="text-left w-full focus:outline-none group/title">
-      <h3 class="font-serif text-lg text-indigo-950 font-medium group-hover/title:text-indigo-600 transition-colors flex items-center justify-between">
+    <button id={`toggle-btn-${id}`} type="button" class="text-left w-full focus:outline-none group/title">
+      <h3 class="font-serif text-base sm:text-lg text-indigo-950 font-medium group-hover/title:text-indigo-600 transition-colors flex items-center justify-between">
         {title}
-        <span class="text-xs text-indigo-400 group-hover/title:translate-y-0.5 transition-transform">▼</span>
+        {subProducts.length > 0 && (
+          <span id={`arrow-${id}`} class="text-xs text-indigo-400 group-hover/title:translate-y-0.5 transition-transform duration-300">▼</span>
+        )}
       </h3>
     </button>
 
@@ -67,9 +69,9 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
         <p class="text-[10px] font-bold text-indigo-600 tracking-wider uppercase">¿Qué incluye esta línea?</p>
         <div class="grid grid-cols-1 gap-1.5">
           {subProducts.map((sub) => (
-            <div class="p-2 bg-slate-50 rounded-lg border border-slate-100 hover:border-indigo-100 transition-colors">
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-100 hover:border-indigo-100 transition-colors">
               <h4 class="text-[11px] font-semibold text-slate-800">{sub.name}</h4>
-              <p class="text-[10px] text-slate-500 mt-0.5">{sub.desc}</p>
+              <p class="text-[10px] text-slate-500 mt-0.5 leading-normal">{sub.desc}</p>
             </div>
           ))}
         </div>
@@ -93,6 +95,7 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
   const galleryBtn = document.getElementById(`gallery-btn-${id}`);
   const toggleBtn = document.getElementById(`toggle-btn-${id}`);
   const subMenu = document.getElementById(`sub-${id}`);
+  const arrow = document.getElementById(`arrow-${id}`);
 
   // Disparar el modal del carrusel
   galleryBtn?.addEventListener('click', (e) => {
@@ -102,10 +105,14 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
     }));
   });
 
-  // Desplegar información inferior en la tarjeta
+  // Desplegar información inferior en la tarjeta y rotar flecha
   toggleBtn?.addEventListener('click', () => {
     if (subMenu) {
+      const isHidden = subMenu.classList.contains('hidden');
       subMenu.classList.toggle('hidden');
+      if (arrow) {
+        arrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
     }
   });
 </script>
