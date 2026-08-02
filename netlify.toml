@@ -1,0 +1,4 @@
+[build]
+  base = "ideas"
+  publish = "dist"
+  command = "npm run build"
