@@ -16,42 +16,42 @@
     </p>
 
     <!-- Filtro rápido estilo catálogo (Trozos de papel flotantes) -->
-    <div class="mt-10 sm:mt-14 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6 max-w-3xl mx-auto pt-2">
+    <div class="mt-8 sm:mt-14 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto pt-2">
       
       <!-- TARJETA 1 -->
-      <a href="#marcas" class="paper-card-wrapper paper-rotate-left block text-left group">
-        <div class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 active:scale-98">
-          <span class="text-2xl block mb-2 sm:mb-3" aria-hidden="true">🚀</span>
-          <h3 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">
+      <a href="#marcas" class="paper-card-wrapper paper-rotate-left block group">
+        <div class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-1.5 active:scale-98 text-center flex flex-col items-center justify-center min-h-[140px] sm:min-h-[160px]">
+          <span class="text-3xl sm:text-4xl block mb-2 sm:mb-3 transform transition-transform group-hover:scale-110" aria-hidden="true">🚀</span>
+          <h3 class="font-serif font-medium text-indigo-950 text-base sm:text-lg leading-snug group-hover:text-indigo-600 transition-colors">
             Quiero potenciar mi marca
           </h3>
-          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">
+          <p class="text-xs text-slate-500 mt-1 font-light leading-relaxed">
             Packaging, stickers y tarjetas.
           </p>
         </div>
       </a>
       
       <!-- TARJETA 2 -->
-      <a href="#eventos" class="paper-card-wrapper paper-rotate-right block text-left group">
-        <div class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 active:scale-98">
-          <span class="text-2xl block mb-2 sm:mb-3" aria-hidden="true">✨</span>
-          <h3 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">
+      <a href="#eventos" class="paper-card-wrapper paper-rotate-right block group">
+        <div class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-1.5 active:scale-98 text-center flex flex-col items-center justify-center min-h-[140px] sm:min-h-[160px]">
+          <span class="text-3xl sm:text-4xl block mb-2 sm:mb-3 transform transition-transform group-hover:scale-110" aria-hidden="true">✨</span>
+          <h3 class="font-serif font-medium text-indigo-950 text-base sm:text-lg leading-snug group-hover:text-indigo-600 transition-colors">
             Tengo un evento especial
           </h3>
-          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">
+          <p class="text-xs text-slate-500 mt-1 font-light leading-relaxed">
             Invitaciones, tags y cartelería.
           </p>
         </div>
       </a>
 
-      <!-- TARJETA 3 -->
-      <a href="#tienda" class="paper-card-wrapper paper-rotate-center block text-left group">
-        <div class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 active:scale-98">
-          <span class="text-2xl block mb-2 sm:mb-3" aria-hidden="true">🌙</span>
-          <h3 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">
+      <!-- TARJETA 3 (LUNA GIRADA 180° HORIZONTALMENTE) -->
+      <a href="#tienda" class="paper-card-wrapper paper-rotate-center block group">
+        <div class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-1.5 active:scale-98 text-center flex flex-col items-center justify-center min-h-[140px] sm:min-h-[160px]">
+          <span class="text-3xl sm:text-4xl block mb-2 sm:mb-3 -scale-x-100 inline-block transform transition-transform group-hover:-scale-x-110" aria-hidden="true">🌙</span>
+          <h3 class="font-serif font-medium text-indigo-950 text-base sm:text-lg leading-snug group-hover:text-indigo-600 transition-colors">
             Busco papelería para mí
           </h3>
-          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">
+          <p class="text-xs text-slate-500 mt-1 font-light leading-relaxed">
             Cuadernos, agendas y láminas.
           </p>
         </div>
@@ -62,7 +62,7 @@
 </section>
 
 <style>
-  /* Inclinaciones orgánicas suavizadas en desktop */
+  /* Inclinaciones orgánicas en desktop */
   @media (min-width: 640px) {
     .paper-rotate-left {
       transform: rotate(-1.8deg);
@@ -75,7 +75,6 @@
     }
   }
 
-  /* Sombra pronunciada adaptada al clip-path */
   .paper-card-wrapper {
     will-change: transform, filter;
     filter: 
@@ -84,14 +83,12 @@
     transition: filter 0.3s ease, transform 0.3s ease;
   }
 
-  /* Efecto Flotante Aumentado en Hover */
   .paper-card-wrapper:hover {
     filter: 
       drop-shadow(4px 16px 20px rgba(45, 35, 66, 0.14)) 
       drop-shadow(2px 5px 6px rgba(45, 35, 66, 0.08));
   }
 
-  /* Clip-path de corte rasgado */
   .paper-card {
     clip-path: polygon(
       0% 4px, 8% 0px, 16% 3px, 24% 1px, 32% 4px, 40% 0px, 48% 3px, 56% 1px, 64% 4px, 72% 0px, 80% 3px, 88% 1px, 96% 3px, 100% 1px,
