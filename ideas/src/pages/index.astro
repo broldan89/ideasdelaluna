@@ -12,23 +12,17 @@ import Faq from '../components/Faq.astro';
   <TopBar />
   <Navbar />
 
-  <!-- CONTENEDOR CON PERSPECTIVA 3D Y PATRÓN DE FONDO CONSERVADO -->
   <main class="relative overflow-x-hidden perspective-container">
-
-    <!-- HERO CON ENTRADA CON ZOOM SUAVE -->
     <div class="orbit-card opacity-0 scale-95 translate-y-6 transition-all duration-500 ease-out">
       <Hero />
     </div>
 
-    <!-- COTIZADOR AUTOMÁTICO DE IMPRESIONES -->
     <div class="orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out my-8">
       <Cotizador />
     </div>
 
-    <!-- SECCIONES DE PRODUCTOS -->
     <div class="max-w-6xl mx-auto space-y-20 sm:space-y-28 py-8 sm:py-12 px-4 sm:px-6">
       
-      <!-- SECCIÓN 1: UNIVERSO EMPRENDEDOR -->
       <section id="marcas" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
         <div class="max-w-xl mb-6 sm:mb-8">
           <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
@@ -78,7 +72,6 @@ import Faq from '../components/Faq.astro';
         </div>
       </section>
 
-      <!-- SECCIÓN 2: PARA EVENTOS -->
       <section id="eventos" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
         <div class="max-w-xl mb-6 sm:mb-8">
           <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
@@ -114,7 +107,6 @@ import Faq from '../components/Faq.astro';
         </div>
       </section>
 
-      <!-- SECCIÓN 3: LÍNEA PROPIA -->
       <section id="tienda" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
         <div class="max-w-xl mb-6 sm:mb-8">
           <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
@@ -160,12 +152,10 @@ import Faq from '../components/Faq.astro';
       </section>
     </div>
 
-    <!-- FAQ -->
     <div class="orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out my-12">
       <Faq />
     </div>
 
-    <!-- FOOTER -->
     <div class="paper-footer-wrapper relative z-20 mt-12 sm:mt-16">
       <div class="w-full overflow-hidden leading-[0] rotate-180 bg-transparent -mb-1">
         <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-full h-8 sm:h-12 fill-white/95">
@@ -222,7 +212,6 @@ import Faq from '../components/Faq.astro';
   </main>
 </Layout>
 
-<!-- SCRIPT DE INTERSECCIÓN 3D REVERSIBLE -->
 <script>
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {

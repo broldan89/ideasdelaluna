@@ -1,13 +1,11 @@
 ---
 ---
-<!-- MODAL DE GALERÍA DE TRABAJOS -->
 <div 
   id="gallery-modal" 
   class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-2 sm:p-4 transition-all duration-300 opacity-0"
 >
   <div class="relative w-full max-w-3xl bg-[#FAF8FC] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/20 flex flex-col max-h-[92vh]">
     
-    <!-- HEADER DEL MODAL -->
     <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-200/60 bg-white/60 backdrop-blur-sm">
       <div class="pr-2">
         <h3 id="modal-title" class="font-serif text-base sm:text-xl font-medium text-indigo-950 truncate max-w-[220px] sm:max-w-none">
@@ -18,7 +16,6 @@
         </p>
       </div>
       
-      <!-- BOTÓN CERRAR -->
       <button 
         id="close-modal" 
         class="w-10 h-10 rounded-full bg-slate-200/70 hover:bg-slate-300 active:scale-95 text-slate-700 flex items-center justify-center transition-all text-base font-bold shrink-0"
@@ -28,12 +25,10 @@
       </button>
     </div>
 
-    <!-- CONTENEDOR DEL CARRUSEL DE FOTOS (SOPORTA SWIPE TÁCTIL) -->
     <div 
       id="carousel-touch-area"
       class="relative flex-grow flex items-center justify-center bg-slate-900/5 min-h-[260px] sm:min-h-[420px] overflow-hidden p-2 sm:p-4 select-none touch-pan-y"
     >
-      <!-- IMAGEN PRINCIPAL -->
       <img 
         id="modal-img" 
         src="" 
@@ -41,7 +36,6 @@
         class="max-h-[60vh] sm:max-h-[65vh] w-auto max-w-full object-contain rounded-xl shadow-md transition-all duration-300 pointer-events-none"
       />
 
-      <!-- BOTONES NAVEGACIÓN (ANTERIOR / SIGUIENTE) -->
       <button 
         id="prev-slide" 
         class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 hover:bg-white active:scale-95 text-indigo-950 shadow-md flex items-center justify-center text-lg sm:text-xl backdrop-blur-sm transition-all z-10"
@@ -59,9 +53,7 @@
       </button>
     </div>
 
-    <!-- FOOTER / NAVEGACIÓN POR MINIATURAS (DOTS) -->
     <div id="modal-dots" class="flex items-center justify-center gap-1.5 sm:gap-2 py-3 sm:py-4 bg-white/60">
-      <!-- Los puntos se generan dinámicamente -->
     </div>
 
   </div>
@@ -71,7 +63,6 @@
   let currentImages: string[] = [];
   let currentIndex = 0;
 
-  // Variables para detectar gestos swipe en teléfonos
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -119,7 +110,6 @@
     });
   }
 
-  // Evento global para abrir el modal desde las tarjetas
   window.addEventListener('open-gallery', ((e: CustomEvent) => {
     const { title, images } = e.detail;
     if (!images || images.length === 0) return;
@@ -135,7 +125,7 @@
     if (modal) {
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-      document.body.style.overflow = 'hidden'; // Bloquea el scroll del fondo
+      document.body.style.overflow = 'hidden';
       setTimeout(() => modal.classList.remove('opacity-0'), 10);
     }
   }) as EventListener);
@@ -143,7 +133,7 @@
   function closeModal() {
     if (modal) {
       modal.classList.add('opacity-0');
-      document.body.style.overflow = ''; // Restaura el scroll del fondo
+      document.body.style.overflow = '';
       setTimeout(() => {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
@@ -166,7 +156,6 @@
     updateSlide();
   });
 
-  // LÓGICA SWIPE (DESLIZAR CON EL DEDO EN MÓVILES)
   touchArea?.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX;
   }, { passive: true });
@@ -177,17 +166,14 @@
   }, { passive: true });
 
   function handleSwipe() {
-    const threshold = 40; // Distancia mínima en px para considerar un swipe
+    const threshold = 40;
     if (touchStartX - touchEndX > threshold) {
-      // Swipe a la izquierda -> Siguiente
       nextBtn?.click();
     } else if (touchEndX - touchStartX > threshold) {
-      // Swipe a la derecha -> Anterior
       prevBtn?.click();
     }
   }
 
-  // Teclas para navegación en desktop
   window.addEventListener('keydown', (e) => {
     if (modal && !modal.classList.contains('hidden')) {
       if (e.key === 'Escape') closeModal();

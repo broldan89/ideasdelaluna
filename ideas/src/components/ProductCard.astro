@@ -17,13 +17,11 @@ interface Props {
 
 const { id, title, description, badge, imageSrc, hoverImageSrc, galleryImages = [], subProducts = [] } = Astro.props;
 
-// Si no pasas galleryImages, usamos por defecto la imagen principal y la de hover
 const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverImageSrc].filter(Boolean);
 ---
 
 <div class="bg-[#FAF8FC]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#EBE3F0] shadow-[0_4px_15px_rgba(100,70,150,0.03)] hover:shadow-md transition-all duration-300 flex flex-col group transform sm:hover:-translate-y-1 w-full">
   
-  <!-- CONTENEDOR DE LA IMAGEN CON BOTÓN DE GALERÍA -->
   <div class="relative overflow-hidden aspect-[4/3] sm:aspect-[16/10] bg-slate-100 w-full group/img">
     <img 
       src={imageSrc} 
@@ -40,7 +38,6 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
       {badge}
     </span>
 
-    <!-- BOTÓN PARA ABRIR CARRUSEL -->
     <button 
       id={`gallery-btn-${id}`}
       type="button"
@@ -51,7 +48,6 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
   </div>
   
   <div class="p-4 sm:p-5 flex flex-col flex-grow">
-    <!-- TÍTULO QUE DESPLIEGA LOS SUB-PRODUCTOS EN LA TARJETA -->
     <button id={`toggle-btn-${id}`} type="button" class="text-left w-full focus:outline-none group/title">
       <h3 class="font-serif text-base sm:text-lg text-indigo-950 font-medium group-hover/title:text-indigo-600 transition-colors flex items-center justify-between">
         {title}
@@ -63,7 +59,6 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
 
     <p class="text-slate-500 text-xs mt-1.5 flex-grow font-light leading-relaxed">{description}</p>
     
-    <!-- SUB-CATÁLOGO DESPLEGABLE -->
     {subProducts.length > 0 && (
       <div id={`sub-${id}`} class="hidden mt-4 pt-3 border-t border-slate-100 space-y-2 animate-fade-in">
         <p class="text-[10px] font-bold text-indigo-600 tracking-wider uppercase">¿Qué incluye esta línea?</p>
@@ -97,7 +92,6 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
   const subMenu = document.getElementById(`sub-${id}`);
   const arrow = document.getElementById(`arrow-${id}`);
 
-  // Disparar el modal del carrusel
   galleryBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     window.dispatchEvent(new CustomEvent('open-gallery', {
@@ -105,7 +99,6 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
     }));
   });
 
-  // Desplegar información inferior en la tarjeta y rotar flecha
   toggleBtn?.addEventListener('click', () => {
     if (subMenu) {
       const isHidden = subMenu.classList.contains('hidden');

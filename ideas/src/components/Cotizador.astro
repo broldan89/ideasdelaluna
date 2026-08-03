@@ -2,7 +2,6 @@
 ---
 
 <section id="cotizador" class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16 scroll-mt-20">
-  <!-- ENCABEZADO -->
   <div class="text-center mb-8 sm:mb-10">
     <span class="text-[11px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">
       Calculadora al instante
@@ -15,16 +14,13 @@
     </p>
   </div>
 
-  <!-- TARJETA DEL COTIZADOR -->
   <div class="cotizador-card-wrapper">
     <div class="cotizador-card bg-white p-5 sm:p-10 text-left rounded-2xl sm:rounded-none">
       
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         
-        <!-- COLUMNA IZQUIERDA: CARGA Y OPCIONES -->
         <div class="space-y-5 sm:space-y-6">
           
-          <!-- DROPZONE / CARGA DE ARCHIVO -->
           <div>
             <span class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
               1. Cargar Documento (PDF)
@@ -46,7 +42,6 @@
             </label>
           </div>
 
-          <!-- OPCIÓN: TIPO DE IMPRESIÓN -->
           <div>
             <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
               2. Modalidad de Impresión
@@ -69,7 +64,6 @@
             </div>
           </div>
 
-          <!-- OPCIÓN: COLOR / B&N -->
           <div>
             <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
               3. Tipo de Color
@@ -92,7 +86,6 @@
             </div>
           </div>
 
-          <!-- OPCIÓN: ENCUADERNACIÓN -->
           <div>
             <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
               4. Terminación / Acabado
@@ -109,7 +102,6 @@
 
         </div>
 
-        <!-- COLUMNA DERECHA: DESGLOSE -->
         <div class="bg-indigo-50/50 rounded-2xl p-5 sm:p-6 flex flex-col justify-between border border-indigo-100/60">
           <div>
             <h3 class="font-serif font-medium text-indigo-950 text-base sm:text-lg mb-4 pb-2 border-b border-indigo-100">
@@ -136,7 +128,6 @@
             </div>
           </div>
 
-          <!-- MONTO TOTAL & BOTÓN DE CONTACTO -->
           <div class="mt-6 pt-4 border-t border-indigo-100">
             <div class="flex justify-between items-baseline mb-4 sm:mb-6">
               <span class="text-xs uppercase tracking-wider font-semibold text-slate-500">Total Estimado:</span>
@@ -154,7 +145,6 @@
               Envía la configuración y el archivo subido a la nube directamente.
             </p>
 
-            <!-- INFORMACIÓN DE PAGO CON BOTÓN COPIAR -->
             <div class="mt-4 p-3 bg-white/80 rounded-xl border border-indigo-100 text-[11px] text-slate-600 space-y-1.5">
               <p class="font-semibold text-indigo-950 flex items-center gap-1">
                 <span>📌</span> Información de Pago (Transferencia):
@@ -195,7 +185,6 @@
       drop-shadow(1px 4px 5px rgba(45, 35, 66, 0.05));
   }
 
-  /* Aplica el trozado de papel solo en desktop para evitar cortar márgenes en teléfonos pequeños */
   @media (min-width: 640px) {
     .cotizador-card {
       clip-path: polygon(
@@ -284,7 +273,6 @@
   }
 
   function initCotizador() {
-    console.log('🚀 Inicializando Cotizador...');
     const TARIFAS = {
       bn_simple: 80,
       bn_doble: 120,
@@ -311,7 +299,6 @@
     const btnEnviarWhatsApp = document.getElementById('btnEnviarWhatsApp') as HTMLButtonElement;
     const btnCopyAlias = document.getElementById('btnCopyAlias');
 
-    // Botón para copiar Alias MP
     btnCopyAlias?.addEventListener('click', () => {
       navigator.clipboard.writeText('IDEASDELALUNA.MP');
       playClickSound();

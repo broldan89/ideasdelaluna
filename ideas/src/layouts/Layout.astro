@@ -16,19 +16,17 @@ import GalleryModal from '../components/GalleryModal.astro';
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/png" href="/logo.png" />
 		<title>{title}</title>
-		<!-- Fuente estética y moderna -->
+
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 	</head>
 	
 	<body class="fondo-pastel-animado min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-pink-300 selection:text-slate-800">
-		<!-- Contenedor dinámico central adaptativo -->
 		<main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
 			<slot />
 		</main>
 
-		<!-- Modal global de galería si aplica -->
 		<GalleryModal />
 	</body>
 </html>
@@ -43,7 +41,6 @@ import GalleryModal from '../components/GalleryModal.astro';
 		font-family: 'Playfair Display', serif;
 	}
 	
-	/* ANIMACIÓN DE FONDOS PASTELES */
 	@keyframes cambioPastel {
 		0% { background-color: #fdf2f8; }
 		33% { background-color: #f3e8ff; }
@@ -59,7 +56,6 @@ import GalleryModal from '../components/GalleryModal.astro';
 		transition: background-color 1s ease-in-out;
 	}
 
-	/* TRAMA PUNTEADA RESPONSIVE DETRÁS DEL CONTENIDO */
 	body::before {
 		content: "";
 		position: fixed;
