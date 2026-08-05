@@ -23,6 +23,7 @@ import Faq from '../components/Faq.astro';
 
     <div class="max-w-6xl mx-auto space-y-20 sm:space-y-28 py-8 sm:py-12 px-4 sm:px-6">
       
+      <!-- SECCIÓN MARCAS -->
       <section id="marcas" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
         <div class="max-w-xl mb-6 sm:mb-8">
           <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
@@ -34,6 +35,7 @@ import Faq from '../components/Faq.astro';
         </div>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          <!-- Existente 1 -->
           <ProductCard 
             id="stickers"
             title="Stickers & Etiquetas"
@@ -53,6 +55,7 @@ import Faq from '../components/Faq.astro';
             ]}
           />
           
+          <!-- Existente 2 -->
           <ProductCard 
             id="tarjetas"
             title="Tarjetas Profesionales"
@@ -69,9 +72,84 @@ import Faq from '../components/Faq.astro';
               { name: "Tags colgantes con hilo", desc: "Para ropa o productos artesanales, perforadas y listas." }
             ]}
           />
+
+          <!-- Nueva 1 -->
+          <ProductCard
+            id="brand-tags"
+            title="Etiquetas Colgantes & Tags"
+            description="Tags personalizados con perforación para prendas, regalos o calzado. Variedad de gramajes y acabados."
+            badge="Branding"
+            imageSrc="/catalog/tarjetas_profesionales.jpeg"
+            hoverImageSrc="/catalog/tarjetas_profesionales2.jpeg"
+            galleryImages={[
+              "/catalog/tarjetas_profesionales.jpeg",
+              "/catalog/tarjetas_profesionales2.jpeg"
+            ]}
+            subProducts={[
+              { name: "Tag Clásico Ilustración", desc: "Papel ilustración 300g con perforación estándar para cordón." },
+              { name: "Tag Kraft Ecológico", desc: "Papel kraft sustentable con estética rústica y natural." },
+              { name: "Tag con Troquel Especial", desc: "Formas circulares, con bordes redondeados o cortes personalizados." }
+            ]}
+          />
+
+          <!-- Nueva 2 -->
+          <ProductCard
+            id="brand-thanks"
+            title="Tarjetas de Agradecimiento & Cuidados"
+            description="Tarjetas de fidelización, instrucciones de cuidado o notas de agradecimiento para incluir en tus envíos."
+            badge="Packaging"
+            imageSrc="/catalog/tarjetasPersonales_1.png"
+            hoverImageSrc="/catalog/tarjetas_profesionales2.jpeg"
+            galleryImages={[
+              "/catalog/tarjetasPersonales_1.png",
+              "/catalog/tarjetas_profesionales2.jpeg"
+            ]}
+            subProducts={[
+              { name: "Tarjeta de Agradecimiento A6", desc: "Impresión frente y dorso en papel mate o satinado." },
+              { name: "Tarjeta con QR / Redes", desc: "Optimizada con códigos QR directos a tus tiendas o catálogo." },
+              { name: "Guías de Cuidado de Producto", desc: "Formatos pequeños para prendas, accesorios o papelería." }
+            ]}
+          />
+
+          <!-- Nueva 3 -->
+          <ProductCard
+            id="brand-fajas"
+            title="Fajas de Cierre & Fajas Papel"
+            description="Fajas impresas en papel para envolver prendas, cerrar cajas o empaques de regalo con elegancia."
+            badge="Empaque"
+            imageSrc="/catalog/sticker_1.jpeg"
+            hoverImageSrc="/catalog/sticker_5.jpeg"
+            galleryImages={[
+              "/catalog/sticker_1.jpeg",
+              "/catalog/sticker_5.jpeg"
+            ]}
+            subProducts={[
+              { name: "Faja Adhesiva Satinada", desc: "Sticker alargado ideal para sellado seguro de cajas." },
+              { name: "Faja de Papel Seda / Obra", desc: "Tira de papel para abrazar productos textiles o calzado." }
+            ]}
+          />
+
+          <!-- Nueva 4 -->
+          <ProductCard
+            id="brand-seda"
+            title="Papel Manteca y Seda Personalizado"
+            description="Hojas de papel de seda o papel manteca impreso a 1 o 2 colores con el patrón de tu logotipo."
+            badge="Premium"
+            imageSrc="/catalog/sticker_5.jpeg"
+            hoverImageSrc="/catalog/sticker_1.jpeg"
+            galleryImages={[
+              "/catalog/sticker_5.jpeg",
+              "/catalog/sticker_1.jpeg"
+            ]}
+            subProducts={[
+              { name: "Papel Seda Patrón Tramado", desc: "Envoltorio interior delicado para cajas de ropa y calzado." },
+              { name: "Papel Manteca Anti-grasa", desc: "Ideal para presentaciones de repostería o gastropackaging." }
+            ]}
+          />
         </div>
       </section>
 
+      <!-- SECCIÓN EVENTOS -->
       <section id="eventos" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
         <div class="max-w-xl mb-6 sm:mb-8">
           <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
@@ -83,6 +161,7 @@ import Faq from '../components/Faq.astro';
         </div>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          <!-- Existente 1 -->
           <ProductCard 
             id="invitaciones"
             title="Invitaciones Especiales"
@@ -96,6 +175,7 @@ import Faq from '../components/Faq.astro';
             ]}
           />
           
+          <!-- Existente 2 -->
           <ProductCard 
             id="souvenirs"
             title="Tags & Detalles"
@@ -104,9 +184,85 @@ import Faq from '../components/Faq.astro';
             imageSrc="/catalog/tags_1.jpeg"
             hoverImageSrc="https://images.unsplash.com/photo-1542435503-956c469947f6?q=80&w=600"
           />
+
+          <!-- Nueva 1 -->
+          <ProductCard
+            id="event-carteleria"
+            title="Carteles de Bienvenida & Seating Plan"
+            description="Cartelería rígida e impresa para recepción de invitados, organigramas de mesas o menús gigantes."
+            badge="Ambientación"
+            imageSrc="/catalog/invitaciones.jpeg"
+            hoverImageSrc="/catalog/tags_1.jpeg"
+            galleryImages={[
+              "/catalog/invitaciones.jpeg",
+              "/catalog/tags_1.jpeg"
+            ]}
+            subProducts={[
+              { name: "Cartel Montado en Foam Board", desc: "Rígido, liviano y listo para colocar en atriles." },
+              { name: "Seating Plan de Mesas", desc: "Diseño organizado por sectores o números de mesa." },
+              { name: "Carteles Indicadores", desc: "Flechas, frascos o indicaciones de barra e ingreso." }
+            ]}
+          />
+
+          <!-- Nueva 2 -->
+          <ProductCard
+            id="event-menus"
+            title="Menús de Mesa & Números de Sector"
+            description="Cartas individuales, menús por mesa e identificadores de platos o mesas de dulces."
+            badge="Mesa Especial"
+            imageSrc="/catalog/tags_1.jpeg"
+            hoverImageSrc="/catalog/invitaciones.jpeg"
+            galleryImages={[
+              "/catalog/tags_1.jpeg",
+              "/catalog/invitaciones.jpeg"
+            ]}
+            subProducts={[
+              { name: "Menú Individual Alargado", desc: "Diseño elegante en papel acartonado con detalles especiales." },
+              { name: "Número de Mesa Carpa", desc: "Soporte autoportante impreso frente y dorso." },
+              { name: "Tags para Copas o Bebidas", desc: "Detalles personalizados para sorbetes o identificación." }
+            ]}
+          />
+
+          <!-- Nueva 3 -->
+          <ProductCard
+            id="event-souvenirs"
+            title="Tags & Envoltorios para Souvenirs"
+            description="Kits de papelería diseñados para coordinar los regalos y recuerdos del evento."
+            badge="Recuerdos"
+            imageSrc="/catalog/tags_1.jpeg"
+            hoverImageSrc="/catalog/invitaciones.jpeg"
+            galleryImages={[
+              "/catalog/tags_1.jpeg",
+              "/catalog/invitaciones.jpeg"
+            ]}
+            subProducts={[
+              { name: "Tags Calados para Souvenir", desc: "Con perforación e hilo de yute o cinta bebé." },
+              { name: "Cajitas Kraft Armables", desc: "Para golosinas, velas o detalles gastronómicos." },
+              { name: "Stickers de Cierre de Bolsa", desc: "Adhesivos redondos o rectangulares personalizados." }
+            ]}
+          />
+
+          <!-- Nueva 4 -->
+          <ProductCard
+            id="event-firmas"
+            title="Libro de Firmas & Mensajes"
+            description="Álbumes y libros artesanales con encuadernación especial para que los invitados dejen sus dedicatorias."
+            badge="Artesanal"
+            imageSrc="/catalog/invitaciones.jpeg"
+            hoverImageSrc="/catalog/tags_1.jpeg"
+            galleryImages={[
+              "/catalog/invitaciones.jpeg",
+              "/catalog/tags_1.jpeg"
+            ]}
+            subProducts={[
+              { name: "Libro Tapa Dura con Espiral", desc: "Hojas de alto gramaje aptas para fotos e insumos pegados." },
+              { name: "Libro Cosido a Mano", desc: "Encuadernación artesanal con tapas enteladas o laminadas." }
+            ]}
+          />
         </div>
       </section>
 
+      <!-- SECCIÓN TIENDA -->
       <section id="tienda" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
         <div class="max-w-xl mb-6 sm:mb-8">
           <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
@@ -118,6 +274,7 @@ import Faq from '../components/Faq.astro';
         </div>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          <!-- Existente 1 -->
           <ProductCard 
             id="cuadernos"
             title="Cuadernos Artesanales"
@@ -131,6 +288,7 @@ import Faq from '../components/Faq.astro';
             ]}
           />
           
+          <!-- Existente 2 -->
           <ProductCard 
             id="planners"
             title="Agendas & Planners"
@@ -146,6 +304,78 @@ import Faq from '../components/Faq.astro';
             subProducts={[
               { name: "Agendas Personalizadas", desc: "Tapa dura laminada, cierre elástico y sobre interno." },
               { name: "Bitácoras de viaje", desc: "Encuadernación flexible y lomo cosido a la vista." }
+            ]}
+          />
+
+          <!-- Nueva 1 -->
+          <ProductCard
+            id="shop-planners"
+            title="Planners de Escritorio & Bloques de Notas"
+            description="Organizadores semanales o mensuales anillados o blocks bloc de notas arrancables."
+            badge="Organización"
+            imageSrc="/catalog/libreta.jpeg"
+            hoverImageSrc="/catalog/cuaderno.jpeg"
+            galleryImages={[
+              "/catalog/libreta.jpeg",
+              "/catalog/cuaderno.jpeg"
+            ]}
+            subProducts={[
+              { name: "Planner Semanal A4 Acolchado", desc: "Block de 50 hojas abrochadas o encoladas para escritorio." },
+              { name: "Organizadores Diarios To-Do", desc: "Formato alargado con listas de tareas y hábitos." }
+            ]}
+          />
+
+          <!-- Nueva 2 -->
+          <ProductCard
+            id="shop-recetarios"
+            title="Recetarios & Bitácoras de Viaje"
+            description="Cuadernos temáticos diseñados para registrar recetas familiares, itinerarios o recuerdos."
+            badge="Edición Especial"
+            imageSrc="/catalog/cuaderno.jpeg"
+            hoverImageSrc="/catalog/libreta.jpeg"
+            galleryImages={[
+              "/catalog/cuaderno.jpeg",
+              "/catalog/libreta.jpeg"
+            ]}
+            subProducts={[
+              { name: "Recetario Tapa Dura Anillado", desc: "Con divisiones por tipo de plato y bolsillo interno." },
+              { name: "Bitácora de Viajes", desc: "Páginas mixtas para escribir, pegar pasajes y recuerdos." }
+            ]}
+          />
+
+          <!-- Nueva 3 -->
+          <ProductCard
+            id="shop-laminas"
+            title="Láminas Ilustradas & Prints A4/A3"
+            description="Impresiones de alta resolución en papeles de gran gramaje con arte propio o ilustraciones personalizadas."
+            badge="Decoración"
+            imageSrc="/catalog/libreta.jpeg"
+            hoverImageSrc="/catalog/cuaderno.jpeg"
+            galleryImages={[
+              "/catalog/libreta.jpeg",
+              "/catalog/cuaderno.jpeg"
+            ]}
+            subProducts={[
+              { name: "Lámina Ilustración Texturada", desc: "Impresión sobre papel obra o fotográfico mate de 240g." },
+              { name: "Set de Láminas Temáticas", desc: "Combinaciones de 3 láminas para cuadros de pared." }
+            ]}
+          />
+
+          <!-- Nueva 4 -->
+          <ProductCard
+            id="shop-memopads"
+            title="Blocks de Notas & Notitas Adhesivas"
+            description="Papelería complementaria para escritorios, agendas y cuadernos."
+            badge="Papelería"
+            imageSrc="/catalog/cuaderno.jpeg"
+            hoverImageSrc="/catalog/libreta.jpeg"
+            galleryImages={[
+              "/catalog/cuaderno.jpeg",
+              "/catalog/libreta.jpeg"
+            ]}
+            subProducts={[
+              { name: "Block Memopad 10x10cm", desc: "50 hojas de papel de alto gramaje arrancables." },
+              { name: "Mini Sticky Notes Ilustradas", desc: "Banderitas y notas adhesivas con diseños ilustrados." }
             ]}
           />
         </div>
@@ -213,21 +443,24 @@ import Faq from '../components/Faq.astro';
 </Layout>
 
 <script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.remove('opacity-0', 'rotate-x-3', 'translate-y-12', 'scale-95');
-        entry.target.classList.add('opacity-100', 'rotate-x-0', 'translate-y-0', 'scale-100');
-      } else {
-        entry.target.classList.remove('opacity-100', 'rotate-x-0', 'translate-y-0', 'scale-100');
-        entry.target.classList.add('opacity-0', 'rotate-x-3', 'translate-y-12', 'scale-95');
-      }
-    });
-  }, { 
-    threshold: 0.15
-  });
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href*="whatsapp.com"]').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const card = button.closest('.product-card');
+        const productName = card ? card.querySelector('h3')?.innerText : 'Consulta General';
+        const sectionId = button.closest('section')?.id || 'general';
 
-  document.querySelectorAll('.orbit-card').forEach(el => observer.observe(el));
+        if (typeof gtag === 'function') {
+          gtag('event', 'product_inquiry', {
+            product_name: productName,
+            section: sectionId,
+            event_category: 'engagement',
+            event_label: `WhatsApp - ${productName}`
+          });
+        }
+      });
+    });
+  });
 </script>
 
 <style>
