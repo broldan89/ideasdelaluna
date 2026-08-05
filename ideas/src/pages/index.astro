@@ -443,24 +443,36 @@ import Faq from '../components/Faq.astro';
 </Layout>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('a[href*="whatsapp.com"]').forEach(button => {
-      button.addEventListener('click', (e) => {
-        const card = button.closest('.product-card');
-        const productName = card ? card.querySelector('h3')?.innerText : 'Consulta General';
-        const sectionId = button.closest('section')?.id || 'general';
-
-        if (typeof gtag === 'function') {
-          gtag('event', 'product_inquiry', {
-            product_name: productName,
-            section: sectionId,
-            event_category: 'engagement',
-            event_label: `WhatsApp - ${productName}`
-          });
-        }
+  function revealCards() {
+    const cards = document.querySelectorAll('.orbit-card');
+    
+    // Si la API de IntersectionObserver está soportada
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('opacity-0', 'rotate-x-3', 'translate-y-12', 'scale-95');
+            entry.target.classList.add('opacity-100', 'rotate-x-0', 'translate-y-0', 'scale-100');
+          }
+        });
+      }, { 
+        threshold: 0.01 // Se activa con apenas asomar un 1% en pantalla
       });
-    });
-  });
+
+      cards.forEach(el => observer.observe(el));
+    } else {
+      // Fallback por si falla el observer
+      cards.forEach(el => {
+        el.classList.remove('opacity-0', 'rotate-x-3', 'translate-y-12', 'scale-95');
+        el.classList.add('opacity-100');
+      });
+    }
+  }
+
+  // Ejecutar al cargar y al cambiar de pestaña en Astro
+  document.addEventListener('DOMContentLoaded', revealCards);
+  document.addEventListener('astro:page-load', revealCards);
+  revealCards();
 </script>
 
 <style>
