@@ -11,13 +11,25 @@ interface Props {
   badge: string;
   imageSrc: string;
   hoverImageSrc: string;
-  galleryImages?: string[]; // <-- Nueva lista de imágenes para el carrusel
+  galleryImages?: string[];
   subProducts?: SubProduct[];
+  isProximamente?: boolean; // <-- Controla si el producto está en preparación
+  proximamenteText?: string; // <-- Mensaje personalizado opcional
 }
 
-const { id, title, description, badge, imageSrc, hoverImageSrc, galleryImages = [], subProducts = [] } = Astro.props;
+const { 
+  id, 
+  title, 
+  description, 
+  badge, 
+  imageSrc, 
+  hoverImageSrc, 
+  galleryImages = [], 
+  subProducts = [],
+  isProximamente = false,
+  proximamenteText = "En el taller de diseño"
+} = Astro.props;
 
-// Si no pasas galleryImages, usamos por defecto la imagen principal y la de hover
 const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverImageSrc].filter(Boolean);
 ---
 
@@ -36,11 +48,18 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
       class="w-full h-full object-cover absolute inset-0 z-0 transition-transform duration-500 scale-100 group-hover/img:scale-105"
     />
     
-    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-700 text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full z-20 shadow-sm">
-      {badge}
-    </span>
+    <div class="absolute top-3 left-3 flex flex-col gap-1 z-20">
+      <span class="bg-white/90 backdrop-blur-md text-slate-700 text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-sm w-fit">
+        {badge}
+      </span>
+      {isProximamente && (
+        <span class="bg-amber-100/90 backdrop-blur-md text-amber-900 border border-amber-200/60 text-[9px] font-semibold tracking-wide px-2 py-0.5 rounded-full shadow-sm w-fit">
+          Próximamente
+        </span>
+      )}
+    </div>
 
-    <!-- BOTÓN COOL PARA ABRIR CARRUSEL -->
+    <!-- BOTÓN PARA ABRIR CARRUSEL -->
     <button 
       id={`gallery-btn-${id}`}
       type="button"
@@ -55,7 +74,9 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
     <button id={`toggle-btn-${id}`} class="text-left w-full focus:outline-none group/title">
       <h3 class="font-serif text-lg text-indigo-950 font-medium group-hover/title:text-indigo-600 transition-colors flex items-center justify-between">
         {title}
-        <span class="text-xs text-indigo-400 group-hover/title:translate-y-0.5 transition-transform">▼</span>
+        {subProducts.length > 0 && (
+          <span class="text-xs text-indigo-400 group-hover/title:translate-y-0.5 transition-transform">▼</span>
+        )}
       </h3>
     </button>
 
@@ -76,15 +97,26 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
       </div>
     )}
 
+    <!-- ACCIÓN PRINCIPAL / BOTÓN -->
     <div class="mt-4 pt-3 border-t border-slate-50">
-      <a 
-        href={`https://api.whatsapp.com/send?phone=5493412141732&text=${encodeURIComponent('¡Hola! Me interesa obtener más información y cotizar la línea de: ' + title)}`} 
-        target="_blank"
-        rel="noopener noreferrer"
-        class="w-full text-center block bg-slate-50 hover:bg-indigo-600 hover:text-white text-slate-700 text-xs font-semibold py-2.5 rounded-lg transition-all tracking-wider"
-      >
-        COTIZAR ESTA LÍNEA
-      </a>
+      {isProximamente ? (
+        <button 
+          type="button"
+          disabled 
+          class="w-full text-center bg-slate-100 border border-slate-200/80 text-slate-400 text-xs font-medium py-2.5 rounded-lg cursor-not-allowed select-none flex items-center justify-center gap-1.5"
+        >
+          <span>🎨</span> {proximamenteText}
+        </button>
+      ) : (
+        <a 
+          href={`https://api.whatsapp.com/send?phone=5493412141732&text=${encodeURIComponent('¡Hola! Me interesa obtener más información y cotizar la línea de: ' + title)}`} 
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-full text-center block bg-slate-50 hover:bg-indigo-600 hover:text-white text-slate-700 text-xs font-semibold py-2.5 rounded-lg transition-all tracking-wider"
+        >
+          COTIZAR ESTA LÍNEA
+        </a>
+      )}
     </div>
   </div>
 </div>
@@ -94,7 +126,6 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
   const toggleBtn = document.getElementById(`toggle-btn-${id}`);
   const subMenu = document.getElementById(`sub-${id}`);
 
-  // Disparar el modal del carrusel
   galleryBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     window.dispatchEvent(new CustomEvent('open-gallery', {
@@ -102,7 +133,6 @@ const allImages = galleryImages.length > 0 ? galleryImages : [imageSrc, hoverIma
     }));
   });
 
-  // Desplegar información inferior en la tarjeta
   toggleBtn?.addEventListener('click', () => {
     if (subMenu) {
       subMenu.classList.toggle('hidden');

@@ -2,41 +2,41 @@
 ---
 <section class="relative overflow-hidden py-20 px-6 bg-gradient-to-b from-indigo-50/50 to-transparent">
   <div class="max-w-4xl mx-auto text-center relative z-10">
-    <span class="text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">Papeleria Creativa y Personalizada</span>
+    <span class="text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">Papelería Creativa y Personalizada</span>
     <h1 class="text-5xl md:text-6xl font-normal text-indigo-950 mt-6 leading-tight">
       Imprimimos las ideas que <br><span class="italic font-serif text-indigo-600">orbitan</span> en tu cabeza.
     </h1>
     <p class="mt-6 text-lg text-slate-600 max-w-xl mx-auto font-light">
-      Hacemos real lo que imaginas. Papelería y soluciones de impresión con terminaciones mágicas para marcas, eventos y personas.
+      Hacemos realidad lo que imaginás. Papelería y detalles impresos para marcas, eventos y personas.
     </p>
 
     <!-- Filtro rápido estilo catálogo (Trozos de papel flotantes) -->
     <div class="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto pt-2">
       
-      <!-- TARJETA 1 (Inclinada levemente a la izquierda) -->
-      <a href="#marcas" class="paper-card-wrapper paper-rotate-left block text-left group">
-        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2">
-          <span class="text-2xl block mb-3">🚀</span>
-          <h4 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">Quiero potenciar mi marca</h4>
-          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">Packaging, stickers y tarjetas.</p>
+      <!-- TARJETA 1 -->
+      <a href="#marcas" class="paper-card-wrapper paper-rotate-left block group">
+        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 flex flex-col items-center text-center">
+          <span class="text-3xl block mb-3">🚀</span>
+          <h4 class="font-serif font-medium text-indigo-950 text-lg group-hover:text-indigo-600 transition-colors leading-snug">Quiero potenciar mi marca</h4>
+          <p class="text-xs text-slate-500 mt-2 font-light leading-relaxed">Packaging, stickers y tarjetas.</p>
         </div>
       </a>
       
-      <!-- TARJETA 2 (Inclinada levemente a la derecha) -->
-      <a href="#eventos" class="paper-card-wrapper paper-rotate-right block text-left group">
-        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2">
-          <span class="text-2xl block mb-3">✨</span>
-          <h3 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">Tengo un evento especial</h3>
-          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">Invitaciones, tags y cartelería.</p>
+      <!-- TARJETA 2 -->
+      <a href="#eventos" class="paper-card-wrapper paper-rotate-right block group">
+        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 flex flex-col items-center text-center">
+          <span class="text-3xl block mb-3">✨</span>
+          <h3 class="font-serif font-medium text-indigo-950 text-lg group-hover:text-indigo-600 transition-colors leading-snug">Tengo un evento especial</h3>
+          <p class="text-xs text-slate-500 mt-2 font-light leading-relaxed">Invitaciones, tags y cartelería.</p>
         </div>
       </a>
 
-      <!-- TARJETA 3 (Inclinación casi recta) -->
-      <a href="#tienda" class="paper-card-wrapper paper-rotate-center block text-left group">
-        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2">
-          <span class="text-2xl block mb-3">🌙</span>
-          <h3 class="font-serif font-medium text-indigo-950 text-base group-hover:text-indigo-600 transition-colors">Busco papelería para mí</h3>
-          <p class="text-xs text-slate-500 mt-1.5 font-light leading-relaxed">Cuadernos, agendas y láminas.</p>
+      <!-- TARJETA 3 (Luna rotada 90°) -->
+      <a href="#tienda" class="paper-card-wrapper paper-rotate-center block group">
+        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 flex flex-col items-center text-center">
+          <span class="text-3xl block mb-3 rotate-90 inline-block">🌙</span>
+          <h3 class="font-serif font-medium text-indigo-950 text-lg group-hover:text-indigo-600 transition-colors leading-snug">Busco papelería para mí</h3>
+          <p class="text-xs text-slate-500 mt-2 font-light leading-relaxed">Cuadernos, agendas y láminas.</p>
         </div>
       </a>
 
@@ -58,7 +58,6 @@
 
   /* Sombra pronunciada que respeta los bordes recortados */
   .paper-card-wrapper {
-    /* Combinación de sombra suave amplia + sombra intensa cerca del borde */
     filter: 
       drop-shadow(3px 12px 16px rgba(45, 35, 66, 0.12)) 
       drop-shadow(1px 4px 5px rgba(45, 35, 66, 0.08));

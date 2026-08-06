@@ -169,23 +169,35 @@ import GalleryModal from '../components/GalleryModal.astro';
         </div>
 
         <!-- TARJETA 3: DESCARGABLES PDF -->
-        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg">
-          <div>
-            <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
-              <span class="absolute top-2.5 left-2.5 z-10 text-[10px] font-bold uppercase tracking-wider bg-amber-400 text-slate-950 px-2.5 py-1 rounded-md font-semibold">
-                ⚡ Descarga PDF
-              </span>
-              <img src="/catalog/libreta.jpeg" alt="Recursos PDF" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-            </div>
-            <h3 class="text-lg font-serif font-medium text-white mb-2">Recursos Digitales en PDF</h3>
-            <p class="text-indigo-200/70 text-xs font-light leading-relaxed mb-4">
-              Archivos listos para descargar e imprimir. Efemérides, carteles de aula y fichas por grado.
-            </p>
-          </div>
-          <button id="btn-open-pdf-modal" type="button" class="w-full text-center py-2.5 px-4 rounded-xl bg-amber-300 text-slate-950 hover:bg-amber-200 text-xs font-bold tracking-wider uppercase transition-all shadow-md cursor-pointer">
-            Ver PDFs Disponibles
-          </button>
-        </div>
+<div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg">
+  <div>
+    <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
+      <div class="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
+        <span class="text-[10px] font-bold uppercase tracking-wider bg-amber-400 text-slate-950 px-2.5 py-1 rounded-md">
+          ⚡ Descarga PDF
+        </span>
+        <span class="text-[9px] font-semibold tracking-wide bg-slate-900/80 backdrop-blur-md text-amber-200 border border-amber-300/30 px-2 py-0.5 rounded-md w-fit">
+          Próximamente
+        </span>
+      </div>
+      <img src="/catalog/libreta.jpeg" alt="Recursos PDF" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
+    </div>
+    
+    <h3 class="text-lg font-serif font-medium text-white mb-2">Recursos Digitales en PDF</h3>
+    <p class="text-indigo-200/70 text-xs font-light leading-relaxed mb-4">
+      Archivos listos para descargar e imprimir. Efemérides, carteles de aula y fichas por grado.
+    </p>
+  </div>
+
+  <!-- BOTÓN DESHABILITADO / EN PREPARACIÓN -->
+  <button 
+    disabled 
+    type="button" 
+    class="w-full text-center py-2.5 px-4 rounded-xl bg-white/10 text-indigo-200/60 border border-white/10 text-xs font-medium transition-all cursor-not-allowed select-none flex items-center justify-center gap-2"
+  >
+    <span>🎨</span> En el taller de diseño
+  </button>
+</div>
 
       </div>
     </section>
