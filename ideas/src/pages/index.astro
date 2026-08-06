@@ -6,520 +6,435 @@ import Hero from '../components/Hero.astro';
 import Cotizador from '../components/Cotizador.astro';
 import ProductCard from '../components/ProductCard.astro';
 import Faq from '../components/Faq.astro';
+import GalleryModal from '../components/GalleryModal.astro';
 ---
 
 <Layout title="Ideas de la Luna | Papelería de otro planeta">
   <TopBar />
   <Navbar />
+  <Hero />
 
-  <main class="relative overflow-x-hidden perspective-container">
-    <div class="orbit-card opacity-0 scale-95 translate-y-6 transition-all duration-500 ease-out">
-      <Hero />
-    </div>
+  <!-- CALCULADORA / COTIZADOR AUTOMÁTICO DE IMPRESIONES -->
+  <Cotizador />
 
-    <div class="orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out my-8">
-      <Cotizador />
-    </div>
-
-    <div class="max-w-6xl mx-auto space-y-20 sm:space-y-28 py-8 sm:py-12 px-4 sm:px-6">
+  <main class="max-w-7xl mx-auto px-6 py-12 space-y-24">
+    
+    <!-- SECCIÓN 1: UNIVERSO EMPRENDEDOR -->
+    <section id="marcas" class="scroll-mt-24">
+      <div class="max-w-xl mb-8">
+        <h2 class="text-3xl font-normal text-indigo-950">El Universo <span class="italic text-indigo-600">Emprendedor</span></h2>
+        <p class="text-slate-500 text-sm mt-2 font-light">Packaging e identidad 100% personalizada para marcas que quieren dejar una huella imborrable al abrir sus cajas. Haz clic en la foto para ver las opciones disponibles.</p>
+      </div>
       
-      <!-- SECCIÓN MARCAS -->
-      <section id="marcas" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
-        <div class="max-w-xl mb-6 sm:mb-8">
-          <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
-            El Universo <span class="italic text-indigo-600">Emprendedor</span>
-          </h2>
-          <p class="text-slate-500 text-sm mt-2 font-light leading-relaxed">
-            Packaging e identidad para marcas que quieren dejar una huella imborrable al abrir sus cajas. Haz clic en la foto para ver las opciones disponibles.
-          </p>
-        </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-fit">
+        <ProductCard 
+          id="stickers"
+          title="Stickers & Etiquetas (Planchas A4)"
+          description="Impresión por plancha A4 (mínimo 20 unidades). Papel fotográfico (200g), mate (260g) o material fílmico resistente al agua. Corte troquelado listo para despegar."
+          badge="100% Personalizado"
+          imageSrc="/catalog/sticker_5.jpeg"
+          hoverImageSrc="/catalog/sticker_1.jpeg"
+          galleryImages={[
+            "/catalog/sticker_5.jpeg",
+            "/catalog/sticker_1.jpeg"
+          ]}
+          subProducts={[
+            { name: "Planchas de stickers con logo", desc: "Mínimo 20 unidades. La cantidad por plancha A4 depende del tamaño de tu diseño." },
+            { name: "Etiquetas con código QR", desc: "Listas para cobros por transferencia, Mercado Pago o redes sociales." },
+            { name: "Material Fílmico Waterproof", desc: "Resistente al agua y humedad, ideal para frascos, vasos o cosmética." }
+          ]}
+        />
         
-        <div class="flex sm:grid overflow-x-auto sm:overflow-visible snap-x snap-mandatory sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-4 sm:pb-0 scrollbar-hide">
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard 
-              id="stickers"
-              title="Stickers & Etiquetas"
-              description="En plancha o troquelados individuales. Papel brillante, mate o vinilo resistente al agua."
-              badge="Identidad"
-              imageSrc="/catalog/sticker_5.jpeg"
-              hoverImageSrc="/catalog/sticker_1.jpeg"
-              galleryImages={[
-                "/catalog/sticker_5.jpeg",
-                "/catalog/sticker_1.jpeg",
-                "/catalog/tarjetas_profesionales.jpeg"
-              ]}
-              subProducts={[
-                { name: "Planchas A4 troqueladas", desc: "Ideales para cerrar bolsas y rotular cajas rápidamente." },
-                { name: "Stickers individuales (Die-cut)", desc: "Cortados uno a uno con la forma de tu logo." },
-                { name: "Etiquetas transparentes", desc: "Vinilo premium invisible, ideal para frascos o cosmética." }
-              ]}
-            />
-          </div>
-          
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard 
-              id="tarjetas"
-              title="Tarjetas Profesionales"
-              description="Papel pesado de alta calidad (300g) con terminaciones mate suaves al tacto para conectar con tus clientes."
-              badge="Packaging"
-              imageSrc="/catalog/tarjetasPersonales_1.png"
-              hoverImageSrc="/catalog/tarjetas_profesionales2.jpeg"
-              galleryImages={[
-                "/catalog/tarjetas_profesionales.jpeg",
-                "/catalog/tarjetas_profesionales2.jpeg"
-              ]}
-              subProducts={[
-                { name: "Tarjetas Personales", desc: "Ideales para emprendedores y profesionales." },
-                { name: "Tags colgantes con hilo", desc: "Para ropa o productos artesanales, perforadas y listas." }
-              ]}
-            />
-          </div>
+        <ProductCard 
+          id="tarjetas"
+          title="Tarjetas Profesionales & Personales"
+          description="Diseño 100% personalizado en medidas estándar (4x9 cm o 5x9 cm). Opción simple o doble faz en papel pesado de alta calidad."
+          badge="Contacto"
+          imageSrc="/catalog/tarjetas_profesionales.jpeg"
+          hoverImageSrc="/catalog/tarjetas_profesionales2.jpeg"
+          galleryImages={[
+            "/catalog/tarjetas_profesionales.jpeg",
+            "/catalog/tarjetas_profesionales2.jpeg"
+          ]}
+          subProducts={[
+            { name: "Tarjetas Estándar (4x9 cm / 5x9 cm)", desc: "Impresión simple o doble faz adaptada a tu identidad visual." },
+            { name: "Tarjetas de contacto corporativas", desc: "Presentación impecable con tus redes, datos de pago y QR." },
+            { name: "Tarjetas dobles desplegables", desc: "Mayor espacio para mostrar tus servicios o recomendaciones de uso." }
+          ]}
+        />
 
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="brand-tags"
-              title="Etiquetas Colgantes & Tags"
-              description="Tags personalizados con perforación para prendas, regalos o calzado. Variedad de gramajes y acabados."
-              badge="Branding"
-              imageSrc="/catalog/tarjetas_profesionales.jpeg"
-              hoverImageSrc="/catalog/tarjetas_profesionales2.jpeg"
-              galleryImages={[
-                "/catalog/tarjetas_profesionales.jpeg",
-                "/catalog/tarjetas_profesionales2.jpeg"
-              ]}
-              subProducts={[
-                { name: "Tag Clásico Ilustración", desc: "Papel ilustración 300g con perforación estándar para cordón." },
-                { name: "Tag Kraft Ecológico", desc: "Papel kraft sustentable con estética rústica y natural." },
-                { name: "Tag con Troquel Especial", desc: "Formas circulares, con bordes redondeados o cortes personalizados." }
-              ]}
-            />
-          </div>
+        <ProductCard 
+          id="packaging"
+          title="Presentación & Cierrabolsas"
+          description="Detalles gráficos impresos para sellar y dar el toque final a tus paquetes antes de enviarlos."
+          badge="Packaging"
+          imageSrc="/catalog/sticker_1.jpeg"
+          hoverImageSrc="/catalog/sticker_5.jpeg"
+          subProducts={[
+            { name: "Stickers cierrabolsas", desc: "Formatos rectangulares o circulares para asegurar tus envíos." },
+            { name: "Fajas autoadhesivas de cierre", desc: "Diseñadas a medida para envolver cajas o bolsas." },
+            { name: "Tarjetas de agradecimiento (5x5 cm)", desc: "Formato estándar cuadrado de 5x5 cm para dar la bienvenida al cliente." }
+          ]}
+        />
 
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="brand-thanks"
-              title="Tarjetas de Agradecimiento & Cuidados"
-              description="Tarjetas de fidelización, instrucciones de cuidado o notas de agradecimiento para incluir en tus envíos."
-              badge="Packaging"
-              imageSrc="/catalog/tarjetasPersonales_1.png"
-              hoverImageSrc="/catalog/tarjetas_profesionales2.jpeg"
-              galleryImages={[
-                "/catalog/tarjetasPersonales_1.png",
-                "/catalog/tarjetas_profesionales2.jpeg"
-              ]}
-              subProducts={[
-                { name: "Tarjeta de Agradecimiento A6", desc: "Impresión frente y dorso en papel mate o satinado." },
-                { name: "Tarjeta con QR / Redes", desc: "Optimizada con códigos QR directos a tus tiendas o catálogo." },
-                { name: "Guías de Cuidado de Producto", desc: "Formatos pequeños para prendas, accesorios o papelería." }
-              ]}
-            />
-          </div>
+        <ProductCard 
+          id="fidelizacion"
+          title="Fidelización & Gift Cards"
+          description="Tarjetas impresas 100% personalizadas en papel pesado diseñadas para premiar la lealtad e incentivar la recompra."
+          badge="Clientes"
+          imageSrc="/catalog/tarjetas_profesionales2.jpeg"
+          hoverImageSrc="/catalog/tarjetas_profesionales.jpeg"
+          subProducts={[
+            { name: "Tarjetas 'Gracias por tu compra' (5x5 cm)", desc: "Mensajes cálidos y recomendaciones impresas en formato cuadrado estándar." },
+            { name: "Tarjetas de fidelización", desc: "Sistema impreso de puntos o sellos simple o doble faz para premiar clientes." },
+            { name: "Gift Cards impresas", desc: "Tarjetas de regalo personalizadas con montos o servicios." }
+          ]}
+        />
 
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="brand-fajas"
-              title="Fajas de Cierre & Fajas Papel"
-              description="Fajas impresas en papel para envolver prendas, cerrar cajas o empaques de regalo con elegancia."
-              badge="Empaque"
-              imageSrc="/catalog/sticker_1.jpeg"
-              hoverImageSrc="/catalog/sticker_5.jpeg"
-              galleryImages={[
-                "/catalog/sticker_1.jpeg",
-                "/catalog/sticker_5.jpeg"
-              ]}
-              subProducts={[
-                { name: "Faja Adhesiva Satinada", desc: "Sticker alargado ideal para sellado seguro de cajas." },
-                { name: "Faja de Papel Seda / Obra", desc: "Tira de papel para abrazar productos textiles o calzado." }
-              ]}
-            />
-          </div>
+        <ProductCard 
+          id="folleteria"
+          title="Folletería & Material Promocional"
+          description="Volantes, flyers y folletos impresos en alta calidad para difundir tus promociones o catálogo de servicios."
+          badge="Difusión"
+          imageSrc="/catalog/tarjetas_profesionales.jpeg"
+          hoverImageSrc="/catalog/tarjetas_profesionales2.jpeg"
+          subProducts={[
+            { name: "Flyers A6 / A5 promocionales", desc: "Formatos ideales para incluir en cada entrega o repartir." },
+            { name: "Volantes informativos", desc: "Papel liviano o pesado según la necesidad del proyecto." },
+            { name: "Cartas o menús desplegables", desc: "Para locales gastronómicos, servicios o catálogos impresos." }
+          ]}
+        />
+      </div>
+    </section>
 
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="brand-seda"
-              title="Papel Manteca y Seda Personalizado"
-              description="Hojas de papel de seda o papel manteca impreso a 1 o 2 colores con el patrón de tu logotipo."
-              badge="Premium"
-              imageSrc="/catalog/sticker_5.jpeg"
-              hoverImageSrc="/catalog/sticker_1.jpeg"
-              galleryImages={[
-                "/catalog/sticker_5.jpeg",
-                "/catalog/sticker_1.jpeg"
-              ]}
-              subProducts={[
-                { name: "Papel Seda Patrón Tramado", desc: "Envoltorio interior delicado para cajas de ropa y calzado." },
-                { name: "Papel Manteca Anti-grasa", desc: "Ideal para presentaciones de repostería o gastropackaging." }
-              ]}
-            />
-          </div>
-        </div>
-      </section>
+    <!-- SECCIÓN ESPECIAL DESTACADA: ÓRBITA DOCENTE & SEÑOS -->
+    <section id="docentes" class="scroll-mt-24 p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white shadow-2xl relative overflow-hidden border border-indigo-500/20">
+      
+      <!-- Resplandores de luz de fondo -->
+      <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-purple-500/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -top-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-      <!-- SECCIÓN EVENTOS -->
-      <section id="eventos" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
-        <div class="max-w-xl mb-6 sm:mb-8">
-          <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
-            Fases de <span class="italic text-indigo-600">Celebración</span>
-          </h2>
-          <p class="text-slate-500 text-sm mt-2 font-light leading-relaxed">
-            Papelería fina y detalles completamente personalizados para eventos que merecen ser recordados para siempre.
-          </p>
-        </div>
+      <!-- Encabezado de la sección -->
+      <div class="max-w-2xl mb-12 relative z-10">
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest px-3.5 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/30 mb-3 shadow-inner">
+          <span>✨</span> Espacio Exclusivo
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-serif font-normal text-white tracking-wide">
+          Órbita <span class="italic text-amber-300">Docente</span>
+        </h2>
+        <p class="text-indigo-200/80 text-sm mt-3 font-light leading-relaxed">
+          Diseñado con amor para maestras y educadores. Herramientas físicas e imprimibles en PDF para organizar el aula, calificar con ternura e inspirar todos los días.
+        </p>
+      </div>
+      
+      <!-- Grilla de Tarjetas Cristalinas (Glassmorphism) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
         
-        <div class="flex sm:grid overflow-x-auto sm:overflow-visible snap-x snap-mandatory sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-4 sm:pb-0 scrollbar-hide">
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard 
-              id="invitaciones"
-              title="Invitaciones Especiales"
-              description="Diseños únicos en papeles texturados con detalles en foil dorado o plata metalizado."
-              badge="Premium"
-              imageSrc="/catalog/invitaciones.jpeg"
-              hoverImageSrc="/catalog/invitaciones.jpeg"
-              subProducts={[
-                { name: "Tarjetas de Invitación", desc: "Impresión en papeles especiales, texturados o vegetales de alta calidad." },
-                { name: "Sobres artesanales", desc: "Con o sin liner personalizado impreso en el interior." }
-              ]}
-            />
+        <!-- TARJETA 1 -->
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg">
+          <div>
+            <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
+              <span class="absolute top-2.5 left-2.5 z-10 text-[10px] font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-amber-300 px-2.5 py-1 rounded-md border border-amber-300/20">
+                Impreso
+              </span>
+              <img src="/catalog/cuaderno.jpeg" alt="Planificadores" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            </div>
+            <h3 class="text-lg font-serif font-medium text-white mb-2">Planificadores & Agendas</h3>
+            <p class="text-indigo-200/70 text-xs font-light leading-relaxed mb-4">
+              Organización integral con asistencia, notas y grilla de clases. Tapa dura personalizada.
+            </p>
           </div>
-          
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard 
-              id="souvenirs"
-              title="Tags & Detalles"
-              description="Pequeños complementos que hacen la diferencia: indicadores de sitio, menús impresos y etiquetas colgantes."
-              badge="Eventos"
-              imageSrc="/catalog/tags_1.jpeg"
-              hoverImageSrc="https://images.unsplash.com/photo-1542435503-956c469947f6?q=80&w=600"
-            />
-          </div>
-
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="event-carteleria"
-              title="Carteles de Bienvenida & Seating Plan"
-              description="Cartelería rígida e impresa para recepción de invitados, organigramas de mesas o menús gigantes."
-              badge="Ambientación"
-              imageSrc="/catalog/invitaciones.jpeg"
-              hoverImageSrc="/catalog/tags_1.jpeg"
-              galleryImages={[
-                "/catalog/invitaciones.jpeg",
-                "/catalog/tags_1.jpeg"
-              ]}
-              subProducts={[
-                { name: "Cartel Montado en Foam Board", desc: "Rígido, liviano y listo para colocar en atriles." },
-                { name: "Seating Plan de Mesas", desc: "Diseño organizado por sectores o números de mesa." },
-                { name: "Carteles Indicadores", desc: "Flechas, frascos o indicaciones de barra e ingreso." }
-              ]}
-            />
-          </div>
-
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="event-menus"
-              title="Menús de Mesa & Números de Sector"
-              description="Cartas individuales, menús por mesa e identificadores de platos o mesas de dulces."
-              badge="Mesa Especial"
-              imageSrc="/catalog/tags_1.jpeg"
-              hoverImageSrc="/catalog/invitaciones.jpeg"
-              galleryImages={[
-                "/catalog/tags_1.jpeg",
-                "/catalog/invitaciones.jpeg"
-              ]}
-              subProducts={[
-                { name: "Menú Individual Alargado", desc: "Diseño elegante en papel acartonado con detalles especiales." },
-                { name: "Número de Mesa Carpa", desc: "Soporte autoportante impreso frente y dorso." },
-                { name: "Tags para Copas o Bebidas", desc: "Detalles personalizados para sorbetes o identificación." }
-              ]}
-            />
-          </div>
-
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="event-souvenirs"
-              title="Tags & Envoltorios para Souvenirs"
-              description="Kits de papelería diseñados para coordinar los regalos y recuerdos del evento."
-              badge="Recuerdos"
-              imageSrc="/catalog/tags_1.jpeg"
-              hoverImageSrc="/catalog/invitaciones.jpeg"
-              galleryImages={[
-                "/catalog/tags_1.jpeg",
-                "/catalog/invitaciones.jpeg"
-              ]}
-              subProducts={[
-                { name: "Tags Calados para Souvenir", desc: "Con perforación e hilo de yute o cinta bebé." },
-                { name: "Cajitas Kraft Armables", desc: "Para golosinas, velas o detalles gastronómicos." },
-                { name: "Stickers de Cierre de Bolsa", desc: "Adhesivos redondos o rectangulares personalizados." }
-              ]}
-            />
-          </div>
-
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="event-firmas"
-              title="Libro de Firmas & Mensajes"
-              description="Álbumes y libros artesanales con encuadernación especial para que los invitados dejen sus dedicatorias."
-              badge="Artesanal"
-              imageSrc="/catalog/invitaciones.jpeg"
-              hoverImageSrc="/catalog/tags_1.jpeg"
-              galleryImages={[
-                "/catalog/invitaciones.jpeg",
-                "/catalog/tags_1.jpeg"
-              ]}
-              subProducts={[
-                { name: "Libro Tapa Dura con Espiral", desc: "Hojas de alto gramaje aptas para fotos e insumos pegados." },
-                { name: "Libro Cosido a Mano", desc: "Encuadernación artesanal con tapas enteladas o laminadas." }
-              ]}
-            />
-          </div>
+          <a href="#contacto" class="w-full text-center py-2.5 px-4 rounded-xl bg-amber-300/10 hover:bg-amber-300/20 text-amber-300 border border-amber-300/30 text-xs font-semibold tracking-wider uppercase transition-all">
+            Cotizar esta línea
+          </a>
         </div>
-      </section>
 
-      <!-- SECCIÓN TIENDA -->
-      <section id="tienda" class="scroll-mt-24 orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out">
-        <div class="max-w-xl mb-6 sm:mb-8">
-          <h2 class="text-2xl sm:text-3xl font-normal text-indigo-950">
-            La Tienda de la <span class="italic text-indigo-600">Luna</span>
-          </h2>
-          <p class="text-slate-500 text-sm mt-2 font-light leading-relaxed">
-            Nuestra línea exclusiva de papelería de diseño lista para usar, organizar tus días o hacer un regalo especial.
-          </p>
+        <!-- TARJETA 2 -->
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg">
+          <div>
+            <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
+              <span class="absolute top-2.5 left-2.5 z-10 text-[10px] font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-amber-300 px-2.5 py-1 rounded-md border border-amber-300/20">
+                Impreso
+              </span>
+              <img src="/catalog/sticker_5.jpeg" alt="Stickers motivacionales" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            </div>
+            <h3 class="text-lg font-serif font-medium text-white mb-2">Stickers Motivacionales</h3>
+            <p class="text-indigo-200/70 text-xs font-light leading-relaxed mb-4">
+              Planchas A4 impresas con mensajes hermosos para evaluar cuadernos con ternura.
+            </p>
+          </div>
+          <a href="#contacto" class="w-full text-center py-2.5 px-4 rounded-xl bg-amber-300/10 hover:bg-amber-300/20 text-amber-300 border border-amber-300/30 text-xs font-semibold tracking-wider uppercase transition-all">
+            Cotizar esta línea
+          </a>
         </div>
+
+        <!-- TARJETA 3: DESCARGABLES PDF -->
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg">
+          <div>
+            <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
+              <span class="absolute top-2.5 left-2.5 z-10 text-[10px] font-bold uppercase tracking-wider bg-amber-400 text-slate-950 px-2.5 py-1 rounded-md font-semibold">
+                ⚡ Descarga PDF
+              </span>
+              <img src="/catalog/libreta.jpeg" alt="Recursos PDF" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            </div>
+            <h3 class="text-lg font-serif font-medium text-white mb-2">Recursos Digitales en PDF</h3>
+            <p class="text-indigo-200/70 text-xs font-light leading-relaxed mb-4">
+              Archivos listos para descargar e imprimir. Efemérides, carteles de aula y fichas por grado.
+            </p>
+          </div>
+          <button id="btn-open-pdf-modal" type="button" class="w-full text-center py-2.5 px-4 rounded-xl bg-amber-300 text-slate-950 hover:bg-amber-200 text-xs font-bold tracking-wider uppercase transition-all shadow-md cursor-pointer">
+            Ver PDFs Disponibles
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: PARA EVENTOS -->
+    <section id="eventos" class="scroll-mt-24">
+      <div class="max-w-xl mb-8">
+        <h2 class="text-3xl font-normal text-indigo-950">Fases de <span class="italic text-indigo-600">Celebración</span></h2>
+        <p class="text-slate-500 text-sm mt-2 font-light">Papelería fina y detalles completamente personalizados para eventos que merecen ser recordados para siempre.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-fit">
+        <ProductCard 
+          id="invitaciones"
+          title="Invitaciones Especiales"
+          description="Diseños 100% personalizados en papeles de alta calidad para bodas, XV años y cumpleaños."
+          badge="Premium"
+          imageSrc="/catalog/invitaciones.jpeg"
+          hoverImageSrc="/catalog/invitaciones.jpeg"
+          subProducts={[
+            { name: "Tarjetas de Invitación", desc: "Impresión en papeles especiales, simple o doble faz." },
+            { name: "Sobres artesanales", desc: "Con o sin liner personalizado impreso en el interior." }
+          ]}
+        />
         
-        <div class="flex sm:grid overflow-x-auto sm:overflow-visible snap-x snap-mandatory sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-4 sm:pb-0 scrollbar-hide">
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard 
-              id="cuadernos"
-              title="Cuadernos Artesanales"
-              description="Anillados o con costura expuesta a mano. Hojas punticuladas ideales para bullet journal o bocetos."
-              badge="Línea Propia"
-              imageSrc="/catalog/cuaderno.jpeg"
-              hoverImageSrc="/catalog/cuaderno.jpeg"
-              subProducts={[
-                { name: "Cuadernos A5 Anillados", desc: "Tapa dura laminada, cierre elástico y sobre interno." },
-                { name: "Bitácoras de viaje", desc: "Encuadernación flexible y lomo cosido a la vista." }
-              ]}
-            />
-          </div>
-          
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard 
-              id="planners"
-              title="Agendas & Planners"
-              description="Organizadores perpetuos y blocs de notas semanales para despejar la mente y estructurar tus metas."
-              badge="Diseño"
-              imageSrc="/catalog/libreta.jpeg"
-              hoverImageSrc="/catalog/libreta.jpeg"
-              galleryImages={[
-                "/catalog/sticker_5.jpeg",
-                "/catalog/sticker_1.jpeg",
-                "/catalog/tarjetas_profesionales.jpeg"
-              ]}
-              subProducts={[
-                { name: "Agendas Personalizadas", desc: "Tapa dura laminada, cierre elástico y sobre interno." },
-                { name: "Bitácoras de viaje", desc: "Encuadernación flexible y lomo cosido a la vista." }
-              ]}
-            />
-          </div>
+        <ProductCard 
+          id="souvenirs"
+          title="Tags & Detalles"
+          description="Pequeños complementos que hacen la diferencia: indicadores de sitio, menús impresos y tarjetas de recuerdo."
+          badge="Eventos"
+          imageSrc="https://images.unsplash.com/photo-1513151233558-d860c5398git176?q=80&w=600"
+          hoverImageSrc="https://images.unsplash.com/photo-1542435503-956c469947f6?q=80&w=600"
+        />
+      </div>
+    </section>
 
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="shop-planners"
-              title="Planners de Escritorio & Bloques de Notas"
-              description="Organizadores semanales o mensuales anillados o blocks bloc de notas arrancables."
-              badge="Organización"
-              imageSrc="/catalog/libreta.jpeg"
-              hoverImageSrc="/catalog/cuaderno.jpeg"
-              galleryImages={[
-                "/catalog/libreta.jpeg",
-                "/catalog/cuaderno.jpeg"
-              ]}
-              subProducts={[
-                { name: "Planner Semanal A4 Acolchado", desc: "Block de 50 hojas abrochadas o encoladas para escritorio." },
-                { name: "Organizadores Diarios To-Do", desc: "Formato alargado con listas de tareas y hábitos." }
-              ]}
-            />
-          </div>
+    <!-- SECCIÓN 4: LÍNEA PROPIA -->
+    <section id="tienda" class="scroll-mt-24 mb-12">
+      <div class="max-w-xl mb-8">
+        <h2 class="text-3xl font-normal text-indigo-950">La Tienda de la <span class="italic text-indigo-600">Luna</span></h2>
+        <p class="text-slate-500 text-sm mt-2 font-light">Nuestra línea exclusiva de papelería de diseño lista para usar, organizar tus días o hacer un regalo especial.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-fit">
+        <ProductCard 
+          id="cuadernos"
+          title="Cuadernos Artesanales"
+          description="Anillados con tapa dura laminada. Hojas punteadas, rayadas o lisas para organizarte como quieras."
+          badge="Línea Propia"
+          imageSrc="/catalog/cuaderno.jpeg"
+          hoverImageSrc="/catalog/cuaderno.jpeg"
+          subProducts={[
+            { name: "Cuadernos A5 Anillados", desc: "Tapa dura laminada, cierre elástico y sobre interno." },
+            { name: "Bitácoras de viaje", desc: "Encuadernación flexible ideal para trasladar." }
+          ]}
+        />
+        
+        <ProductCard 
+          id="planners"
+          title="Agendas & Planners"
+          description="Organizadores perpetuos y blocs de notas semanales para estructurar tus metas día a día."
+          badge="Diseño"
+          imageSrc="/catalog/libreta.jpeg"
+          hoverImageSrc="/catalog/libreta.jpeg"
+          subProducts={[
+            { name: "Agendas Personalizadas", desc: "Tapa dura laminada, cierre elástico y organizador mensual." },
+            { name: "Planners Semanales de escritorio", desc: "Formato anillado o en bloc para escritorio." }
+          ]}
+        />
+      </div>
+    </section>
+  </main>
 
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="shop-recetarios"
-              title="Recetarios & Bitácoras de Viaje"
-              description="Cuadernos temáticos diseñados para registrar recetas familiares, itinerarios o recuerdos."
-              badge="Edición Especial"
-              imageSrc="/catalog/cuaderno.jpeg"
-              hoverImageSrc="/catalog/libreta.jpeg"
-              galleryImages={[
-                "/catalog/cuaderno.jpeg",
-                "/catalog/libreta.jpeg"
-              ]}
-              subProducts={[
-                { name: "Recetario Tapa Dura Anillado", desc: "Con divisiones por tipo de plato y bolsillo interno." },
-                { name: "Bitácora de Viajes", desc: "Páginas mixtas para escribir, pegar pasajes y recuerdos." }
-              ]}
-            />
-          </div>
+  <!-- SECCIÓN PREGUNTAS FRECUENTES -->
+  <Faq />
 
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="shop-laminas"
-              title="Láminas Ilustradas & Prints A4/A3"
-              description="Impresiones de alta resolución en papeles de gran gramaje con arte propio o ilustraciones personalizadas."
-              badge="Decoración"
-              imageSrc="/catalog/libreta.jpeg"
-              hoverImageSrc="/catalog/cuaderno.jpeg"
-              galleryImages={[
-                "/catalog/libreta.jpeg",
-                "/catalog/cuaderno.jpeg"
-              ]}
-              subProducts={[
-                { name: "Lámina Ilustración Texturada", desc: "Impresión sobre papel obra o fotográfico mate de 240g." },
-                { name: "Set de Láminas Temáticas", desc: "Combinaciones de 3 láminas para cuadros de pared." }
-              ]}
-            />
-          </div>
-
-          <div class="min-w-[85vw] sm:min-w-0 snap-center">
-            <ProductCard
-              id="shop-memopads"
-              title="Blocks de Notas & Notitas Adhesivas"
-              description="Papelería complementaria para escritorios, agendas y cuadernos."
-              badge="Papelería"
-              imageSrc="/catalog/cuaderno.jpeg"
-              hoverImageSrc="/catalog/libreta.jpeg"
-              galleryImages={[
-                "/catalog/cuaderno.jpeg",
-                "/catalog/libreta.jpeg"
-              ]}
-              subProducts={[
-                { name: "Block Memopad 10x10cm", desc: "50 hojas de papel de alto gramaje arrancables." },
-                { name: "Mini Sticky Notes Ilustradas", desc: "Banderitas y notas adhesivas con diseños ilustrados." }
-              ]}
-            />
-          </div>
-        </div>
-      </section>
+  <!-- FOOTER CON SOMBRA DE PAPEL SOBREPUESTO -->
+  <div class="paper-footer-wrapper relative z-20">
+    
+    <!-- SEPARADOR ESTILO PAPEL RASGADO -->
+    <div class="w-full overflow-hidden leading-[0] rotate-180 bg-transparent -mb-1">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-full h-12 fill-white/95">
+        <path d="M0,0 L1200,0 L1200,20 L1180,45 L1150,25 L1100,55 L1060,30 L1020,50 L980,20 L940,45 L900,15 L850,50 L800,25 L750,55 L700,30 L650,50 L600,20 L550,45 L500,15 L450,55 L400,25 L350,50 L300,20 L250,45 L200,15 L150,55 L100,30 L50,50 L0,20 Z"></path>
+      </svg>
     </div>
 
-    <div class="orbit-card opacity-0 rotate-x-3 translate-y-12 scale-95 transition-all duration-500 ease-out my-12">
-      <Faq />
-    </div>
+    <!-- FOOTER LIMPIO E INTEGRADO -->
+    <footer id="contacto" class="bg-white/95 backdrop-blur-md text-indigo-950 pb-16 pt-4 px-6 relative">
+      <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
+        
+        <!-- LOGO INTEGRADO -->
+        <div class="mb-5 flex justify-center">
+          <img 
+            src="/logo.png" 
+            alt="Ideas de la Luna Logo" 
+            class="h-20 w-auto object-contain transition-transform duration-300 hover:scale-105 opacity-90" 
+          />
+        </div>
 
-    <div class="paper-footer-wrapper relative z-20 mt-12 sm:mt-16">
-      <div class="w-full overflow-hidden leading-[0] rotate-180 bg-transparent -mb-1">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-full h-8 sm:h-12 fill-white/95">
-          <path d="M0,0 L1200,0 L1200,20 L1180,45 L1150,25 L1100,55 L1060,30 L1020,50 L980,20 L940,45 L900,15 L850,50 L800,25 L750,55 L700,30 L650,50 L600,20 L550,45 L500,15 L450,55 L400,25 L350,50 L300,20 L250,45 L200,15 L150,55 L100,30 L50,50 L0,20 Z"></path>
-        </svg>
+        <!-- TÍTULO Y DESCRIPCIÓN -->
+        <h2 class="text-3xl font-serif mb-2 text-indigo-950 font-medium tracking-wide">
+          ¿Tenés una idea fuera de órbita?
+        </h2>
+        <p class="text-slate-500 text-sm max-w-sm mx-auto font-light mb-8 leading-relaxed">
+          Hablemos de tu proyecto y creemos algo mágico juntos.
+        </p>
+        
+        <!-- BOTONES DE CONTACTO -->
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-auto">
+          
+          <!-- BOTÓN WHATSAPP -->
+          <a 
+            href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Vi%20tu%20web%20y%20me%20gustar%C3%ADa%20hacerte%20una%20consulta." 
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto inline-flex items-center justify-center bg-[#10B981] hover:bg-[#059669] text-white font-semibold px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5 hover:-translate-y-0.5"
+          >
+            <span class="text-base">💬</span>
+            Escríbenos por WhatsApp
+          </a>
+
+          <!-- BOTÓN INSTAGRAM -->
+          <a 
+            href="https://www.instagram.com/ideas.de.la.luna/" 
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-[#A855F7] to-[#EC4899] hover:opacity-95 text-white font-semibold px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5 hover:-translate-y-0.5"
+          >
+            <span class="text-base">📸</span>
+            Seguinos en Instagram
+          </a>
+
+        </div>
+
+        <!-- COPYRIGHT -->
+        <p class="text-xs text-slate-400 mt-14 font-light">
+          © 2026 Ideas de la Luna. Todos los derechos reservados.
+        </p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- CÓDIGO DEL MODAL DE RECURSOS DIGITALES -->
+  <div id="pdf-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300">
+    <div class="bg-slate-900 border border-indigo-500/30 rounded-3xl p-6 sm:p-8 max-w-xl w-full text-white shadow-2xl relative overflow-hidden">
+      
+      <!-- Botón Cerrar (X) -->
+      <button id="close-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer">
+        ✕
+      </button>
+
+      <!-- Encabezado del Modal -->
+      <div class="mb-6">
+        <span class="text-xs font-semibold uppercase tracking-widest text-amber-300 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
+          ⚡ Descarga Inmediata
+        </span>
+        <h3 class="text-2xl font-serif font-normal mt-3 text-white">Catálogo de Recursos PDF</h3>
+        <p class="text-indigo-200/70 text-xs mt-1 font-light">Elegí el kit imprimible que necesitas para tu aula.</p>
       </div>
 
-      <footer id="contacto" class="bg-white/95 backdrop-blur-md text-indigo-950 pb-12 pt-4 px-4 sm:px-6 relative">
-        <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
-          
-          <div class="mb-4 sm:mb-5 flex justify-center">
-            <img 
-              src="/logo.png" 
-              alt="Ideas de la Luna Logo" 
-              class="h-16 sm:h-20 w-auto object-contain transition-transform duration-300 hover:scale-105 opacity-90" 
-            />
+      <!-- Lista de Productos Digitales -->
+      <div class="space-y-3.5 max-h-[60vh] overflow-y-auto pr-1">
+        
+        <!-- ITEM 1 -->
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between gap-4 hover:border-amber-300/30 transition-all">
+          <div>
+            <h4 class="font-medium text-sm text-white">Kit Efemérides & Actos Escolares</h4>
+            <p class="text-xs text-indigo-200/60 mt-0.5">Láminas, guirnaldas y fichas de actividades en alta resolución.</p>
           </div>
-
-          <h2 class="text-2xl sm:text-3xl font-serif mb-2 text-indigo-950 font-medium tracking-wide">
-            ¿Tenés una idea fuera de órbita?
-          </h2>
-          <p class="text-slate-500 text-xs sm:text-sm max-w-sm mx-auto font-light mb-6 sm:mb-8 leading-relaxed">
-            Hablemos de tu proyecto y creemos algo mágico juntos.
-          </p>
-          
-          <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full sm:w-auto">
-            <a 
-              href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Vi%20tu%20web%20y%20me%20gustar%C3%ADa%20hacerte%20una%20consulta." 
-              target="_blank"
-              rel="noopener noreferrer"
-              class="w-full sm:w-auto inline-flex items-center justify-center bg-[#10B981] hover:bg-[#059669] text-white font-semibold px-6 sm:px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5"
-            >
-              <span class="text-base">💬</span>
-              Escríbenos por WhatsApp
-            </a>
-
-            <a 
-              href="https://www.instagram.com/ideas.de.la.luna/" 
-              target="_blank"
-              rel="noopener noreferrer"
-              class="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-[#A855F7] to-[#EC4899] hover:opacity-95 text-white font-semibold px-6 sm:px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5"
-            >
-              <span class="text-base">📸</span>
-              Seguinos en Instagram
-            </a>
-          </div>
-
-          <p class="text-xs text-slate-400 mt-10 sm:mt-14 font-light">
-            © 2026 Ideas de la Luna. Todos los derechos reservados.
-          </p>
+          <a 
+            href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Me%20interesa%20adquirir%20el%20Kit%20Efem%C3%A9rides%20en%20PDF." 
+            target="_blank" 
+            class="shrink-0 bg-amber-300 hover:bg-amber-200 text-slate-950 text-xs font-bold px-3.5 py-2 rounded-xl transition-all"
+          >
+            Solicitar
+          </a>
         </div>
-      </footer>
+
+        <!-- ITEM 2 -->
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between gap-4 hover:border-amber-300/30 transition-all">
+          <div>
+            <h4 class="font-medium text-sm text-white">Kit Organización de Aula (Inicial / Primaria)</h4>
+            <p class="text-xs text-indigo-200/60 mt-0.5">Calendarios, carteles de clima, cumpleaños y abecedarios.</p>
+          </div>
+          <a 
+            href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Me%20interesa%20adquirir%20el%20Kit%20Organizaci%C3%B3n%20de%20Aula%20en%20PDF." 
+            target="_blank" 
+            class="shrink-0 bg-amber-300 hover:bg-amber-200 text-slate-950 text-xs font-bold px-3.5 py-2 rounded-xl transition-all"
+          >
+            Solicitar
+          </a>
+        </div>
+
+        <!-- ITEM 3: RECURSO GRATUITO / FREEBIE -->
+        <div class="p-4 rounded-2xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-between gap-4">
+          <div>
+            <span class="text-[10px] uppercase tracking-wider font-bold text-amber-300">Regalo de Bienvenida 🎁</span>
+            <h4 class="font-medium text-sm text-white mt-0.5">Plantilla de Seguimiento Pedagógico</h4>
+            <p class="text-xs text-indigo-200/60 mt-0.5">Ficha de muestra lista para imprimir en A4.</p>
+          </div>
+          <a 
+            href="/downloads/muestra-docente-ideas-de-la-luna.pdf" 
+            download 
+            class="shrink-0 bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all"
+          >
+            Descargar Gratis
+          </a>
+        </div>
+
+      </div>
+
     </div>
-  </main>
+  </div>
+
+  <GalleryModal />
 </Layout>
 
 <script>
-  function revealCards() {
-    const cards = document.querySelectorAll('.orbit-card');
-    
-    // Si la API de IntersectionObserver está soportada
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.remove('opacity-0', 'rotate-x-3', 'translate-y-12', 'scale-95');
-            entry.target.classList.add('opacity-100', 'rotate-x-0', 'translate-y-0', 'scale-100');
-          }
-        });
-      }, { 
-        threshold: 0.01 // Se activa con apenas asomar un 1% en pantalla
-      });
+  const openBtn = document.getElementById('btn-open-pdf-modal');
+  const closeBtn = document.getElementById('close-modal');
+  const modal = document.getElementById('pdf-modal');
 
-      cards.forEach(el => observer.observe(el));
-    } else {
-      // Fallback por si falla el observer
-      cards.forEach(el => {
-        el.classList.remove('opacity-0', 'rotate-x-3', 'translate-y-12', 'scale-95');
-        el.classList.add('opacity-100');
-      });
-    }
+  if (openBtn && closeBtn && modal) {
+    openBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    });
   }
-
-  // Ejecutar al cargar y al cambiar de pestaña en Astro
-  document.addEventListener('DOMContentLoaded', revealCards);
-  document.addEventListener('astro:page-load', revealCards);
-  revealCards();
 </script>
 
 <style>
-  .perspective-container {
-    perspective: 1200px;
-  }
-  
-  .rotate-x-3 {
-    transform: perspective(1200px) rotateX(4deg) translateY(3rem) scale(0.96);
-  }
-
-  .rotate-x-0 {
-    transform: perspective(1200px) rotateX(0deg) translateY(0) scale(1);
-  }
-
+  /* Sombra profunda tipo capa de papel flotante para todo el footer */
   .paper-footer-wrapper {
     filter: 
       drop-shadow(0px -10px 18px rgba(35, 25, 60, 0.12)) 
       drop-shadow(0px -2px 6px rgba(35, 25, 60, 0.08));
-  }
-
-  /* Ocultar barra de desplazamiento para Chrome, Safari y Opera */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Ocultar barra de desplazamiento para IE, Edge y Firefox */
-  .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE y Edge */
-    scrollbar-width: none;  /* Firefox */
   }
 </style>
