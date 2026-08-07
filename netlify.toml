@@ -4,6 +4,5 @@
 
 [build.environment]
   NODE_VERSION = "20"
-  PUBLIC_SUPABASE_URL=https://uhbcqofxiltkapbbonoj.supabase.co/rest/v1/
-  PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-
+  PUBLIC_SUPABASE_URL = "https://uhbcqofxiltkapbbonoj.supabase.co"
+  PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoYmNxb2Z4aWx0a2FwYmJvbm9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1OTcyNDgsImV4cCI6MjEwMTE3MzI0OH0.98CwOtGPHuSQToe0SqyHw1cAWNfSo-zWLz1SD3g9YPc"
