@@ -26,3 +26,7 @@ pnpm-debug.log*
 # Archivos de metadatos de macOS
 ._*
 .DS_Store.env
+
+# Archivos de sistema macOS
+._*
+.DS_Store
