@@ -104,7 +104,7 @@
             </select>
           </div>
 
-          <!-- 5. CANTIDAD DE COPIAS (BLOQUE FALTANTE AGREGADO) -->
+          <!-- 5. CANTIDAD DE COPIAS -->
           <div>
             <label for="inputCopias" class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
               5. Cantidad de Copias
@@ -219,326 +219,336 @@
 <script>
   import { createClient } from '@supabase/supabase-js';
 
-  const audioCtx = () => {
-    try {
-      const Ctx = window.AudioContext || (window as any).webkitAudioContext;
-      return Ctx ? new Ctx() : null;
-    } catch {
-      return null;
-    }
-  };
-
-  const playClick = () => {
-    const ctx = audioCtx();
-    if (!ctx) return;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(450, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.04);
-
-    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.04);
-  };
-
-  const playSend = () => {
-    const ctx = audioCtx();
-    if (!ctx) return;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const now = ctx.currentTime;
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(320, now);
-    osc.frequency.exponentialRampToValueAtTime(880, now + 0.22);
-
-    gain.gain.setValueAtTime(0.12, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.22);
-  };
-
-  const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-  const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-  const db = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
-
-  function loadPdfLibrary() {
-    return new Promise((resolve, reject) => {
-      if ((window as any).pdfjsLib) {
-        resolve((window as any).pdfjsLib);
-        return;
+  if (typeof window !== 'undefined') {
+    const audioCtx = () => {
+      try {
+        const Ctx = window.AudioContext || (window as any).webkitAudioContext;
+        return Ctx ? new Ctx() : null;
+      } catch {
+        return null;
       }
-      const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
-      s.onload = () => {
-        const lib = (window as any).pdfjsLib || (window as any)['pdfjs-dist/build/pdf'];
-        if (lib) {
-          lib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-          resolve(lib);
-        } else {
-          reject();
-        }
-      };
-      s.onerror = reject;
-      document.head.appendChild(s);
-    });
-  }
-
-  function setup() {
-    const config = {
-      pages: 0,
-      fileName: '',
-      fileUrl: '',
-      duplex: false,
-      color: false,
-      binding: 'ninguno',
-      copies: 1
     };
 
-    const dropzone = document.getElementById('dropzone');
-    const input = document.getElementById('pdfInput') as HTMLInputElement;
-    const txtName = document.getElementById('fileName');
-    const txtStatus = document.getElementById('fileStatus');
-    const selectBinding = document.getElementById('selectEncuadernacion') as HTMLSelectElement;
-    const inputCopies = document.getElementById('inputCopias') as HTMLInputElement;
-    const btnWsp = document.getElementById('btnEnviarWhatsApp') as HTMLButtonElement;
-    const btnCopy = document.getElementById('btnCopyAlias');
+    const playClick = () => {
+      const ctx = audioCtx();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
 
-    if (!input) return;
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(450, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.04);
 
-    btnCopy?.addEventListener('click', () => {
-      navigator.clipboard.writeText('ideas.de.la.luna');
-      playClick();
-      btnCopy.textContent = '✅ ¡Copiado!';
-      setTimeout(() => btnCopy.textContent = '📋 Copiar', 2000);
-    });
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
 
-    input.addEventListener('change', (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) handleFile(file);
-    });
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.04);
+    };
 
-    if (dropzone) {
-      dropzone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropzone.classList.add('bg-indigo-100/50');
-      });
+    const playSend = () => {
+      const ctx = audioCtx();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const now = ctx.currentTime;
 
-      dropzone.addEventListener('dragleave', () => {
-        dropzone.classList.remove('bg-indigo-100/50');
-      });
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.22);
 
-      dropzone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropzone.classList.remove('bg-indigo-100/50');
-        const file = e.dataTransfer?.files[0];
-        if (file) {
-          playClick();
-          handleFile(file);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.22);
+    };
+
+    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+    const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+    const db = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
+
+    function loadPdfLibrary() {
+      return new Promise((resolve, reject) => {
+        if ((window as any).pdfjsLib) {
+          resolve((window as any).pdfjsLib);
+          return;
         }
-      });
-    }
-
-    async function handleFile(file: File) {
-      if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
-        alert('Por favor selecciona un archivo PDF.');
-        return;
-      }
-
-      if (txtName && txtStatus) {
-        txtName.textContent = `⏳ Leyendo "${file.name}"...`;
-        txtStatus.textContent = 'Procesando archivo...';
-      }
-
-      try {
-        const pdfjs = await loadPdfLibrary();
-        const buffer = await file.arrayBuffer();
-        const doc = await pdfjs.getDocument({ data: buffer }).promise;
-
-        config.pages = doc.numPages;
-        config.fileName = file.name;
-
-        if (txtName && txtStatus) {
-          txtName.textContent = `✅ ${file.name}`;
-          txtStatus.textContent = `${doc.numPages} págs. (Listo para encargar)`;
-        }
-
-        if (db) {
-          try {
-            const ext = file.name.split('.').pop();
-            const cleanName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
-            const path = `${Date.now()}_${cleanName}.${ext}`;
-
-            const { error } = await db.storage
-              .from('pdfs-cotizador')
-              .upload(path, file, { cacheControl: '3600', upsert: false });
-
-            if (!error) {
-              const { data } = db.storage.from('pdfs-cotizador').getPublicUrl(path);
-              config.fileUrl = data.publicUrl;
-            }
-          } catch {}
-        }
-
-        recalculate();
-      } catch (err) {
-        if (txtName && txtStatus) {
-          txtName.textContent = '❌ Error al procesar el PDF';
-          txtStatus.textContent = 'Intenta subir otro archivo PDF.';
-        }
-      }
-    }
-
-    document.querySelectorAll('.opt-impresion').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        playClick();
-        document.querySelectorAll('.opt-impresion').forEach((b) => {
-          b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
-          b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
-        });
-        btn.classList.add('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
-        btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
-
-        config.duplex = btn.getAttribute('data-type') === 'doble';
-        recalculate();
-      });
-    });
-
-    document.querySelectorAll('.opt-color').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        playClick();
-        document.querySelectorAll('.opt-color').forEach((b) => {
-          b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
-          b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
-        });
-        btn.classList.add('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
-        btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
-
-        config.color = btn.getAttribute('data-color') === 'color';
-        recalculate();
-      });
-    });
-
-    selectBinding?.addEventListener('change', (e) => {
-      playClick();
-      config.binding = (e.target as HTMLSelectElement).value;
-      recalculate();
-    });
-
-    inputCopies?.addEventListener('input', (e) => {
-      const val = parseInt((e.target as HTMLInputElement).value, 10);
-      config.copies = isNaN(val) || val < 1 ? 1 : val;
-      recalculate();
-    });
-
-    function getSheetUnitPrice(totalPages: number, isDuplex: boolean, isColor: boolean) {
-      if (totalPages < 100) {
-        if (!isColor) return isDuplex ? 180 : 150;
-        return isDuplex ? 270 : 220;
-      }
-      if (totalPages <= 500) {
-        if (!isColor) return isDuplex ? 160 : 120;
-        return isDuplex ? 250 : 200;
-      }
-      if (!isColor) return isDuplex ? 130 : 100;
-      return isDuplex ? 200 : 180;
-    }
-
-    function recalculate() {
-      if (!config.pages) return;
-
-      const copies = config.copies || 1;
-      const totalPages = config.pages * copies;
-
-      const sheetsPerDoc = config.duplex ? Math.ceil(config.pages / 2) : config.pages;
-      const totalSheets = sheetsPerDoc * copies;
-
-      const sheetPrice = getSheetUnitPrice(totalPages, config.duplex, config.color);
-      const printSubtotal = totalSheets * sheetPrice;
-
-      let bindingPrice = 0;
-      if (config.binding === 'anillado') {
-        const bindingRate = copies >= 10 ? 2500 : 3000;
-        bindingPrice = bindingRate * copies;
-      }
-
-      const total = printSubtotal + bindingPrice;
-
-      const elPages = document.getElementById('resPaginas');
-      const elSheets = document.getElementById('resHojas');
-      const elUnitPrice = document.getElementById('resCostoHoja');
-      const elBinding = document.getElementById('resEncuadernacion');
-      const elTotal = document.getElementById('totalPrecio');
-
-      if (elPages) {
-        elPages.textContent = copies > 1 
-          ? `${totalPages} páginas (${config.pages} págs. x ${copies} copias)`
-          : `${totalPages} páginas`;
-      }
-
-      if (elSheets) {
-        elSheets.textContent = copies > 1 
-          ? `${totalSheets} hojas (${sheetsPerDoc} hojas x ${copies} copias)`
-          : `${totalSheets} hojas`;
-      }
-
-      if (elUnitPrice) elUnitPrice.textContent = `$${sheetPrice} por hoja`;
-      if (elBinding) elBinding.textContent = `$${bindingPrice.toLocaleString('es-AR')}`;
-      if (elTotal) elTotal.textContent = `$${total.toLocaleString('es-AR')}`;
-
-      if (btnWsp) {
-        btnWsp.disabled = false;
-        btnWsp.classList.remove('bg-slate-300', 'cursor-not-allowed');
-        btnWsp.classList.add('bg-[#10B981]', 'hover:bg-[#059669]', 'hover:-translate-y-0.5');
-
-        const fileLink = config.fileUrl 
-          ? `⬇️ Link de descarga del PDF:\n${config.fileUrl}\n\n` 
-          : `📎 *(Te adjunto el archivo PDF por esta misma conversación)*\n\n`;
-
-        const detailsCount = copies > 1 
-          ? `*${totalPages}* (${config.pages} págs. x ${copies} copias - total ${totalSheets} hojas)`
-          : `*${totalPages}* (${totalSheets} hojas)`;
-
-        const bindingText = config.binding === 'anillado'
-          ? (copies >= 10 ? `Anillado con desc. mayorista (${copies} unidades)` : `Anillado (${copies} unidad${copies > 1 ? 'es' : ''})`)
-          : 'Sin encuadernar';
-
-        const msg = encodeURIComponent(
-          `Hola! Quiero encargar el siguiente pedido cotizado desde la web:\n\n` +
-          `📄 Archivo: *${config.fileName}*\n` +
-          `📊 Cantidad de páginas: ${detailsCount}\n` +
-          `🖨️ Modalidad: *${config.duplex ? 'Doble Faz' : 'Simple Faz'}*\n` +
-          `🎨 Tipo: *${config.color ? 'Color' : 'Blanco y Negro'}*\n` +
-          `📚 Acabado: *${bindingText}*\n\n` +
-          `💰 *Total a Abonar: $${total.toLocaleString('es-AR')}*\n` +
-          `💳 *Método de pago:* Transferencia (Alias: ideas.de.la.luna)\n\n` +
-          fileLink +
-          `¿Me confirman para realizar el pago y enviar el comprobante?`
-        );
-
-        btnWsp.onclick = () => {
-          playSend();
-          setTimeout(() => {
-            window.open(`https://api.whatsapp.com/send?phone=5493412141732&text=${msg}`, '_blank');
-          }, 150);
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
+        s.onload = () => {
+          const lib = (window as any).pdfjsLib || (window as any)['pdfjs-dist/build/pdf'];
+          if (lib) {
+            lib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+            resolve(lib);
+          } else {
+            reject();
+          }
         };
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    function setup() {
+      const config = {
+        pages: 0,
+        fileName: '',
+        fileUrl: '',
+        duplex: false,
+        color: false,
+        binding: 'ninguno',
+        copies: 1
+      };
+
+      const dropzone = document.getElementById('dropzone');
+      const input = document.getElementById('pdfInput') as HTMLInputElement;
+      const txtName = document.getElementById('fileName');
+      const txtStatus = document.getElementById('fileStatus');
+      const selectBinding = document.getElementById('selectEncuadernacion') as HTMLSelectElement;
+      const inputCopies = document.getElementById('inputCopias') as HTMLInputElement;
+      const btnWsp = document.getElementById('btnEnviarWhatsApp') as HTMLButtonElement;
+      const btnCopy = document.getElementById('btnCopyAlias');
+
+      if (!input) return;
+
+      btnCopy?.addEventListener('click', () => {
+        navigator.clipboard.writeText('ideas.de.la.luna');
+        playClick();
+        if (btnCopy) btnCopy.textContent = '✅ ¡Copiado!';
+        setTimeout(() => { if (btnCopy) btnCopy.textContent = '📋 Copiar'; }, 2000);
+      });
+
+      input.addEventListener('change', (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) handleFile(file);
+      });
+
+      if (dropzone) {
+        dropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropzone.classList.add('bg-indigo-100/50');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+          dropzone.classList.remove('bg-indigo-100/50');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('bg-indigo-100/50');
+          const file = e.dataTransfer?.files[0];
+          if (file) {
+            playClick();
+            handleFile(file);
+          }
+        });
+      }
+
+      async function handleFile(file: File) {
+        if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+          alert('Por favor selecciona un archivo PDF.');
+          return;
+        }
+
+        if (txtName && txtStatus) {
+          txtName.textContent = `⏳ Leyendo "${file.name}"...`;
+          txtStatus.textContent = 'Procesando archivo...';
+        }
+
+        try {
+          const pdfjs = await loadPdfLibrary();
+          const buffer = await file.arrayBuffer();
+          const doc = await pdfjs.getDocument({ data: buffer }).promise;
+
+          config.pages = doc.numPages;
+          config.fileName = file.name;
+
+          if (txtName && txtStatus) {
+            txtName.textContent = `☁️ Subiendo "${file.name}" a la nube...`;
+            txtStatus.textContent = 'Guardando archivo para la imprenta...';
+          }
+
+          if (db) {
+            try {
+              const ext = file.name.split('.').pop();
+              const cleanName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
+              const path = `${Date.now()}_${cleanName}.${ext}`;
+
+              const { error } = await db.storage
+                .from('pdfs-cotizador')
+                .upload(path, file, { cacheControl: '3600', upsert: false });
+
+              if (!error) {
+                const { data } = db.storage.from('pdfs-cotizador').getPublicUrl(path);
+                config.fileUrl = data.publicUrl;
+              }
+            } catch (err) {
+              console.error('Error de subida a Supabase:', err);
+            }
+          }
+
+          if (txtName && txtStatus) {
+            txtName.textContent = `✅ ${file.name}`;
+            txtStatus.textContent = `${doc.numPages} págs. (Listo para encargar)`;
+          }
+
+          recalculate();
+        } catch (err) {
+          console.error(err);
+          if (txtName && txtStatus) {
+            txtName.textContent = '❌ Error al procesar el PDF';
+            txtStatus.textContent = 'Intenta subir otro archivo PDF.';
+          }
+        }
+      }
+
+      document.querySelectorAll('.opt-impresion').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          playClick();
+          document.querySelectorAll('.opt-impresion').forEach((b) => {
+            b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
+            b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
+          });
+          btn.classList.add('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
+          btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
+
+          config.duplex = btn.getAttribute('data-type') === 'doble';
+          recalculate();
+        });
+      });
+
+      document.querySelectorAll('.opt-color').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          playClick();
+          document.querySelectorAll('.opt-color').forEach((b) => {
+            b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
+            b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
+          });
+          btn.classList.add('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
+          btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
+
+          config.color = btn.getAttribute('data-color') === 'color';
+          recalculate();
+        });
+      });
+
+      selectBinding?.addEventListener('change', (e) => {
+        playClick();
+        config.binding = (e.target as HTMLSelectElement).value;
+        recalculate();
+      });
+
+      inputCopies?.addEventListener('input', (e) => {
+        const val = parseInt((e.target as HTMLInputElement).value, 10);
+        config.copies = isNaN(val) || val < 1 ? 1 : val;
+        recalculate();
+      });
+
+      function getSheetUnitPrice(totalPages: number, isDuplex: boolean, isColor: boolean) {
+        if (totalPages < 100) {
+          if (!isColor) return isDuplex ? 180 : 150;
+          return isDuplex ? 270 : 220;
+        }
+        if (totalPages <= 500) {
+          if (!isColor) return isDuplex ? 160 : 120;
+          return isDuplex ? 250 : 200;
+        }
+        if (!isColor) return isDuplex ? 130 : 100;
+        return isDuplex ? 200 : 180;
+      }
+
+      function recalculate() {
+        if (!config.pages) return;
+
+        const copies = config.copies || 1;
+        const totalPages = config.pages * copies;
+
+        const sheetsPerDoc = config.duplex ? Math.ceil(config.pages / 2) : config.pages;
+        const totalSheets = sheetsPerDoc * copies;
+
+        const sheetPrice = getSheetUnitPrice(totalPages, config.duplex, config.color);
+        const printSubtotal = totalSheets * sheetPrice;
+
+        let bindingPrice = 0;
+        if (config.binding === 'anillado') {
+          const bindingRate = copies >= 10 ? 2500 : 3000;
+          bindingPrice = bindingRate * copies;
+        }
+
+        const total = printSubtotal + bindingPrice;
+
+        const elPages = document.getElementById('resPaginas');
+        const elSheets = document.getElementById('resHojas');
+        const elUnitPrice = document.getElementById('resCostoHoja');
+        const elBinding = document.getElementById('resEncuadernacion');
+        const elTotal = document.getElementById('totalPrecio');
+
+        if (elPages) {
+          elPages.textContent = copies > 1 
+            ? `${totalPages} páginas (${config.pages} págs. x ${copies} copias)`
+            : `${totalPages} páginas`;
+        }
+
+        if (elSheets) {
+          elSheets.textContent = copies > 1 
+            ? `${totalSheets} hojas (${sheetsPerDoc} hojas x ${copies} copias)`
+            : `${totalSheets} hojas`;
+        }
+
+        if (elUnitPrice) elUnitPrice.textContent = `$${sheetPrice} por hoja`;
+        if (elBinding) elBinding.textContent = `$${bindingPrice.toLocaleString('es-AR')}`;
+        if (elTotal) elTotal.textContent = `$${total.toLocaleString('es-AR')}`;
+
+        if (btnWsp) {
+          btnWsp.disabled = false;
+          btnWsp.classList.remove('bg-slate-300', 'cursor-not-allowed');
+          btnWsp.classList.add('bg-[#10B981]', 'hover:bg-[#059669]', 'hover:-translate-y-0.5');
+
+          const fileLink = config.fileUrl 
+            ? `⬇️ Link de descarga del PDF:\n${config.fileUrl}\n\n` 
+            : `📎 *(Te adjunto el archivo PDF por esta misma conversación)*\n\n`;
+
+          const detailsCount = copies > 1 
+            ? `*${totalPages}* (${config.pages} págs. x ${copies} copias - total ${totalSheets} hojas)`
+            : `*${totalPages}* (${totalSheets} hojas)`;
+
+          const bindingText = config.binding === 'anillado'
+            ? (copies >= 10 ? `Anillado con desc. mayorista (${copies} unidades)` : `Anillado (${copies} unidad${copies > 1 ? 'es' : ''})`)
+            : 'Sin encuadernar';
+
+          const msg = encodeURIComponent(
+            `Hola! Quiero encargar el siguiente pedido cotizado desde la web:\n\n` +
+            `📄 Archivo: *${config.fileName}*\n` +
+            `📊 Cantidad de páginas: ${detailsCount}\n` +
+            `🖨️ Modalidad: *${config.duplex ? 'Doble Faz' : 'Simple Faz'}*\n` +
+            `🎨 Tipo: *${config.color ? 'Color' : 'Blanco y Negro'}*\n` +
+            `📚 Acabado: *${bindingText}*\n\n` +
+            `💰 *Total a Abonar: $${total.toLocaleString('es-AR')}*\n` +
+            `💳 *Método de pago:* Transferencia (Alias: ideas.de.la.luna)\n\n` +
+            fileLink +
+            `¿Me confirman para realizar el pago y enviar el comprobante?`
+          );
+
+          btnWsp.onclick = () => {
+            playSend();
+            setTimeout(() => {
+              window.open(`https://api.whatsapp.com/send?phone=5493412141732&text=${msg}`, '_blank');
+            }, 150);
+          };
+        }
       }
     }
-  }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setup);
-  } else {
-    setup();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setup);
+    } else {
+      setup();
+    }
+    document.addEventListener('astro:page-load', setup);
   }
-  document.addEventListener('astro:page-load', setup);
 </script>
