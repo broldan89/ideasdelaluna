@@ -1,3 +1,9 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
 [build.environment]
-  PUBLIC_SUPABASE_URL = "https://TU_PROYECTO_REAL.supabase.co"
-  PUBLIC_SUPABASE_ANON_KEY = "eyJhbG...TU_KEY_REAL"
+  NODE_VERSION = "20"
+  PUBLIC_SUPABASE_URL=https://uhbcqofxiltkapbbonoj.supabase.co/rest/v1/
+  PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
