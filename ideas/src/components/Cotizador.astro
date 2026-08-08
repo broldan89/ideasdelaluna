@@ -1,6 +1,3 @@
----
----
-
 <section id="cotizador" class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16 scroll-mt-20">
   <div class="text-center mb-8 sm:mb-10">
     <span class="text-[11px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">
@@ -302,7 +299,8 @@
         duplex: false,
         color: false,
         binding: 'ninguno',
-        copies: 1
+        copies: 1,
+        calculatedTotal: 0
       };
 
       const dropzone = document.getElementById('dropzone');
@@ -350,62 +348,94 @@
       }
 
       async function handleFile(file: File) {
-        if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
-          alert('Por favor selecciona un archivo PDF.');
-          return;
-        }
+  if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+    alert('Por favor selecciona un archivo PDF.');
+    return;
+  }
 
-        if (txtName && txtStatus) {
-          txtName.textContent = `⏳ Leyendo "${file.name}"...`;
-          txtStatus.textContent = 'Procesando archivo...';
-        }
+  // 1. Bloquear el botón de WhatsApp mientras procesamos y subimos
+  if (btnWsp) {
+    btnWsp.disabled = true;
+    btnWsp.classList.add('bg-slate-300', 'cursor-not-allowed');
+    btnWsp.classList.remove('bg-[#10B981]', 'hover:bg-[#059669]');
+    btnWsp.textContent = '⏳ Subiendo PDF a la nube...';
+  }
 
-        try {
-          const pdfjs = await loadPdfLibrary();
-          const buffer = await file.arrayBuffer();
-          const doc = await pdfjs.getDocument({ data: buffer }).promise;
+  if (txtName && txtStatus) {
+    txtName.textContent = `⏳ Leyendo "${file.name}"...`;
+    txtStatus.textContent = 'Procesando páginas...';
+  }
 
-          config.pages = doc.numPages;
-          config.fileName = file.name;
+  try {
+    const pdfjs = await loadPdfLibrary();
+    const buffer = await file.arrayBuffer();
+    const doc = await pdfjs.getDocument({ data: buffer }).promise;
 
-          if (txtName && txtStatus) {
-            txtName.textContent = `☁️ Subiendo "${file.name}" a la nube...`;
-            txtStatus.textContent = 'Guardando archivo para la imprenta...';
-          }
+    config.pages = doc.numPages;
+    config.fileName = file.name;
+    config.fileUrl = ''; // Reiniciamos URL
 
-          if (db) {
-            try {
-              const ext = file.name.split('.').pop();
-              const cleanName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
-              const path = `${Date.now()}_${cleanName}.${ext}`;
+    if (txtName && txtStatus) {
+      txtName.textContent = `☁️ Subiendo "${file.name}" a la nube...`;
+      txtStatus.textContent = 'Guardando archivo en el servidor...';
+    }
 
-              const { error } = await db.storage
-                .from('pdfs-cotizador')
-                .upload(path, file, { cacheControl: '3600', upsert: false });
+    // 2. Subida AWAIT estricta a Supabase
+    let uploadOk = false;
 
-              if (!error) {
-                const { data } = db.storage.from('pdfs-cotizador').getPublicUrl(path);
-                config.fileUrl = data.publicUrl;
-              }
-            } catch (err) {
-              console.error('Error de subida a Supabase:', err);
-            }
-          }
+    if (db) {
+      const ext = file.name.split('.').pop();
+      const cleanName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
+      const path = `pdf_${Date.now()}_${cleanName}.${ext}`;
 
-          if (txtName && txtStatus) {
-            txtName.textContent = `✅ ${file.name}`;
-            txtStatus.textContent = `${doc.numPages} págs. (Listo para encargar)`;
-          }
+      const { data: uploadData, error: uploadError } = await db.storage
+        .from('pdfs-cotizador')
+        .upload(path, file, { cacheControl: '3600', upsert: true });
 
-          recalculate();
-        } catch (err) {
-          console.error(err);
-          if (txtName && txtStatus) {
-            txtName.textContent = '❌ Error al procesar el PDF';
-            txtStatus.textContent = 'Intenta subir otro archivo PDF.';
-          }
+      if (uploadError) {
+        alert(`Atención: El PDF se calculó pero no se pudo subir a la nube (${uploadError.message}). Revisa los permisos de Supabase Storage.`);
+      } else if (uploadData) {
+        const { data: publicUrlData } = db.storage
+          .from('pdfs-cotizador')
+          .getPublicUrl(uploadData.path);
+
+        if (publicUrlData?.publicUrl) {
+          config.fileUrl = publicUrlData.publicUrl;
+          uploadOk = true;
         }
       }
+    } else {
+      alert('Atención: No se pudo conectar con el servidor de archivos. Recargá la página e intentá de nuevo.');
+    }
+
+    if (!uploadOk) {
+      if (txtName && txtStatus) {
+        txtName.textContent = `⚠️ ${file.name}`;
+        txtStatus.textContent = 'No se pudo subir a la nube. Reintentá subiendo el archivo de nuevo.';
+      }
+      if (btnWsp) {
+        btnWsp.disabled = true;
+        btnWsp.textContent = '💬 Encargar por WhatsApp';
+      }
+      return;
+    }
+
+    if (txtName && txtStatus) {
+      txtName.textContent = `✅ ${file.name}`;
+      txtStatus.textContent = `${doc.numPages} págs. (PDF alojado en la nube)`;
+    }
+
+    // Recalculamos y habilitamos el botón
+    recalculate();
+
+  } catch (err) {
+    console.error('Error procesando el PDF:', err);
+    if (txtName && txtStatus) {
+      txtName.textContent = '❌ Error al procesar el PDF';
+      txtStatus.textContent = 'Intenta subir otro archivo.';
+    }
+  }
+}
 
       document.querySelectorAll('.opt-impresion').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -481,6 +511,7 @@
         }
 
         const total = printSubtotal + bindingPrice;
+        config.calculatedTotal = total;
 
         const elPages = document.getElementById('resPaginas');
         const elSheets = document.getElementById('resHojas');
@@ -509,36 +540,80 @@
           btnWsp.classList.remove('bg-slate-300', 'cursor-not-allowed');
           btnWsp.classList.add('bg-[#10B981]', 'hover:bg-[#059669]', 'hover:-translate-y-0.5');
 
-          const fileLink = config.fileUrl 
-            ? `⬇️ Link de descarga del PDF:\n${config.fileUrl}\n\n` 
-            : `📎 *(Te adjunto el archivo PDF por esta misma conversación)*\n\n`;
-
-          const detailsCount = copies > 1 
-            ? `*${totalPages}* (${config.pages} págs. x ${copies} copias - total ${totalSheets} hojas)`
-            : `*${totalPages}* (${totalSheets} hojas)`;
-
-          const bindingText = config.binding === 'anillado'
-            ? (copies >= 10 ? `Anillado con desc. mayorista (${copies} unidades)` : `Anillado (${copies} unidad${copies > 1 ? 'es' : ''})`)
-            : 'Sin encuadernar';
-
-          const msg = encodeURIComponent(
-            `Hola! Quiero encargar el siguiente pedido cotizado desde la web:\n\n` +
-            `📄 Archivo: *${config.fileName}*\n` +
-            `📊 Cantidad de páginas: ${detailsCount}\n` +
-            `🖨️ Modalidad: *${config.duplex ? 'Doble Faz' : 'Simple Faz'}*\n` +
-            `🎨 Tipo: *${config.color ? 'Color' : 'Blanco y Negro'}*\n` +
-            `📚 Acabado: *${bindingText}*\n\n` +
-            `💰 *Total a Abonar: $${total.toLocaleString('es-AR')}*\n` +
-            `💳 *Método de pago:* Transferencia (Alias: ideas.de.la.luna)\n\n` +
-            fileLink +
-            `¿Me confirman para realizar el pago y enviar el comprobante?`
-          );
-
-          btnWsp.onclick = () => {
+          btnWsp.onclick = async () => {
             playSend();
-            setTimeout(() => {
-              window.open(`https://api.whatsapp.com/send?phone=5493412141732&text=${msg}`, '_blank');
-            }, 150);
+            btnWsp.disabled = true;
+            btnWsp.textContent = '⏳ Generando orden...';
+
+            let orderCode = '';
+
+            if (db) {
+              try {
+                const subproductsData = [
+                  { label: "Páginas totales", value: totalPages },
+                  { label: "Hojas", value: totalSheets },
+                  { label: "Modalidad", value: config.duplex ? 'Doble Faz' : 'Simple Faz' },
+                  { label: "Tipo", value: config.color ? 'Color' : 'Blanco y Negro' },
+                  { label: "Acabado", value: config.binding === 'anillado' ? 'Anillado' : 'Sin encuadernar' },
+                  { label: "Copias", value: copies }
+                ];
+
+                const { data, error } = await db
+                  .from('orders')
+                  .insert([
+                    {
+                      product_title: `Imprenta: ${config.fileName}`,
+                      subproducts: subproductsData,
+                      total_price: config.calculatedTotal,
+                      pdf_url: config.fileUrl || null,
+                      status: 'Pendiente de Pago'
+                    }
+                  ])
+                  .select('order_code')
+                  .single();
+
+                if (!error && data) {
+                  orderCode = data.order_code;
+                } else if (error) {
+                  console.error('❌ Error insertando en DB:', error.message);
+                }
+              } catch (e) {
+                console.error("❌ Error guardando order:", e);
+              }
+            }
+
+            btnWsp.disabled = false;
+            btnWsp.innerHTML = '<span>💬</span> Encargar por WhatsApp';
+
+            const fileLink = (config.fileUrl && config.fileUrl.startsWith('http'))
+              ? `⬇️ Link del PDF subido:\n${config.fileUrl}\n\n` 
+              : `📎 *(Te adjunto el archivo PDF directamente por este chat)*\n\n`;
+
+            const detailsCount = copies > 1 
+              ? `*${totalPages}* (${config.pages} págs. x ${copies} copias - total ${totalSheets} hojas)`
+              : `*${totalPages}* (${totalSheets} hojas)`;
+
+            const bindingText = config.binding === 'anillado'
+              ? (copies >= 10 ? `Anillado con desc. mayorista (${copies} un.)` : `Anillado (${copies} un.)`)
+              : 'Sin encuadernar';
+
+            const headerCode = orderCode ? ` *#${orderCode}*` : '';
+
+            const msg = encodeURIComponent(
+              `¡Hola Ideas de la Luna! 🌙\n` +
+              `Quiero encargar mi pedido${headerCode}:\n\n` +
+              `📄 Archivo: *${config.fileName}*\n` +
+              `📊 Cantidad de páginas: ${detailsCount}\n` +
+              `🖨️ Modalidad: *${config.duplex ? 'Doble Faz' : 'Simple Faz'}*\n` +
+              `🎨 Tipo: *${config.color ? 'Color' : 'Blanco y Negro'}*\n` +
+              `📚 Acabado: *${bindingText}*\n\n` +
+              `💰 *Total a Abonar: $${total.toLocaleString('es-AR')}*\n` +
+              `💳 *Método de pago:* Transferencia (Alias: ideas.de.la.luna)\n\n` +
+              fileLink +
+              `¿Me confirman para realizar el pago y enviar el comprobante?`
+            );
+
+            window.open(`https://api.whatsapp.com/send?phone=5493412141732&text=${msg}`, '_blank');
           };
         }
       }

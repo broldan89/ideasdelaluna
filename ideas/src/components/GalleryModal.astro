@@ -14,10 +14,11 @@
         <p id="modal-subtitle" class="text-xs text-slate-500 font-light">Desliza para ver más opciones</p>
       </div>
       
-      <!-- BOTÓN CERRAR -->
+      <!-- BOTÓN CERRAR (Se agrega type="button" y z-index) -->
       <button 
         id="close-modal" 
-        class="w-9 h-9 rounded-full bg-slate-200/60 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition-colors text-lg font-bold"
+        type="button"
+        class="w-9 h-9 rounded-full bg-slate-200/60 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition-colors text-lg font-bold cursor-pointer relative z-10"
         aria-label="Cerrar galería"
       >
         ✕
@@ -38,14 +39,16 @@
       <!-- BOTONES NAVEGACIÓN (ANTERIOR / SIGUIENTE) -->
       <button 
         id="prev-slide" 
-        class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-indigo-950 shadow-lg flex items-center justify-center text-xl backdrop-blur-sm transition-all hover:scale-110"
+        type="button"
+        class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-indigo-950 shadow-lg flex items-center justify-center text-xl backdrop-blur-sm transition-all hover:scale-110 cursor-pointer z-10"
       >
         ❮
       </button>
 
       <button 
         id="next-slide" 
-        class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-indigo-950 shadow-lg flex items-center justify-center text-xl backdrop-blur-sm transition-all hover:scale-110"
+        type="button"
+        class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-indigo-950 shadow-lg flex items-center justify-center text-xl backdrop-blur-sm transition-all hover:scale-110 cursor-pointer z-10"
       >
         ❯
       </button>
@@ -60,33 +63,37 @@
 </div>
 
 <script>
-  // Lógica global para controlar el carrusel
   let currentImages: string[] = [];
   let currentIndex = 0;
 
-  const modal = document.getElementById('gallery-modal');
-  const modalImg = document.getElementById('modal-img') as HTMLImageElement;
-  const modalTitle = document.getElementById('modal-title');
-  const closeModalBtn = document.getElementById('close-modal');
-  const prevBtn = document.getElementById('prev-slide');
-  const nextBtn = document.getElementById('next-slide');
-  const dotsContainer = document.getElementById('modal-dots');
+  // Función para cerrar la galería
+  function closeModal() {
+    const modal = document.getElementById('gallery-modal');
+    if (modal) {
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }, 300);
+    }
+  }
 
   function updateSlide() {
+    const modalImg = document.getElementById('modal-img') as HTMLImageElement;
+    const dotsContainer = document.getElementById('modal-dots');
+    
     if (!modalImg || currentImages.length === 0) return;
     
-    // Efecto suave de cambio
     modalImg.style.opacity = '0';
     setTimeout(() => {
       modalImg.src = currentImages[currentIndex];
       modalImg.style.opacity = '1';
     }, 150);
 
-    // Actualizar estados de los dots
     if (dotsContainer) {
       Array.from(dotsContainer.children).forEach((dot, idx) => {
         if (idx === currentIndex) {
-          dot.className = "w-6 h-2.5 bg-indigo-600 rounded-full transition-all";
+          dot.className = "w-6 h-2.5 bg-indigo-600 rounded-full transition-all cursor-pointer";
         } else {
           dot.className = "w-2.5 h-2.5 bg-slate-300 hover:bg-slate-400 rounded-full transition-all cursor-pointer";
         }
@@ -95,12 +102,14 @@
   }
 
   function renderDots() {
+    const dotsContainer = document.getElementById('modal-dots');
     if (!dotsContainer) return;
     dotsContainer.innerHTML = '';
     currentImages.forEach((_, idx) => {
       const dot = document.createElement('button');
       dot.type = 'button';
-      dot.addEventListener('click', () => {
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
         currentIndex = idx;
         updateSlide();
       });
@@ -108,13 +117,16 @@
     });
   }
 
-  // Evento global para abrir el modal desde las tarjetas
+  // Evento para abrir la galería
   window.addEventListener('open-gallery', ((e: CustomEvent) => {
     const { title, images } = e.detail;
     if (!images || images.length === 0) return;
 
     currentImages = images;
     currentIndex = 0;
+
+    const modal = document.getElementById('gallery-modal');
+    const modalTitle = document.getElementById('modal-title');
 
     if (modalTitle) modalTitle.textContent = title;
     
@@ -128,37 +140,55 @@
     }
   }) as EventListener);
 
-  function closeModal() {
-    if (modal) {
-      modal.classList.add('opacity-0');
-      setTimeout(() => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }, 300);
+  // DELEGACIÓN GLOBAL DE CLICS (Atrapa la X sin importar cuándo se cargó)
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+
+    // Si el clic fue en la X o dentro del botón de cierre
+    if (target.closest('#close-modal')) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeModal();
+      return;
     }
-  }
 
-  closeModalBtn?.addEventListener('click', closeModal);
-  modal?.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
+    // Si el clic fue en el fondo oscuro del modal
+    const modal = document.getElementById('gallery-modal');
+    if (target === modal) {
+      closeModal();
+      return;
+    }
+
+    // Botón Anterior
+    if (target.closest('#prev-slide')) {
+      e.stopPropagation();
+      currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+      updateSlide();
+      return;
+    }
+
+    // Botón Siguiente
+    if (target.closest('#next-slide')) {
+      e.stopPropagation();
+      currentIndex = (currentIndex + 1) % currentImages.length;
+      updateSlide();
+      return;
+    }
   });
 
-  prevBtn?.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-    updateSlide();
-  });
-
-  nextBtn?.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % currentImages.length;
-    updateSlide();
-  });
-
-  // Teclas para navegación
+  // Teclas para cerrar/navegar
   window.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('gallery-modal');
     if (modal && !modal.classList.contains('hidden')) {
       if (e.key === 'Escape') closeModal();
-      if (e.key === 'ArrowLeft') prevBtn?.click();
-      if (e.key === 'ArrowRight') nextBtn?.click();
+      if (e.key === 'ArrowLeft') {
+        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+        updateSlide();
+      }
+      if (e.key === 'ArrowRight') {
+        currentIndex = (currentIndex + 1) % currentImages.length;
+        updateSlide();
+      }
     }
   });
 </script>
