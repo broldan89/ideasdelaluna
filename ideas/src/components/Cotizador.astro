@@ -313,6 +313,8 @@
       const btnCopy = document.getElementById('btnCopyAlias');
 
       if (!input) return;
+      if (input.dataset.cotizadorInit === 'true') return;
+      input.dataset.cotizadorInit = 'true';
 
       btnCopy?.addEventListener('click', () => {
         navigator.clipboard.writeText('ideas.de.la.luna');
@@ -575,10 +577,10 @@
                 if (!error && data) {
                   orderCode = data.order_code;
                 } else if (error) {
-                  console.error('❌ Error insertando en DB:', error.message);
+                  alert(`Atención: El pedido no se pudo guardar en el sistema (${error.message}). El mensaje de WhatsApp se va a enviar igual, pero avisá para registrar la orden manualmente.`);
                 }
               } catch (e) {
-                console.error("❌ Error guardando order:", e);
+                alert('Atención: El pedido no se pudo guardar en el sistema. El mensaje de WhatsApp se va a enviar igual, pero avisá para registrar la orden manualmente.');
               }
             }
 
