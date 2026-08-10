@@ -392,119 +392,123 @@
       }
 
       async function handleFile(file: File) {
-  const ext = getFileExtension(file);
-  if (!ALLOWED_EXTENSIONS.includes(ext)) {
-    alert(`Formato no admitido (.${ext || '?'}). Formatos aceptados: ${ALLOWED_EXTENSIONS.map(e => '.' + e).join(', ')}.`);
-    return;
-  }
+        const ext = getFileExtension(file);
+        if (!ALLOWED_EXTENSIONS.includes(ext)) {
+          alert(`Formato no admitido (.${ext || '?'}). Formatos aceptados: ${ALLOWED_EXTENSIONS.map(e => '.' + e).join(', ')}.`);
+          return;
+        }
 
-  const isPdf = isPdfFile(file);
+        const isPdf = isPdfFile(file);
 
-  // Reiniciamos estado relacionado al archivo anterior
-  config.pages = 0;
-  config.fileUrl = '';
-  if (inputPaginasManual) inputPaginasManual.value = '';
+        // Reiniciamos estado relacionado al archivo anterior
+        config.pages = 0;
+        config.fileUrl = '';
+        if (inputPaginasManual) inputPaginasManual.value = '';
 
-  // 1. Bloquear el botón de WhatsApp mientras procesamos y subimos
-  if (btnWsp) {
-    btnWsp.disabled = true;
-    btnWsp.classList.add('bg-slate-300', 'cursor-not-allowed');
-    btnWsp.classList.remove('bg-[#10B981]', 'hover:bg-[#059669]');
-    btnWsp.textContent = '⏳ Subiendo archivo a la nube...';
-  }
+        // 1. Bloquear el botón de WhatsApp mientras procesamos y subimos
+        if (btnWsp) {
+          btnWsp.disabled = true;
+          btnWsp.classList.add('bg-slate-300', 'cursor-not-allowed');
+          btnWsp.classList.remove('bg-[#10B981]', 'hover:bg-[#059669]');
+          btnWsp.textContent = '⏳ Subiendo archivo a la nube...';
+        }
 
-  if (txtName && txtStatus) {
-    txtName.textContent = `⏳ Leyendo "${file.name}"...`;
-    txtStatus.textContent = isPdf ? 'Procesando páginas...' : 'Preparando archivo...';
-  }
+        if (txtName && txtStatus) {
+          txtName.textContent = `⏳ Leyendo "${file.name}"...`;
+          txtStatus.textContent = isPdf ? 'Procesando páginas...' : 'Preparando archivo...';
+        }
 
-  try {
-    // Solo para PDF contamos páginas automáticamente con pdf.js
-    if (isPdf) {
-      const pdfjs = await loadPdfLibrary();
-      const buffer = await file.arrayBuffer();
-      const doc = await pdfjs.getDocument({ data: buffer }).promise;
-      config.pages = doc.numPages;
-      paginasManualWrapper?.classList.add('hidden');
-      if (inputPaginasManual) inputPaginasManual.required = false;
-    } else {
-      // Para el resto de los formatos (Word, Excel, PowerPoint, imágenes, etc.)
-      // no podemos contar páginas de forma confiable en el navegador,
-      // así que se le pide al cliente que indique la cantidad manualmente.
-      paginasManualWrapper?.classList.remove('hidden');
-      if (inputPaginasManual) inputPaginasManual.required = true;
-    }
+        try {
+          // Solo para PDF contamos páginas automáticamente con pdf.js
+          if (isPdf) {
+            const pdfjs = await loadPdfLibrary();
+            const buffer = await file.arrayBuffer();
+            const doc = await pdfjs.getDocument({ data: buffer }).promise;
+            config.pages = doc.numPages;
+            paginasManualWrapper?.classList.add('hidden');
+            if (inputPaginasManual) inputPaginasManual.required = false;
+          } else {
+            // Para otros formatos se ingresan páginas manualmente
+            paginasManualWrapper?.classList.remove('hidden');
+            if (inputPaginasManual) inputPaginasManual.required = true;
+          }
 
-    config.fileName = file.name;
+          config.fileName = file.name;
 
-    if (txtName && txtStatus) {
-      txtName.textContent = `☁️ Subiendo "${file.name}" a la nube...`;
-      txtStatus.textContent = 'Guardando archivo en el servidor...';
-    }
+          if (txtName && txtStatus) {
+            txtName.textContent = `☁️ Subiendo "${file.name}" a la nube...`;
+            txtStatus.textContent = 'Guardando archivo en el servidor...';
+          }
 
-    // 2. Subida AWAIT estricta a Supabase (vale para cualquier tipo de archivo)
-    let uploadOk = false;
+          // 2. Subida AWAIT estricta a Supabase
+          let uploadOk = false;
 
-    if (db) {
-      const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
-      const path = `archivo_${Date.now()}_${cleanName}`;
+          if (db) {
+            const fileExt = getFileExtension(file);
+            const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+            const cleanBase = baseName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const path = `archivo_${Date.now()}_${cleanBase}.${fileExt}`;
 
-      const { data: uploadData, error: uploadError } = await db.storage
-        .from('pdfs-cotizador')
-        .upload(path, file, { cacheControl: '3600', upsert: true });
+            const mimeType = file.type || 'application/octet-stream';
 
-      if (uploadError) {
-        alert(`Atención: el archivo se procesó pero no se pudo subir a la nube (${uploadError.message}). Revisa los permisos de Supabase Storage.`);
-      } else if (uploadData) {
-        const { data: publicUrlData } = db.storage
-          .from('pdfs-cotizador')
-          .getPublicUrl(uploadData.path);
+            const { data: uploadData, error: uploadError } = await db.storage
+              .from('pdfs-cotizador')
+              .upload(path, file, { 
+                cacheControl: '3600', 
+                upsert: true,
+                contentType: mimeType
+              });
 
-        if (publicUrlData?.publicUrl) {
-          config.fileUrl = publicUrlData.publicUrl;
-          uploadOk = true;
+            if (uploadError) {
+              alert(`Atención: el archivo se procesó pero no se pudo subir a la nube (${uploadError.message}). Revisa los permisos de Supabase Storage.`);
+            } else if (uploadData) {
+              const { data: publicUrlData } = db.storage
+                .from('pdfs-cotizador')
+                .getPublicUrl(uploadData.path);
+
+              if (publicUrlData?.publicUrl) {
+                config.fileUrl = publicUrlData.publicUrl;
+                uploadOk = true;
+              }
+            }
+          } else {
+            alert('Atención: No se pudo conectar con el servidor de archivos. Recargá la página e intentá de nuevo.');
+          }
+
+          if (!uploadOk) {
+            if (txtName && txtStatus) {
+              txtName.textContent = `⚠️ ${file.name}`;
+              txtStatus.textContent = 'No se pudo subir a la nube. Reintentá subiendo el archivo de nuevo.';
+            }
+            if (btnWsp) {
+              btnWsp.disabled = true;
+              btnWsp.textContent = '💬 Encargar por WhatsApp';
+            }
+            return;
+          }
+
+          if (isPdf) {
+            if (txtName && txtStatus) {
+              txtName.textContent = `✅ ${file.name}`;
+              txtStatus.textContent = `${config.pages} págs. (archivo alojado en la nube)`;
+            }
+            recalculate();
+          } else {
+            if (txtName && txtStatus) {
+              txtName.textContent = `✅ ${file.name}`;
+              txtStatus.textContent = 'Archivo alojado en la nube. Indicá la cantidad de páginas/hojas abajo.';
+            }
+            inputPaginasManual?.focus();
+          }
+
+        } catch (err) {
+          console.error('Error procesando el archivo:', err);
+          if (txtName && txtStatus) {
+            txtName.textContent = '❌ Error al procesar el archivo';
+            txtStatus.textContent = 'Intenta subir otro archivo.';
+          }
         }
       }
-    } else {
-      alert('Atención: No se pudo conectar con el servidor de archivos. Recargá la página e intentá de nuevo.');
-    }
-
-    if (!uploadOk) {
-      if (txtName && txtStatus) {
-        txtName.textContent = `⚠️ ${file.name}`;
-        txtStatus.textContent = 'No se pudo subir a la nube. Reintentá subiendo el archivo de nuevo.';
-      }
-      if (btnWsp) {
-        btnWsp.disabled = true;
-        btnWsp.textContent = '💬 Encargar por WhatsApp';
-      }
-      return;
-    }
-
-    if (isPdf) {
-      if (txtName && txtStatus) {
-        txtName.textContent = `✅ ${file.name}`;
-        txtStatus.textContent = `${config.pages} págs. (archivo alojado en la nube)`;
-      }
-      // Recalculamos y habilitamos el botón
-      recalculate();
-    } else {
-      if (txtName && txtStatus) {
-        txtName.textContent = `✅ ${file.name}`;
-        txtStatus.textContent = 'Archivo alojado en la nube. Indicá la cantidad de páginas/hojas abajo.';
-      }
-      inputPaginasManual?.focus();
-      // El botón de WhatsApp queda deshabilitado hasta que se ingrese la cantidad de páginas
-    }
-
-  } catch (err) {
-    console.error('Error procesando el archivo:', err);
-    if (txtName && txtStatus) {
-      txtName.textContent = '❌ Error al procesar el archivo';
-      txtStatus.textContent = 'Intenta subir otro archivo.';
-    }
-  }
-}
 
       document.querySelectorAll('.opt-impresion').forEach((btn) => {
         btn.addEventListener('click', () => {
