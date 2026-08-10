@@ -1,0 +1,16 @@
+cat > .gitignore << 'EOF'
+# environment variables
+.env
+.env.*
+!.env.example
+
+# generated
+.astro/
+dist/
+node_modules/
+
+# OS / editor
+.DS_Store
+._*
+.idea/
+EOF
