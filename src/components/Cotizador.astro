@@ -7,7 +7,7 @@
       Cotiza tu <span class="italic text-indigo-600">Documento o Apunte</span>
     </h2>
     <p class="text-slate-500 text-xs sm:text-sm mt-2 font-light max-w-md mx-auto leading-relaxed">
-      Subí tu archivo PDF, elegí las terminaciones y obtené el presupuesto exacto en segundos.
+      Subí tu archivo (PDF, Word, Excel, imágenes y más), elegí las terminaciones y obtené el presupuesto exacto en segundos.
     </p>
   </div>
 
@@ -22,7 +22,7 @@
           <!-- 1. CARGAR DOCUMENTO -->
           <div>
             <span class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
-              1. Cargar Documento (PDF)
+              1. Cargar Documento
             </span>
 
             <label 
@@ -30,15 +30,31 @@
               id="dropzone"
               class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/40 hover:bg-indigo-50 transition-all rounded-2xl p-4 sm:p-6 text-center cursor-pointer flex flex-col items-center justify-center min-h-[130px] sm:min-h-[140px] select-none"
             >
-              <input type="file" id="pdfInput" accept="application/pdf" class="hidden" />
+              <input type="file" id="pdfInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp,.txt,.odt,.ods" class="hidden" />
               <span class="text-2xl sm:text-3xl mb-1.5 pointer-events-none">📄</span>
               <p id="fileName" class="text-xs font-medium text-indigo-950 pointer-events-none break-all px-2">
-                Haz clic o arrastra tu PDF aquí
+                Haz clic o arrastra tu archivo aquí
               </p>
               <p id="fileStatus" class="text-[11px] text-slate-400 font-light mt-1 pointer-events-none">
-                Formatos aceptados: .pdf
+                PDF, Word, Excel, PowerPoint, imágenes y más
               </p>
             </label>
+
+            <div id="paginasManualWrapper" class="hidden mt-2.5">
+              <label for="inputPaginasManual" class="block text-[11px] font-medium text-indigo-950 mb-1">
+                Cantidad de páginas / hojas del archivo
+              </label>
+              <input 
+                type="number" 
+                id="inputPaginasManual" 
+                min="1" 
+                placeholder="Ej: 5"
+                class="w-full bg-slate-50 border border-slate-200 text-indigo-950 text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-500 font-bold"
+              />
+              <p class="text-[10px] text-slate-400 font-light mt-1">
+                Este formato no permite contar páginas automáticamente, indicá la cantidad manualmente.
+              </p>
+            </div>
           </div>
 
           <!-- 2. MODALIDAD DE IMPRESIÓN -->
@@ -269,6 +285,16 @@
     const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     const db = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
 
+    const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'jpg', 'jpeg', 'png', 'webp', 'txt', 'odt', 'ods'];
+
+    function getFileExtension(file: File) {
+      return file.name.split('.').pop()?.toLowerCase() || '';
+    }
+
+    function isPdfFile(file: File) {
+      return file.type === 'application/pdf' || getFileExtension(file) === 'pdf';
+    }
+
     function loadPdfLibrary() {
       return new Promise((resolve, reject) => {
         if ((window as any).pdfjsLib) {
@@ -311,6 +337,8 @@
       const inputCopies = document.getElementById('inputCopias') as HTMLInputElement;
       const btnWsp = document.getElementById('btnEnviarWhatsApp') as HTMLButtonElement;
       const btnCopy = document.getElementById('btnCopyAlias');
+      const paginasManualWrapper = document.getElementById('paginasManualWrapper');
+      const inputPaginasManual = document.getElementById('inputPaginasManual') as HTMLInputElement;
 
       if (!input) return;
       if (input.dataset.cotizadorInit === 'true') return;
@@ -321,6 +349,20 @@
         playClick();
         if (btnCopy) btnCopy.textContent = '✅ ¡Copiado!';
         setTimeout(() => { if (btnCopy) btnCopy.textContent = '📋 Copiar'; }, 2000);
+      });
+
+      inputPaginasManual?.addEventListener('input', (e) => {
+        const val = parseInt((e.target as HTMLInputElement).value, 10);
+        config.pages = isNaN(val) || val < 1 ? 0 : val;
+
+        if (config.pages > 0 && config.fileUrl) {
+          if (txtStatus) txtStatus.textContent = `${config.pages} págs. (archivo alojado en la nube)`;
+          recalculate();
+        } else if (btnWsp) {
+          btnWsp.disabled = true;
+          btnWsp.classList.add('bg-slate-300', 'cursor-not-allowed');
+          btnWsp.classList.remove('bg-[#10B981]', 'hover:bg-[#059669]');
+        }
       });
 
       input.addEventListener('change', (e) => {
@@ -350,52 +392,69 @@
       }
 
       async function handleFile(file: File) {
-  if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
-    alert('Por favor selecciona un archivo PDF.');
+  const ext = getFileExtension(file);
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    alert(`Formato no admitido (.${ext || '?'}). Formatos aceptados: ${ALLOWED_EXTENSIONS.map(e => '.' + e).join(', ')}.`);
     return;
   }
+
+  const isPdf = isPdfFile(file);
+
+  // Reiniciamos estado relacionado al archivo anterior
+  config.pages = 0;
+  config.fileUrl = '';
+  if (inputPaginasManual) inputPaginasManual.value = '';
 
   // 1. Bloquear el botón de WhatsApp mientras procesamos y subimos
   if (btnWsp) {
     btnWsp.disabled = true;
     btnWsp.classList.add('bg-slate-300', 'cursor-not-allowed');
     btnWsp.classList.remove('bg-[#10B981]', 'hover:bg-[#059669]');
-    btnWsp.textContent = '⏳ Subiendo PDF a la nube...';
+    btnWsp.textContent = '⏳ Subiendo archivo a la nube...';
   }
 
   if (txtName && txtStatus) {
     txtName.textContent = `⏳ Leyendo "${file.name}"...`;
-    txtStatus.textContent = 'Procesando páginas...';
+    txtStatus.textContent = isPdf ? 'Procesando páginas...' : 'Preparando archivo...';
   }
 
   try {
-    const pdfjs = await loadPdfLibrary();
-    const buffer = await file.arrayBuffer();
-    const doc = await pdfjs.getDocument({ data: buffer }).promise;
+    // Solo para PDF contamos páginas automáticamente con pdf.js
+    if (isPdf) {
+      const pdfjs = await loadPdfLibrary();
+      const buffer = await file.arrayBuffer();
+      const doc = await pdfjs.getDocument({ data: buffer }).promise;
+      config.pages = doc.numPages;
+      paginasManualWrapper?.classList.add('hidden');
+      if (inputPaginasManual) inputPaginasManual.required = false;
+    } else {
+      // Para el resto de los formatos (Word, Excel, PowerPoint, imágenes, etc.)
+      // no podemos contar páginas de forma confiable en el navegador,
+      // así que se le pide al cliente que indique la cantidad manualmente.
+      paginasManualWrapper?.classList.remove('hidden');
+      if (inputPaginasManual) inputPaginasManual.required = true;
+    }
 
-    config.pages = doc.numPages;
     config.fileName = file.name;
-    config.fileUrl = ''; // Reiniciamos URL
 
     if (txtName && txtStatus) {
       txtName.textContent = `☁️ Subiendo "${file.name}" a la nube...`;
       txtStatus.textContent = 'Guardando archivo en el servidor...';
     }
 
-    // 2. Subida AWAIT estricta a Supabase
+    // 2. Subida AWAIT estricta a Supabase (vale para cualquier tipo de archivo)
     let uploadOk = false;
 
     if (db) {
-      const ext = file.name.split('.').pop();
-      const cleanName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
-      const path = `pdf_${Date.now()}_${cleanName}.${ext}`;
+      const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+      const path = `archivo_${Date.now()}_${cleanName}`;
 
       const { data: uploadData, error: uploadError } = await db.storage
         .from('pdfs-cotizador')
         .upload(path, file, { cacheControl: '3600', upsert: true });
 
       if (uploadError) {
-        alert(`Atención: El PDF se calculó pero no se pudo subir a la nube (${uploadError.message}). Revisa los permisos de Supabase Storage.`);
+        alert(`Atención: el archivo se procesó pero no se pudo subir a la nube (${uploadError.message}). Revisa los permisos de Supabase Storage.`);
       } else if (uploadData) {
         const { data: publicUrlData } = db.storage
           .from('pdfs-cotizador')
@@ -422,18 +481,26 @@
       return;
     }
 
-    if (txtName && txtStatus) {
-      txtName.textContent = `✅ ${file.name}`;
-      txtStatus.textContent = `${doc.numPages} págs. (PDF alojado en la nube)`;
+    if (isPdf) {
+      if (txtName && txtStatus) {
+        txtName.textContent = `✅ ${file.name}`;
+        txtStatus.textContent = `${config.pages} págs. (archivo alojado en la nube)`;
+      }
+      // Recalculamos y habilitamos el botón
+      recalculate();
+    } else {
+      if (txtName && txtStatus) {
+        txtName.textContent = `✅ ${file.name}`;
+        txtStatus.textContent = 'Archivo alojado en la nube. Indicá la cantidad de páginas/hojas abajo.';
+      }
+      inputPaginasManual?.focus();
+      // El botón de WhatsApp queda deshabilitado hasta que se ingrese la cantidad de páginas
     }
 
-    // Recalculamos y habilitamos el botón
-    recalculate();
-
   } catch (err) {
-    console.error('Error procesando el PDF:', err);
+    console.error('Error procesando el archivo:', err);
     if (txtName && txtStatus) {
-      txtName.textContent = '❌ Error al procesar el PDF';
+      txtName.textContent = '❌ Error al procesar el archivo';
       txtStatus.textContent = 'Intenta subir otro archivo.';
     }
   }
@@ -588,8 +655,8 @@
             btnWsp.innerHTML = '<span>💬</span> Encargar por WhatsApp';
 
             const fileLink = (config.fileUrl && config.fileUrl.startsWith('http'))
-              ? `⬇️ Link del PDF subido:\n${config.fileUrl}\n\n` 
-              : `📎 *(Te adjunto el archivo PDF directamente por este chat)*\n\n`;
+              ? `⬇️ Link del archivo subido:\n${config.fileUrl}\n\n` 
+              : `📎 *(Te adjunto el archivo directamente por este chat)*\n\n`;
 
             const detailsCount = copies > 1 
               ? `*${totalPages}* (${config.pages} págs. x ${copies} copias - total ${totalSheets} hojas)`

@@ -1,6 +1,5 @@
 cat > netlify.toml << 'EOF'
 [build]
-  base = "ideas"
   publish = "dist"
   command = "npm run build"
 
