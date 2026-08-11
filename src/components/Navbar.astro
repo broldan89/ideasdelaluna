@@ -1,69 +1,114 @@
 ---
+
 ---
 
-<header class="sticky top-0 z-50 w-full backdrop-blur-md bg-white/70 border-b border-indigo-100/50 transition-all">
-  <div class="max-w-7xl mx-auto px-6 md:px-12 py-3.5 flex items-center justify-between">
-    
+<header
+  class="sticky top-0 z-50 w-full backdrop-blur-md bg-white/80 border-b border-indigo-100/50 transition-all"
+>
+  <div
+    class="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-3 flex items-center justify-between"
+  >
     <!-- 1. LOGO -->
-    <a href="/" class="flex items-center gap-2.5 group shrink-0">
-      <img 
-        src="/logo.png" 
-        alt="Ideas de la Luna Logo" 
-        class="w-7 h-7 object-contain transition-transform group-hover:rotate-12"
+    <a href="/" class="flex items-center gap-2 group shrink-0">
+      <img
+        src="/logo.png"
+        alt="Ideas de la Luna Logo"
+        class="w-6 h-6 sm:w-7 sm:h-7 object-contain transition-transform group-hover:rotate-12"
       />
-      <span class="font-serif text-lg font-medium text-indigo-950 tracking-tight">
+      <span
+        class="font-serif text-base sm:text-lg font-medium text-indigo-950 tracking-tight"
+      >
         Ideas de la <span class="italic text-indigo-600">Luna</span>
       </span>
     </a>
 
-    <!-- 2. MENÚ EN UNA SOLA LÍNEA (Elegante y limpio) -->
-    <nav class="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-widest text-slate-600">
-      <a href="#marcas" class="hover:text-indigo-600 transition-colors">Marcas</a>
-      
-      <!-- DOCENTES INTEGRADO -->
-      <a href="#docentes" class="hover:text-indigo-600 transition-colors inline-flex items-center gap-1.5 text-indigo-900 font-bold">
+    <!-- 2. MENÚ DESKTOP -->
+    <nav
+      class="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-widest text-slate-600"
+    >
+      <a href="#marcas" class="hover:text-indigo-600 transition-colors"
+        >Marcas</a
+      >
+      <a
+        href="#docentes"
+        class="hover:text-indigo-600 transition-colors inline-flex items-center gap-1.5 text-indigo-900 font-bold"
+      >
         <span>Docentes</span>
-        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"
+        ></span>
       </a>
-
-      <a href="#eventos" class="hover:text-indigo-600 transition-colors">Eventos</a>
-      <a href="#tienda" class="hover:text-indigo-600 transition-colors">Tienda</a>
+      <a href="#eventos" class="hover:text-indigo-600 transition-colors"
+        >Eventos</a
+      >
+      <a href="#tienda" class="hover:text-indigo-600 transition-colors"
+        >Tienda</a
+      >
       <a href="#faq" class="hover:text-indigo-600 transition-colors">FAQ</a>
     </nav>
 
-    <!-- 3. BOTÓN CONTACTO -->
-    <div class="flex items-center justify-end shrink-0">
-      <a 
-        href="#contacto" 
-        class="bg-indigo-950 hover:bg-indigo-900 text-white text-xs font-medium py-2.5 px-6 rounded-full transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
+    <!-- 3. BOTÓN CONTACTO & HAMBURGUESA -->
+    <div class="flex items-center gap-3">
+      <a
+        href="#contacto"
+        class="hidden sm:inline-block bg-indigo-950 hover:bg-indigo-900 text-white text-xs font-medium py-2 px-5 rounded-full transition-all shadow-sm"
       >
         Contacto
       </a>
-    </div>
 
+      <!-- Botón Hamburguesa (solo móvil) -->
+      <button
+        id="mobile-menu-btn"
+        type="button"
+        class="md:hidden text-indigo-950 p-1.5 focus:outline-none"
+        aria-label="Abrir menú"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- MENÚ DESPLEGABLE MÓVIL -->
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden border-t border-indigo-100 bg-white/95 backdrop-blur-md px-6 py-4 space-y-3 text-xs font-semibold uppercase tracking-wider text-slate-700 shadow-lg"
+  >
+    <a href="#marcas" class="block hover:text-indigo-600 py-1">Marcas</a>
+    <a
+      href="#docentes"
+      class="block hover:text-indigo-600 py-1 text-indigo-900 font-bold"
+      >Docentes ✨</a
+    >
+    <a href="#eventos" class="block hover:text-indigo-600 py-1">Eventos</a>
+    <a href="#tienda" class="block hover:text-indigo-600 py-1">Tienda</a>
+    <a href="#faq" class="block hover:text-indigo-600 py-1">FAQ</a>
+    <a
+      href="#contacto"
+      class="block text-center bg-indigo-950 text-white py-2.5 rounded-full font-medium mt-2"
+      >Contacto</a
+    >
   </div>
 </header>
 
-<style>
-  /* Wrapper sticky con la sombra que proyecta el papel rasgado del Navbar hacia abajo */
-  .paper-navbar-wrapper {
-    filter: 
-      drop-shadow(0px 8px 12px rgba(45, 35, 66, 0.08)) 
-      drop-shadow(0px 2px 4px rgba(45, 35, 66, 0.04));
-  }
+<script>
+  const btn = document.getElementById("mobile-menu-btn");
+  const menu = document.getElementById("mobile-menu");
 
-  /* Corte trozado de papel ÚNICAMENTE en el borde inferior del Navbar */
-  .paper-navbar {
-    clip-path: polygon(
-      0% 0%, 
-      100% 0%, 
-      100% calc(100% - 4px), 
-      97% 100%, 94% calc(100% - 3px), 91% 100%, 88% calc(100% - 2px), 85% 100%, 82% calc(100% - 4px), 
-      79% 100%, 76% calc(100% - 2px), 73% 100%, 70% calc(100% - 3px), 67% 100%, 64% calc(100% - 1px), 
-      61% 100%, 58% calc(100% - 3px), 55% 100%, 52% calc(100% - 2px), 49% 100%, 46% calc(100% - 4px), 
-      43% 100%, 40% calc(100% - 2px), 37% 100%, 34% calc(100% - 3px), 31% 100%, 28% calc(100% - 1px), 
-      25% 100%, 22% calc(100% - 3px), 19% 100%, 16% calc(100% - 2px), 13% 100%, 10% calc(100% - 4px), 
-      7% 100%, 4% calc(100% - 2px), 0% 100%
-    );
-  }
-</style>
+  btn?.addEventListener("click", () => {
+    menu?.classList.toggle("hidden");
+  });
+
+  menu?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => menu?.classList.add("hidden"));
+  });
+</script>

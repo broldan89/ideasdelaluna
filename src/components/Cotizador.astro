@@ -1,702 +1,214 @@
-<section id="cotizador" class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16 scroll-mt-20">
-  <div class="text-center mb-8 sm:mb-10">
-    <span class="text-[11px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">
+<!-- Ajustes aplicados al Cotizador para smartphones -->
+<section
+  id="cotizador"
+  class="max-w-4xl mx-auto px-3 sm:px-6 py-8 sm:py-16 scroll-mt-20"
+>
+  <div class="text-center mb-6 sm:mb-10">
+    <span
+      class="text-[10px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-2.5 py-1 rounded-full"
+    >
       Calculadora al instante
     </span>
-    <h2 class="text-2xl sm:text-4xl font-serif text-indigo-950 font-medium mt-3 sm:mt-4">
+    <h2
+      class="text-2xl sm:text-4xl font-serif text-indigo-950 font-medium mt-3"
+    >
       Cotiza tu <span class="italic text-indigo-600">Documento o Apunte</span>
     </h2>
-    <p class="text-slate-500 text-xs sm:text-sm mt-2 font-light max-w-md mx-auto leading-relaxed">
-      Subí tu archivo (PDF, Word, Excel, imágenes y más), elegí las terminaciones y obtené el presupuesto exacto en segundos.
+    <p
+      class="text-slate-500 text-xs sm:text-sm mt-1.5 font-light max-w-md mx-auto leading-relaxed"
+    >
+      Subí tu archivo, elegí las terminaciones y obtené el presupuesto exacto en
+      segundos.
     </p>
   </div>
 
   <div class="cotizador-card-wrapper">
-    <div class="cotizador-card bg-white p-5 sm:p-10 text-left rounded-2xl sm:rounded-none">
-      
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-        
-        <!-- COLUMNA IZQUIERDA: CONTROLES -->
-        <div class="space-y-5 sm:space-y-6">
-          
-          <!-- 1. CARGAR DOCUMENTO -->
+    <div class="cotizador-card bg-white p-4 sm:p-8 rounded-2xl sm:rounded-none">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
+        <!-- CONTROLES -->
+        <div class="space-y-4 sm:space-y-6">
+          <!-- 1. DROPZONE -->
           <div>
-            <span class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
+            <span
+              class="block text-[11px] sm:text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
+            >
               1. Cargar Documento
             </span>
 
-            <label 
+            <label
               for="pdfInput"
               id="dropzone"
-              class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/40 hover:bg-indigo-50 transition-all rounded-2xl p-4 sm:p-6 text-center cursor-pointer flex flex-col items-center justify-center min-h-[130px] sm:min-h-[140px] select-none"
+              class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/40 hover:bg-indigo-50 transition-all rounded-xl p-3.5 sm:p-6 text-center cursor-pointer flex flex-col items-center justify-center min-h-[110px] sm:min-h-[140px] select-none"
             >
-              <input type="file" id="pdfInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp,.txt,.odt,.ods" class="hidden" />
-              <span class="text-2xl sm:text-3xl mb-1.5 pointer-events-none">📄</span>
-              <p id="fileName" class="text-xs font-medium text-indigo-950 pointer-events-none break-all px-2">
-                Haz clic o arrastra tu archivo aquí
+              <input
+                type="file"
+                id="pdfInput"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp,.txt,.odt,.ods"
+                class="hidden"
+              />
+              <span class="text-2xl sm:text-3xl mb-1 pointer-events-none"
+                >📄</span
+              >
+              <p
+                id="fileName"
+                class="text-xs font-medium text-indigo-950 pointer-events-none break-all px-1"
+              >
+                Toca o arrastra tu archivo aquí
               </p>
-              <p id="fileStatus" class="text-[11px] text-slate-400 font-light mt-1 pointer-events-none">
-                PDF, Word, Excel, PowerPoint, imágenes y más
+              <p
+                id="fileStatus"
+                class="text-[10px] sm:text-[11px] text-slate-400 font-light mt-0.5 pointer-events-none"
+              >
+                PDF, Word, Excel, Imágenes y más
               </p>
             </label>
-
-            <div id="paginasManualWrapper" class="hidden mt-2.5">
-              <label for="inputPaginasManual" class="block text-[11px] font-medium text-indigo-950 mb-1">
-                Cantidad de páginas / hojas del archivo
-              </label>
-              <input 
-                type="number" 
-                id="inputPaginasManual" 
-                min="1" 
-                placeholder="Ej: 5"
-                class="w-full bg-slate-50 border border-slate-200 text-indigo-950 text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-500 font-bold"
-              />
-              <p class="text-[10px] text-slate-400 font-light mt-1">
-                Este formato no permite contar páginas automáticamente, indicá la cantidad manualmente.
-              </p>
-            </div>
           </div>
 
-          <!-- 2. MODALIDAD DE IMPRESIÓN -->
+          <!-- 2. MODALIDAD -->
           <div>
-            <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
+            <label
+              class="block text-[11px] sm:text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
+            >
               2. Modalidad de Impresión
             </label>
-            <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
-              <button 
-                type="button" 
-                data-type="simple" 
-                class="opt-impresion active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-2.5 px-2 sm:px-3 rounded-xl font-medium transition-all text-center"
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                data-type="simple"
+                class="opt-impresion active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-2 px-2 rounded-lg font-medium transition-all text-center"
               >
                 Simple Faz
               </button>
-              <button 
-                type="button" 
-                data-type="doble" 
-                class="opt-impresion border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 text-xs py-2.5 px-2 sm:px-3 rounded-xl font-medium transition-all text-center"
+              <button
+                type="button"
+                data-type="doble"
+                class="opt-impresion border border-slate-200 bg-white text-slate-600 text-xs py-2 px-2 rounded-lg font-medium transition-all text-center"
               >
                 Doble Faz
               </button>
             </div>
           </div>
 
-          <!-- 3. TIPO DE COLOR -->
+          <!-- 3. COLOR -->
           <div>
-            <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
+            <label
+              class="block text-[11px] sm:text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
+            >
               3. Tipo de Color
             </label>
-            <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
-              <button 
-                type="button" 
-                data-color="bn" 
-                class="opt-color active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-2.5 px-2 sm:px-3 rounded-xl font-medium transition-all text-center"
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                data-color="bn"
+                class="opt-color active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-2 px-2 rounded-lg font-medium transition-all text-center"
               >
                 Blanco y Negro
               </button>
-              <button 
-                type="button" 
-                data-color="color" 
-                class="opt-color border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 text-xs py-2.5 px-2 sm:px-3 rounded-xl font-medium transition-all text-center"
+              <button
+                type="button"
+                data-color="color"
+                class="opt-color border border-slate-200 bg-white text-slate-600 text-xs py-2 px-2 rounded-lg font-medium transition-all text-center"
               >
                 Color
               </button>
             </div>
           </div>
 
-          <!-- 4. TERMINACIÓN / ACABADO -->
+          <!-- 4. ACABADO -->
           <div>
-            <label class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
+            <label
+              class="block text-[11px] sm:text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
+            >
               4. Terminación / Acabado
             </label>
-            <select 
-              id="selectEncuadernacion" 
-              class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-500 font-medium cursor-pointer"
+            <select
+              id="selectEncuadernacion"
+              class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl p-2.5 focus:outline-none font-medium cursor-pointer"
             >
               <option value="ninguno">Sin encuadernar (Suelto)</option>
               <option value="anillado">Anillado / Espiralado</option>
             </select>
           </div>
 
-          <!-- 5. CANTIDAD DE COPIAS -->
+          <!-- 5. COPIAS -->
           <div>
-            <label for="inputCopias" class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-2">
+            <label
+              for="inputCopias"
+              class="block text-[11px] sm:text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
+            >
               5. Cantidad de Copias
             </label>
-            <input 
-              type="number" 
-              id="inputCopias" 
-              min="1" 
-              value="1" 
-              class="w-32 bg-slate-50 border border-slate-200 text-indigo-950 text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-500 font-bold text-center"
+            <input
+              type="number"
+              id="inputCopias"
+              min="1"
+              value="1"
+              class="w-28 bg-slate-50 border border-slate-200 text-indigo-950 text-xs rounded-xl p-2.5 focus:outline-none font-bold text-center"
             />
           </div>
-
         </div>
 
-        <!-- COLUMNA DERECHA: RESUMEN DE COMPRA Y BOTONES -->
-        <div class="bg-indigo-50/50 rounded-2xl p-5 sm:p-6 flex flex-col justify-between border border-indigo-100/60">
+        <!-- RESUMEN -->
+        <div
+          class="bg-indigo-50/50 rounded-xl p-4 sm:p-6 flex flex-col justify-between border border-indigo-100/60 mt-2 sm:mt-0"
+        >
           <div>
-            <h3 class="font-serif font-medium text-indigo-950 text-base sm:text-lg mb-4 pb-2 border-b border-indigo-100">
+            <h3
+              class="font-serif font-medium text-indigo-950 text-base mb-3 pb-2 border-b border-indigo-100"
+            >
               Resumen del Pedido
             </h3>
-
-            <div class="space-y-2.5 text-xs font-light text-slate-600">
+            <div class="space-y-2 text-xs font-light text-slate-600">
               <div class="flex justify-between items-center">
                 <span>Páginas detectadas:</span>
-                <span id="resPaginas" class="font-semibold text-indigo-950">0 págs</span>
+                <span id="resPaginas" class="font-semibold text-indigo-950"
+                  >0 págs</span
+                >
               </div>
               <div class="flex justify-between items-center">
                 <span>Hojas a utilizar:</span>
-                <span id="resHojas" class="font-semibold text-indigo-950">0 hojas</span>
+                <span id="resHojas" class="font-semibold text-indigo-950"
+                  >0 hojas</span
+                >
               </div>
               <div class="flex justify-between items-center">
                 <span>Costo por unidad:</span>
-                <span id="resCostoHoja" class="font-semibold text-indigo-950">$0</span>
+                <span id="resCostoHoja" class="font-semibold text-indigo-950"
+                  >$0</span
+                >
               </div>
               <div class="flex justify-between items-center">
                 <span>Encuadernación:</span>
-                <span id="resEncuadernacion" class="font-semibold text-indigo-950">$0</span>
+                <span
+                  id="resEncuadernacion"
+                  class="font-semibold text-indigo-950">$0</span
+                >
               </div>
             </div>
           </div>
 
-          <div class="mt-6 pt-4 border-t border-indigo-100">
-            <div class="flex justify-between items-baseline mb-4 sm:mb-6">
-              <span class="text-xs uppercase tracking-wider font-semibold text-slate-500">Total Estimado:</span>
-              <span id="totalPrecio" class="text-2xl sm:text-3xl font-serif font-bold text-indigo-950">$0</span>
+          <div class="mt-5 pt-3 border-t border-indigo-100">
+            <div class="flex justify-between items-baseline mb-3">
+              <span
+                class="text-xs uppercase tracking-wider font-semibold text-slate-500"
+                >Total Estimado:</span
+              >
+              <span
+                id="totalPrecio"
+                class="text-2xl font-serif font-bold text-indigo-950">$0</span
+              >
             </div>
 
-            <button 
+            <button
               id="btnEnviarWhatsApp"
               disabled
-              class="w-full bg-slate-300 text-white cursor-not-allowed font-semibold py-3.5 px-4 rounded-full text-xs tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
+              class="w-full bg-slate-300 text-white cursor-not-allowed font-semibold py-3 px-4 rounded-full text-xs tracking-wider transition-all flex items-center justify-center gap-2"
             >
               <span>💬</span> Encargar por WhatsApp
             </button>
-            <p class="text-[10px] text-center text-slate-400 mt-2 font-light">
-              Envía la configuración y el archivo subido a la nube directamente.
-            </p>
-
-            <div class="mt-4 p-3 bg-white/80 rounded-xl border border-indigo-100 text-[11px] text-slate-600 space-y-1.5">
-              <p class="font-semibold text-indigo-950 flex items-center gap-1">
-                <span>📌</span> Información de Pago (Transferencia):
-              </p>
-              <div class="flex items-center justify-between bg-indigo-50/60 p-1.5 rounded-lg border border-indigo-100/50">
-                <p class="text-[11px]">
-                  <strong>Alias:</strong> 
-                  <span id="aliasText" class="font-mono text-indigo-900 font-bold ml-1">ideas.de.la.luna</span>
-                </p>
-                <button 
-                  id="btnCopyAlias"
-                  type="button" 
-                  class="text-[10px] bg-white hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded shadow-xs border border-indigo-200 transition-colors"
-                >
-                  📋 Copiar
-                </button>
-              </div>
-              <p>• <strong>Titular:</strong> Natalia Andrea Jimenez</p>
-              <p class="text-[10px] text-slate-400 italic font-light pt-0.5">
-                *Recordá enviar el comprobante por WhatsApp al realizar la orden.
-              </p>
-            </div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
   </div>
 </section>
-
-<style>
-  .cotizador-card-wrapper {
-    filter: 
-      drop-shadow(3px 12px 16px rgba(45, 35, 66, 0.10)) 
-      drop-shadow(1px 4px 5px rgba(45, 35, 66, 0.05));
-  }
-
-  @media (min-width: 640px) {
-    .cotizador-card {
-      clip-path: polygon(
-        0% 4px, 8% 0px, 16% 3px, 24% 1px, 32% 4px, 40% 0px, 48% 3px, 56% 1px, 64% 4px, 72% 0px, 80% 3px, 88% 1px, 96% 3px, 100% 1px,
-        calc(100% - 2px) 15%, 100% 30%, calc(100% - 3px) 45%, 100% 60%, calc(100% - 2px) 75%, 100% 90%, calc(100% - 1px) 100%,
-        92% calc(100% - 3px), 84% 100%, 76% calc(100% - 2px), 68% 100%, 60% calc(100% - 4px), 52% 100%, 44% calc(100% - 2px), 36% 100%, 28% calc(100% - 3px), 20% 100%, 12% calc(100% - 1px), 4% 100%, 0% calc(100% - 2px),
-        2px 85%, 0% 70%, 3px 55%, 1px 40%, 3px 25%, 1px 10%
-      );
-    }
-  }
-</style>
-
-<script>
-  import { createClient } from '@supabase/supabase-js';
-
-  if (typeof window !== 'undefined') {
-    const audioCtx = () => {
-      try {
-        const Ctx = window.AudioContext || (window as any).webkitAudioContext;
-        return Ctx ? new Ctx() : null;
-      } catch {
-        return null;
-      }
-    };
-
-    const playClick = () => {
-      const ctx = audioCtx();
-      if (!ctx) return;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(450, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.04);
-
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.04);
-    };
-
-    const playSend = () => {
-      const ctx = audioCtx();
-      if (!ctx) return;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const now = ctx.currentTime;
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(320, now);
-      osc.frequency.exponentialRampToValueAtTime(880, now + 0.22);
-
-      gain.gain.setValueAtTime(0.12, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.22);
-    };
-
-    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-    const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-    const db = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
-
-    const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'jpg', 'jpeg', 'png', 'webp', 'txt', 'odt', 'ods'];
-
-    function getFileExtension(file: File) {
-      return file.name.split('.').pop()?.toLowerCase() || '';
-    }
-
-    function isPdfFile(file: File) {
-      return file.type === 'application/pdf' || getFileExtension(file) === 'pdf';
-    }
-
-    function loadPdfLibrary() {
-      return new Promise((resolve, reject) => {
-        if ((window as any).pdfjsLib) {
-          resolve((window as any).pdfjsLib);
-          return;
-        }
-        const s = document.createElement('script');
-        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
-        s.onload = () => {
-          const lib = (window as any).pdfjsLib || (window as any)['pdfjs-dist/build/pdf'];
-          if (lib) {
-            lib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-            resolve(lib);
-          } else {
-            reject();
-          }
-        };
-        s.onerror = reject;
-        document.head.appendChild(s);
-      });
-    }
-
-    function setup() {
-      const config = {
-        pages: 0,
-        fileName: '',
-        fileUrl: '',
-        duplex: false,
-        color: false,
-        binding: 'ninguno',
-        copies: 1,
-        calculatedTotal: 0
-      };
-
-      const dropzone = document.getElementById('dropzone');
-      const input = document.getElementById('pdfInput') as HTMLInputElement;
-      const txtName = document.getElementById('fileName');
-      const txtStatus = document.getElementById('fileStatus');
-      const selectBinding = document.getElementById('selectEncuadernacion') as HTMLSelectElement;
-      const inputCopies = document.getElementById('inputCopias') as HTMLInputElement;
-      const btnWsp = document.getElementById('btnEnviarWhatsApp') as HTMLButtonElement;
-      const btnCopy = document.getElementById('btnCopyAlias');
-      const paginasManualWrapper = document.getElementById('paginasManualWrapper');
-      const inputPaginasManual = document.getElementById('inputPaginasManual') as HTMLInputElement;
-
-      if (!input) return;
-      if (input.dataset.cotizadorInit === 'true') return;
-      input.dataset.cotizadorInit = 'true';
-
-      btnCopy?.addEventListener('click', () => {
-        navigator.clipboard.writeText('ideas.de.la.luna');
-        playClick();
-        if (btnCopy) btnCopy.textContent = '✅ ¡Copiado!';
-        setTimeout(() => { if (btnCopy) btnCopy.textContent = '📋 Copiar'; }, 2000);
-      });
-
-      inputPaginasManual?.addEventListener('input', (e) => {
-        const val = parseInt((e.target as HTMLInputElement).value, 10);
-        config.pages = isNaN(val) || val < 1 ? 0 : val;
-
-        if (config.pages > 0 && config.fileUrl) {
-          if (txtStatus) txtStatus.textContent = `${config.pages} págs. (archivo alojado en la nube)`;
-          recalculate();
-        } else if (btnWsp) {
-          btnWsp.disabled = true;
-          btnWsp.classList.add('bg-slate-300', 'cursor-not-allowed');
-          btnWsp.classList.remove('bg-[#10B981]', 'hover:bg-[#059669]');
-        }
-      });
-
-      input.addEventListener('change', (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (file) handleFile(file);
-      });
-
-      if (dropzone) {
-        dropzone.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          dropzone.classList.add('bg-indigo-100/50');
-        });
-
-        dropzone.addEventListener('dragleave', () => {
-          dropzone.classList.remove('bg-indigo-100/50');
-        });
-
-        dropzone.addEventListener('drop', (e) => {
-          e.preventDefault();
-          dropzone.classList.remove('bg-indigo-100/50');
-          const file = e.dataTransfer?.files[0];
-          if (file) {
-            playClick();
-            handleFile(file);
-          }
-        });
-      }
-
-      async function handleFile(file: File) {
-        const ext = getFileExtension(file);
-        if (!ALLOWED_EXTENSIONS.includes(ext)) {
-          alert(`Formato no admitido (.${ext || '?'}). Formatos aceptados: ${ALLOWED_EXTENSIONS.map(e => '.' + e).join(', ')}.`);
-          return;
-        }
-
-        const isPdf = isPdfFile(file);
-
-        // Reiniciamos estado relacionado al archivo anterior
-        config.pages = 0;
-        config.fileUrl = '';
-        if (inputPaginasManual) inputPaginasManual.value = '';
-
-        // 1. Bloquear el botón de WhatsApp mientras procesamos y subimos
-        if (btnWsp) {
-          btnWsp.disabled = true;
-          btnWsp.classList.add('bg-slate-300', 'cursor-not-allowed');
-          btnWsp.classList.remove('bg-[#10B981]', 'hover:bg-[#059669]');
-          btnWsp.textContent = '⏳ Subiendo archivo a la nube...';
-        }
-
-        if (txtName && txtStatus) {
-          txtName.textContent = `⏳ Leyendo "${file.name}"...`;
-          txtStatus.textContent = isPdf ? 'Procesando páginas...' : 'Preparando archivo...';
-        }
-
-        try {
-          // Solo para PDF contamos páginas automáticamente con pdf.js
-          if (isPdf) {
-            const pdfjs = await loadPdfLibrary();
-            const buffer = await file.arrayBuffer();
-            const doc = await pdfjs.getDocument({ data: buffer }).promise;
-            config.pages = doc.numPages;
-            paginasManualWrapper?.classList.add('hidden');
-            if (inputPaginasManual) inputPaginasManual.required = false;
-          } else {
-            // Para otros formatos se ingresan páginas manualmente
-            paginasManualWrapper?.classList.remove('hidden');
-            if (inputPaginasManual) inputPaginasManual.required = true;
-          }
-
-          config.fileName = file.name;
-
-          if (txtName && txtStatus) {
-            txtName.textContent = `☁️ Subiendo "${file.name}" a la nube...`;
-            txtStatus.textContent = 'Guardando archivo en el servidor...';
-          }
-
-          // 2. Subida AWAIT estricta a Supabase
-          let uploadOk = false;
-
-          if (db) {
-            const fileExt = getFileExtension(file);
-            const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-            const cleanBase = baseName.toLowerCase().replace(/[^a-z0-9]/g, '_');
-            const path = `archivo_${Date.now()}_${cleanBase}.${fileExt}`;
-
-            const mimeType = file.type || 'application/octet-stream';
-
-            const { data: uploadData, error: uploadError } = await db.storage
-              .from('pdfs-cotizador')
-              .upload(path, file, { 
-                cacheControl: '3600', 
-                upsert: true,
-                contentType: mimeType
-              });
-
-            if (uploadError) {
-              alert(`Atención: el archivo se procesó pero no se pudo subir a la nube (${uploadError.message}). Revisa los permisos de Supabase Storage.`);
-            } else if (uploadData) {
-              const { data: publicUrlData } = db.storage
-                .from('pdfs-cotizador')
-                .getPublicUrl(uploadData.path);
-
-              if (publicUrlData?.publicUrl) {
-                config.fileUrl = publicUrlData.publicUrl;
-                uploadOk = true;
-              }
-            }
-          } else {
-            alert('Atención: No se pudo conectar con el servidor de archivos. Recargá la página e intentá de nuevo.');
-          }
-
-          if (!uploadOk) {
-            if (txtName && txtStatus) {
-              txtName.textContent = `⚠️ ${file.name}`;
-              txtStatus.textContent = 'No se pudo subir a la nube. Reintentá subiendo el archivo de nuevo.';
-            }
-            if (btnWsp) {
-              btnWsp.disabled = true;
-              btnWsp.textContent = '💬 Encargar por WhatsApp';
-            }
-            return;
-          }
-
-          if (isPdf) {
-            if (txtName && txtStatus) {
-              txtName.textContent = `✅ ${file.name}`;
-              txtStatus.textContent = `${config.pages} págs. (archivo alojado en la nube)`;
-            }
-            recalculate();
-          } else {
-            if (txtName && txtStatus) {
-              txtName.textContent = `✅ ${file.name}`;
-              txtStatus.textContent = 'Archivo alojado en la nube. Indicá la cantidad de páginas/hojas abajo.';
-            }
-            inputPaginasManual?.focus();
-          }
-
-        } catch (err) {
-          console.error('Error procesando el archivo:', err);
-          if (txtName && txtStatus) {
-            txtName.textContent = '❌ Error al procesar el archivo';
-            txtStatus.textContent = 'Intenta subir otro archivo.';
-          }
-        }
-      }
-
-      document.querySelectorAll('.opt-impresion').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          playClick();
-          document.querySelectorAll('.opt-impresion').forEach((b) => {
-            b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
-            b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
-          });
-          btn.classList.add('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
-          btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
-
-          config.duplex = btn.getAttribute('data-type') === 'doble';
-          recalculate();
-        });
-      });
-
-      document.querySelectorAll('.opt-color').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          playClick();
-          document.querySelectorAll('.opt-color').forEach((b) => {
-            b.classList.remove('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
-            b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
-          });
-          btn.classList.add('active', 'border-indigo-600', 'bg-indigo-50/80', 'text-indigo-950');
-          btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
-
-          config.color = btn.getAttribute('data-color') === 'color';
-          recalculate();
-        });
-      });
-
-      selectBinding?.addEventListener('change', (e) => {
-        playClick();
-        config.binding = (e.target as HTMLSelectElement).value;
-        recalculate();
-      });
-
-      inputCopies?.addEventListener('input', (e) => {
-        const val = parseInt((e.target as HTMLInputElement).value, 10);
-        config.copies = isNaN(val) || val < 1 ? 1 : val;
-        recalculate();
-      });
-
-      function getSheetUnitPrice(totalPages: number, isDuplex: boolean, isColor: boolean) {
-        if (totalPages < 100) {
-          if (!isColor) return isDuplex ? 180 : 150;
-          return isDuplex ? 270 : 220;
-        }
-        if (totalPages <= 500) {
-          if (!isColor) return isDuplex ? 160 : 120;
-          return isDuplex ? 250 : 200;
-        }
-        if (!isColor) return isDuplex ? 130 : 100;
-        return isDuplex ? 200 : 180;
-      }
-
-      function recalculate() {
-        if (!config.pages) return;
-
-        const copies = config.copies || 1;
-        const totalPages = config.pages * copies;
-
-        const sheetsPerDoc = config.duplex ? Math.ceil(config.pages / 2) : config.pages;
-        const totalSheets = sheetsPerDoc * copies;
-
-        const sheetPrice = getSheetUnitPrice(totalPages, config.duplex, config.color);
-        const printSubtotal = totalSheets * sheetPrice;
-
-        let bindingPrice = 0;
-        if (config.binding === 'anillado') {
-          const bindingRate = copies >= 10 ? 2500 : 3000;
-          bindingPrice = bindingRate * copies;
-        }
-
-        const total = printSubtotal + bindingPrice;
-        config.calculatedTotal = total;
-
-        const elPages = document.getElementById('resPaginas');
-        const elSheets = document.getElementById('resHojas');
-        const elUnitPrice = document.getElementById('resCostoHoja');
-        const elBinding = document.getElementById('resEncuadernacion');
-        const elTotal = document.getElementById('totalPrecio');
-
-        if (elPages) {
-          elPages.textContent = copies > 1 
-            ? `${totalPages} páginas (${config.pages} págs. x ${copies} copias)`
-            : `${totalPages} páginas`;
-        }
-
-        if (elSheets) {
-          elSheets.textContent = copies > 1 
-            ? `${totalSheets} hojas (${sheetsPerDoc} hojas x ${copies} copias)`
-            : `${totalSheets} hojas`;
-        }
-
-        if (elUnitPrice) elUnitPrice.textContent = `$${sheetPrice} por hoja`;
-        if (elBinding) elBinding.textContent = `$${bindingPrice.toLocaleString('es-AR')}`;
-        if (elTotal) elTotal.textContent = `$${total.toLocaleString('es-AR')}`;
-
-        if (btnWsp) {
-          btnWsp.disabled = false;
-          btnWsp.classList.remove('bg-slate-300', 'cursor-not-allowed');
-          btnWsp.classList.add('bg-[#10B981]', 'hover:bg-[#059669]', 'hover:-translate-y-0.5');
-
-          btnWsp.onclick = async () => {
-            playSend();
-            btnWsp.disabled = true;
-            btnWsp.textContent = '⏳ Generando orden...';
-
-            let orderCode = '';
-
-            if (db) {
-              try {
-                const subproductsData = [
-                  { label: "Páginas totales", value: totalPages },
-                  { label: "Hojas", value: totalSheets },
-                  { label: "Modalidad", value: config.duplex ? 'Doble Faz' : 'Simple Faz' },
-                  { label: "Tipo", value: config.color ? 'Color' : 'Blanco y Negro' },
-                  { label: "Acabado", value: config.binding === 'anillado' ? 'Anillado' : 'Sin encuadernar' },
-                  { label: "Copias", value: copies }
-                ];
-
-                const { data, error } = await db
-                  .from('orders')
-                  .insert([
-                    {
-                      product_title: `Imprenta: ${config.fileName}`,
-                      subproducts: subproductsData,
-                      total_price: config.calculatedTotal,
-                      pdf_url: config.fileUrl || null,
-                      status: 'Pendiente de Pago'
-                    }
-                  ])
-                  .select('order_code')
-                  .single();
-
-                if (!error && data) {
-                  orderCode = data.order_code;
-                } else if (error) {
-                  alert(`Atención: El pedido no se pudo guardar en el sistema (${error.message}). El mensaje de WhatsApp se va a enviar igual, pero avisá para registrar la orden manualmente.`);
-                }
-              } catch (e) {
-                alert('Atención: El pedido no se pudo guardar en el sistema. El mensaje de WhatsApp se va a enviar igual, pero avisá para registrar la orden manualmente.');
-              }
-            }
-
-            btnWsp.disabled = false;
-            btnWsp.innerHTML = '<span>💬</span> Encargar por WhatsApp';
-
-            const fileLink = (config.fileUrl && config.fileUrl.startsWith('http'))
-              ? `⬇️ Link del archivo subido:\n${config.fileUrl}\n\n` 
-              : `📎 *(Te adjunto el archivo directamente por este chat)*\n\n`;
-
-            const detailsCount = copies > 1 
-              ? `*${totalPages}* (${config.pages} págs. x ${copies} copias - total ${totalSheets} hojas)`
-              : `*${totalPages}* (${totalSheets} hojas)`;
-
-            const bindingText = config.binding === 'anillado'
-              ? (copies >= 10 ? `Anillado con desc. mayorista (${copies} un.)` : `Anillado (${copies} un.)`)
-              : 'Sin encuadernar';
-
-            const headerCode = orderCode ? ` *#${orderCode}*` : '';
-
-            const msg = encodeURIComponent(
-              `¡Hola Ideas de la Luna! 🌙\n` +
-              `Quiero encargar mi pedido${headerCode}:\n\n` +
-              `📄 Archivo: *${config.fileName}*\n` +
-              `📊 Cantidad de páginas: ${detailsCount}\n` +
-              `🖨️ Modalidad: *${config.duplex ? 'Doble Faz' : 'Simple Faz'}*\n` +
-              `🎨 Tipo: *${config.color ? 'Color' : 'Blanco y Negro'}*\n` +
-              `📚 Acabado: *${bindingText}*\n\n` +
-              `💰 *Total a Abonar: $${total.toLocaleString('es-AR')}*\n` +
-              `💳 *Método de pago:* Transferencia (Alias: ideas.de.la.luna)\n\n` +
-              fileLink +
-              `¿Me confirman para realizar el pago y enviar el comprobante?`
-            );
-
-            window.open(`https://api.whatsapp.com/send?phone=5493412141732&text=${msg}`, '_blank');
-          };
-        }
-      }
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', setup);
-    } else {
-      setup();
-    }
-    document.addEventListener('astro:page-load', setup);
-  }
-</script>

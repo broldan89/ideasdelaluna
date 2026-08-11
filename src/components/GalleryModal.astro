@@ -1,194 +1,66 @@
----
----
-<!-- MODAL DE GALERÍA DE TRABAJOS -->
-<div 
-  id="gallery-modal" 
-  class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 backdrop-blur-md p-4 transition-all duration-300 opacity-0"
+<!-- Ajuste visual del modal para móviles -->
+<div
+  id="gallery-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-3 sm:p-4 transition-all duration-300 opacity-0"
 >
-  <div class="relative w-full max-w-3xl bg-[#FAF8FC] rounded-3xl overflow-hidden shadow-2xl border border-white/20 flex flex-col max-h-[90vh]">
-    
-    <!-- HEADER DEL MODAL -->
-    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200/60 bg-white/50 backdrop-blur-sm">
+  <div
+    class="relative w-full max-w-3xl bg-[#FAF8FC] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/20 flex flex-col max-h-[85vh] sm:max-h-[90vh]"
+  >
+    <!-- HEADER -->
+    <div
+      class="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-slate-200/60 bg-white/50"
+    >
       <div>
-        <h3 id="modal-title" class="font-serif text-xl font-medium text-indigo-950">Galería de Trabajos</h3>
-        <p id="modal-subtitle" class="text-xs text-slate-500 font-light">Desliza para ver más opciones</p>
+        <h3
+          id="modal-title"
+          class="font-serif text-base sm:text-xl font-medium text-indigo-950 truncate max-w-[200px] sm:max-w-none"
+        >
+          Galería
+        </h3>
+        <p class="text-[10px] sm:text-xs text-slate-500 font-light">
+          Desliza para ver más opciones
+        </p>
       </div>
-      
-      <!-- BOTÓN CERRAR (Se agrega type="button" y z-index) -->
-      <button 
-        id="close-modal" 
+
+      <button
+        id="close-modal"
         type="button"
-        class="w-9 h-9 rounded-full bg-slate-200/60 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition-colors text-lg font-bold cursor-pointer relative z-10"
-        aria-label="Cerrar galería"
+        class="w-8 h-8 rounded-full bg-slate-200/60 text-slate-700 flex items-center justify-center text-sm font-bold"
       >
         ✕
       </button>
     </div>
 
-    <!-- CONTENEDOR DEL CARRUSEL DE FOTOS -->
-    <div class="relative flex-grow flex items-center justify-center bg-slate-900/5 min-h-[300px] md:min-h-[420px] overflow-hidden p-4">
-      
-      <!-- IMAGEN PRINCIPAL -->
-      <img 
-        id="modal-img" 
-        src="" 
-        alt="Trabajo realizado" 
-        class="max-h-[65vh] w-auto max-w-full object-contain rounded-xl shadow-md transition-all duration-300"
+    <!-- IMAGEN Y CONTROLES -->
+    <div
+      class="relative flex-grow flex items-center justify-center bg-slate-900/5 min-h-[220px] sm:min-h-[420px] overflow-hidden p-2 sm:p-4"
+    >
+      <img
+        id="modal-img"
+        src=""
+        alt="Trabajo realizado"
+        class="max-h-[50vh] sm:max-h-[65vh] w-auto max-w-full object-contain rounded-lg shadow-md"
       />
 
-      <!-- BOTONES NAVEGACIÓN (ANTERIOR / SIGUIENTE) -->
-      <button 
-        id="prev-slide" 
+      <button
+        id="prev-slide"
         type="button"
-        class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-indigo-950 shadow-lg flex items-center justify-center text-xl backdrop-blur-sm transition-all hover:scale-110 cursor-pointer z-10"
+        class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 text-indigo-950 shadow-md flex items-center justify-center text-lg z-10"
+        >❮</button
       >
-        ❮
-      </button>
-
-      <button 
-        id="next-slide" 
+      <button
+        id="next-slide"
         type="button"
-        class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-indigo-950 shadow-lg flex items-center justify-center text-xl backdrop-blur-sm transition-all hover:scale-110 cursor-pointer z-10"
+        class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 text-indigo-950 shadow-md flex items-center justify-center text-lg z-10"
+        >❯</button
       >
-        ❯
-      </button>
     </div>
 
-    <!-- FOOTER / NAVEGACIÓN POR MINIATURAS (DOTS) -->
-    <div id="modal-dots" class="flex items-center justify-center gap-2 py-4 bg-white/60">
-      <!-- Los puntos se generan dinámicamente -->
+    <!-- DOTS -->
+    <div
+      id="modal-dots"
+      class="flex items-center justify-center gap-2 py-3 bg-white/60"
+    >
     </div>
-
   </div>
 </div>
-
-<script>
-  let currentImages: string[] = [];
-  let currentIndex = 0;
-
-  // Función para cerrar la galería
-  function closeModal() {
-    const modal = document.getElementById('gallery-modal');
-    if (modal) {
-      modal.classList.add('opacity-0');
-      setTimeout(() => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }, 300);
-    }
-  }
-
-  function updateSlide() {
-    const modalImg = document.getElementById('modal-img') as HTMLImageElement;
-    const dotsContainer = document.getElementById('modal-dots');
-    
-    if (!modalImg || currentImages.length === 0) return;
-    
-    modalImg.style.opacity = '0';
-    setTimeout(() => {
-      modalImg.src = currentImages[currentIndex];
-      modalImg.style.opacity = '1';
-    }, 150);
-
-    if (dotsContainer) {
-      Array.from(dotsContainer.children).forEach((dot, idx) => {
-        if (idx === currentIndex) {
-          dot.className = "w-6 h-2.5 bg-indigo-600 rounded-full transition-all cursor-pointer";
-        } else {
-          dot.className = "w-2.5 h-2.5 bg-slate-300 hover:bg-slate-400 rounded-full transition-all cursor-pointer";
-        }
-      });
-    }
-  }
-
-  function renderDots() {
-    const dotsContainer = document.getElementById('modal-dots');
-    if (!dotsContainer) return;
-    dotsContainer.innerHTML = '';
-    currentImages.forEach((_, idx) => {
-      const dot = document.createElement('button');
-      dot.type = 'button';
-      dot.addEventListener('click', (e) => {
-        e.stopPropagation();
-        currentIndex = idx;
-        updateSlide();
-      });
-      dotsContainer.appendChild(dot);
-    });
-  }
-
-  // Evento para abrir la galería
-  window.addEventListener('open-gallery', ((e: CustomEvent) => {
-    const { title, images } = e.detail;
-    if (!images || images.length === 0) return;
-
-    currentImages = images;
-    currentIndex = 0;
-
-    const modal = document.getElementById('gallery-modal');
-    const modalTitle = document.getElementById('modal-title');
-
-    if (modalTitle) modalTitle.textContent = title;
-    
-    renderDots();
-    updateSlide();
-
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      setTimeout(() => modal.classList.remove('opacity-0'), 10);
-    }
-  }) as EventListener);
-
-  // DELEGACIÓN GLOBAL DE CLICS (Atrapa la X sin importar cuándo se cargó)
-  document.addEventListener('click', (e) => {
-    const target = e.target as HTMLElement;
-
-    // Si el clic fue en la X o dentro del botón de cierre
-    if (target.closest('#close-modal')) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeModal();
-      return;
-    }
-
-    // Si el clic fue en el fondo oscuro del modal
-    const modal = document.getElementById('gallery-modal');
-    if (target === modal) {
-      closeModal();
-      return;
-    }
-
-    // Botón Anterior
-    if (target.closest('#prev-slide')) {
-      e.stopPropagation();
-      currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-      updateSlide();
-      return;
-    }
-
-    // Botón Siguiente
-    if (target.closest('#next-slide')) {
-      e.stopPropagation();
-      currentIndex = (currentIndex + 1) % currentImages.length;
-      updateSlide();
-      return;
-    }
-  });
-
-  // Teclas para cerrar/navegar
-  window.addEventListener('keydown', (e) => {
-    const modal = document.getElementById('gallery-modal');
-    if (modal && !modal.classList.contains('hidden')) {
-      if (e.key === 'Escape') closeModal();
-      if (e.key === 'ArrowLeft') {
-        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-        updateSlide();
-      }
-      if (e.key === 'ArrowRight') {
-        currentIndex = (currentIndex + 1) % currentImages.length;
-        updateSlide();
-      }
-    }
-  });
-</script>

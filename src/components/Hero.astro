@@ -1,83 +1,169 @@
 ---
+
 ---
-<section class="relative overflow-hidden py-20 px-6 bg-gradient-to-b from-indigo-50/50 to-transparent">
+
+<section
+  class="relative overflow-hidden py-10 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-indigo-50/50 to-transparent"
+>
   <div class="max-w-4xl mx-auto text-center relative z-10">
-    <span class="text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">Papelería Creativa y Personalizada</span>
-    <h1 class="text-5xl md:text-6xl font-normal text-indigo-950 mt-6 leading-tight">
-      Imprimimos las ideas que <br><span class="italic font-serif text-indigo-600">orbitan</span> en tu cabeza.
+    <span
+      class="text-[10px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full"
+    >
+      Papelería Creativa y Personalizada
+    </span>
+    <h1
+      class="text-3xl sm:text-5xl md:text-6xl font-normal text-indigo-950 mt-4 sm:mt-6 leading-tight"
+    >
+      Imprimimos las ideas que <br /><span
+        class="italic font-serif text-indigo-600">orbitan</span
+      > en tu cabeza.
     </h1>
-    <p class="mt-6 text-lg text-slate-600 max-w-xl mx-auto font-light">
-      Hacemos realidad lo que imaginás. Papelería y detalles impresos para marcas, eventos y personas.
+    <p
+      class="mt-3 sm:mt-6 text-sm sm:text-lg text-slate-600 max-w-xl mx-auto font-light leading-relaxed"
+    >
+      Hacemos realidad lo que imaginás. Papelería y detalles impresos para
+      marcas, eventos y personas.
     </p>
 
-    <!-- Filtro rápido estilo catálogo (Trozos de papel flotantes) -->
-    <div class="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto pt-2">
-      
+    <!-- CARROUSEL HORIZONTAL EN MÓVIL / GRID EN TABLET Y DESKTOP -->
+    <div
+      class="mt-8 sm:mt-14 flex sm:grid sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto pt-2 overflow-x-auto snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-auto no-scrollbar"
+    >
       <!-- TARJETA 1 -->
-      <a href="#marcas" class="paper-card-wrapper paper-rotate-left block group">
-        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 flex flex-col items-center text-center">
-          <span class="text-3xl block mb-3">🚀</span>
-          <h4 class="font-serif font-medium text-indigo-950 text-lg group-hover:text-indigo-600 transition-colors leading-snug">Quiero potenciar mi marca</h4>
-          <p class="text-xs text-slate-500 mt-2 font-light leading-relaxed">Packaging, stickers y tarjetas.</p>
+      <a
+        href="#marcas"
+        class="snap-center shrink-0 w-[80vw] max-w-[260px] sm:w-auto paper-card-wrapper paper-rotate-left block group"
+      >
+        <div
+          class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 flex flex-col items-center text-center h-full"
+        >
+          <span class="text-2xl sm:text-3xl block mb-2 sm:mb-3">🚀</span>
+          <h4
+            class="font-serif font-medium text-indigo-950 text-base sm:text-lg group-hover:text-indigo-600 transition-colors leading-snug"
+          >
+            Quiero potenciar mi marca
+          </h4>
+          <p
+            class="text-[11px] sm:text-xs text-slate-500 mt-2 font-light leading-relaxed"
+          >
+            Packaging, stickers y tarjetas.
+          </p>
         </div>
       </a>
-      
+
       <!-- TARJETA 2 -->
-      <a href="#eventos" class="paper-card-wrapper paper-rotate-right block group">
-        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 flex flex-col items-center text-center">
-          <span class="text-3xl block mb-3">✨</span>
-          <h3 class="font-serif font-medium text-indigo-950 text-lg group-hover:text-indigo-600 transition-colors leading-snug">Tengo un evento especial</h3>
-          <p class="text-xs text-slate-500 mt-2 font-light leading-relaxed">Invitaciones, tags y cartelería.</p>
+      <a
+        href="#eventos"
+        class="snap-center shrink-0 w-[80vw] max-w-[260px] sm:w-auto paper-card-wrapper paper-rotate-right block group"
+      >
+        <div
+          class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 flex flex-col items-center text-center h-full"
+        >
+          <span class="text-2xl sm:text-3xl block mb-2 sm:mb-3">✨</span>
+          <h3
+            class="font-serif font-medium text-indigo-950 text-base sm:text-lg group-hover:text-indigo-600 transition-colors leading-snug"
+          >
+            Tengo un evento especial
+          </h3>
+          <p
+            class="text-[11px] sm:text-xs text-slate-500 mt-2 font-light leading-relaxed"
+          >
+            Invitaciones, tags y cartelería.
+          </p>
         </div>
       </a>
 
-      <!-- TARJETA 3 (Luna rotada 90°) -->
-      <a href="#tienda" class="paper-card-wrapper paper-rotate-center block group">
-        <div class="paper-card p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 flex flex-col items-center text-center">
-          <span class="text-3xl block mb-3 rotate-90 inline-block">🌙</span>
-          <h3 class="font-serif font-medium text-indigo-950 text-lg group-hover:text-indigo-600 transition-colors leading-snug">Busco papelería para mí</h3>
-          <p class="text-xs text-slate-500 mt-2 font-light leading-relaxed">Cuadernos, agendas y láminas.</p>
+      <!-- TARJETA 3 -->
+      <a
+        href="#tienda"
+        class="snap-center shrink-0 w-[80vw] max-w-[260px] sm:w-auto paper-card-wrapper paper-rotate-center block group"
+      >
+        <div
+          class="paper-card p-5 sm:p-6 bg-white transition-transform duration-300 group-hover:-translate-y-2 flex flex-col items-center text-center h-full"
+        >
+          <span
+            class="text-2xl sm:text-3xl block mb-2 sm:mb-3 rotate-90 inline-block"
+            >🌙</span
+          >
+          <h3
+            class="font-serif font-medium text-indigo-950 text-base sm:text-lg group-hover:text-indigo-600 transition-colors leading-snug"
+          >
+            Busco papelería para mí
+          </h3>
+          <p
+            class="text-[11px] sm:text-xs text-slate-500 mt-2 font-light leading-relaxed"
+          >
+            Cuadernos, agendas y láminas.
+          </p>
         </div>
       </a>
-
     </div>
   </div>
 </section>
 
 <style>
-  /* Inclinaciones orgánicas de cada papel */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
   .paper-rotate-left {
-    transform: rotate(-1.8deg);
+    transform: rotate(-1.5deg);
   }
   .paper-rotate-right {
     transform: rotate(1.5deg);
   }
   .paper-rotate-center {
-    transform: rotate(-0.6deg);
+    transform: rotate(-0.5deg);
   }
 
-  /* Sombra pronunciada que respeta los bordes recortados */
   .paper-card-wrapper {
-    filter: 
-      drop-shadow(3px 12px 16px rgba(45, 35, 66, 0.12)) 
-      drop-shadow(1px 4px 5px rgba(45, 35, 66, 0.08));
-    transition: filter 0.3s ease, transform 0.3s ease;
+    filter: drop-shadow(2px 8px 10px rgba(45, 35, 66, 0.08));
   }
-
-  /* Efecto Flotante Aumentado en Hover */
-  .paper-card-wrapper:hover {
-    filter: 
-      drop-shadow(6px 20px 24px rgba(45, 35, 66, 0.18)) 
-      drop-shadow(2px 6px 8px rgba(45, 35, 66, 0.10));
-  }
-
-  /* Clip-path de corte rasgado */
   .paper-card {
     clip-path: polygon(
-      0% 4px, 8% 0px, 16% 3px, 24% 1px, 32% 4px, 40% 0px, 48% 3px, 56% 1px, 64% 4px, 72% 0px, 80% 3px, 88% 1px, 96% 3px, 100% 1px,
-      calc(100% - 2px) 15%, 100% 30%, calc(100% - 3px) 45%, 100% 60%, calc(100% - 2px) 75%, 100% 90%, calc(100% - 1px) 100%,
-      92% calc(100% - 3px), 84% 100%, 76% calc(100% - 2px), 68% 100%, 60% calc(100% - 4px), 52% 100%, 44% calc(100% - 2px), 36% 100%, 28% calc(100% - 3px), 20% 100%, 12% calc(100% - 1px), 4% 100%, 0% calc(100% - 2px),
-      2px 85%, 0% 70%, 3px 55%, 1px 40%, 3px 25%, 1px 10%
+      0% 4px,
+      8% 0px,
+      16% 3px,
+      24% 1px,
+      32% 4px,
+      40% 0px,
+      48% 3px,
+      56% 1px,
+      64% 4px,
+      72% 0px,
+      80% 3px,
+      88% 1px,
+      96% 3px,
+      100% 1px,
+      calc(100% - 2px) 15%,
+      100% 30%,
+      calc(100% - 3px) 45%,
+      100% 60%,
+      calc(100% - 2px) 75%,
+      100% 90%,
+      calc(100% - 1px) 100%,
+      92% calc(100% - 3px),
+      84% 100%,
+      76% calc(100% - 2px),
+      68% 100%,
+      60% calc(100% - 4px),
+      52% 100%,
+      44% calc(100% - 2px),
+      36% 100%,
+      28% calc(100% - 3px),
+      20% 100%,
+      12% calc(100% - 1px),
+      4% 100%,
+      0% calc(100% - 2px),
+      2px 85%,
+      0% 70%,
+      3px 55%,
+      1px 40%,
+      3px 25%,
+      1px 10%
     );
   }
 </style>
