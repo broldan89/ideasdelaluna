@@ -1,4 +1,7 @@
-<!-- Ajustes aplicados al Cotizador para smartphones -->
+---
+/* Cotizador.astro - Conexión dinámica con Google Sheets */
+---
+
 <section
   id="cotizador"
   class="max-w-4xl mx-auto px-3 sm:px-6 py-8 sm:py-16 scroll-mt-20"
@@ -23,7 +26,9 @@
   </div>
 
   <div class="cotizador-card-wrapper">
-    <div class="cotizador-card bg-white p-4 sm:p-8 rounded-2xl sm:rounded-none">
+    <div
+      class="cotizador-card bg-white p-4 sm:p-8 rounded-2xl sm:rounded-none shadow-sm border border-indigo-50"
+    >
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
         <!-- CONTROLES -->
         <div class="space-y-4 sm:space-y-6">
@@ -172,7 +177,7 @@
                 >
               </div>
               <div class="flex justify-between items-center">
-                <span>Costo por unidad:</span>
+                <span>Costo por impresión:</span>
                 <span id="resCostoHoja" class="font-semibold text-indigo-950"
                   >$0</span
                 >
@@ -212,3 +217,223 @@
     </div>
   </div>
 </section>
+
+<!-- Librería para lectura de páginas PDF cliente -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+></script>
+
+<script>
+  // @ts-nocheck
+  let tablaPrecios = {
+    S01: 32, // Impresión Faz Simple (BN)
+    S02: 32, // Impresión Faz Simple (Color)
+    S03: 64, // Impresión Doble Faz (Color/BN)
+    S05: 1500, // Anillado A4 + tapas
+  };
+
+  let estadoCotizador = {
+    paginas: 0,
+    modalidad: "simple", // 'simple' | 'doble'
+    color: "bn", // 'bn' | 'color'
+    encuadernacion: "ninguno", // 'ninguno' | 'anillado'
+    copias: 1,
+    nombreArchivo: "",
+    totalCalculado: 0,
+  };
+
+  // Cargar lista actualizada desde el API
+  async function sincronizarPrecios() {
+    try {
+      const response = await fetch("/api/precios.json");
+      if (response.ok) {
+        const data = await response.json();
+        tablaPrecios = { ...tablaPrecios, ...data };
+      }
+    } catch (e) {
+      console.warn("Utilizando valores locales por omisión.", e);
+    }
+  }
+
+  function calcularTotal() {
+    const { paginas, modalidad, color, encuadernacion, copias } =
+      estadoCotizador;
+
+    if (paginas <= 0) {
+      document.getElementById("resPaginas").textContent = "0 págs";
+      document.getElementById("resHojas").textContent = "0 hojas";
+      document.getElementById("resCostoHoja").textContent = "$0";
+      document.getElementById("resEncuadernacion").textContent = "$0";
+      document.getElementById("totalPrecio").textContent = "$0";
+
+      const btn = document.getElementById("btnEnviarWhatsApp");
+      btn.disabled = true;
+      btn.className =
+        "w-full bg-slate-300 text-white cursor-not-allowed font-semibold py-3 px-4 rounded-full text-xs tracking-wider transition-all flex items-center justify-center gap-2";
+      return;
+    }
+
+    // Cálculo de hojas físicas
+    const hojas = modalidad === "doble" ? Math.ceil(paginas / 2) : paginas;
+
+    // Obtención del costo unitario según selección
+    let costoUnitarioImpresion = 0;
+    if (modalidad === "doble") {
+      costoUnitarioImpresion = tablaPrecios.S03 || 64;
+    } else {
+      costoUnitarioImpresion =
+        color === "color" ? tablaPrecios.S02 || 32 : tablaPrecios.S01 || 32;
+    }
+
+    const subtotalImpresion = hojas * costoUnitarioImpresion;
+    const costoAnilladoUnitario =
+      encuadernacion === "anillado" ? tablaPrecios.S05 || 1500 : 0;
+
+    const subtotalUnidad = subtotalImpresion + costoAnilladoUnitario;
+    const totalFinal = subtotalUnidad * copias;
+
+    estadoCotizador.totalCalculado = totalFinal;
+
+    // Actualización de la interfaz
+    document.getElementById("resPaginas").textContent = `${paginas} págs`;
+    document.getElementById("resHojas").textContent = `${hojas} hojas`;
+    document.getElementById("resCostoHoja").textContent =
+      `$${subtotalImpresion.toLocaleString("es-AR")}`;
+    document.getElementById("resEncuadernacion").textContent =
+      `$${costoAnilladoUnitario.toLocaleString("es-AR")}`;
+    document.getElementById("totalPrecio").textContent =
+      `$${totalFinal.toLocaleString("es-AR")}`;
+
+    // Habilitación del botón WhatsApp
+    const btn = document.getElementById("btnEnviarWhatsApp");
+    btn.disabled = false;
+    btn.className =
+      "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-full text-xs tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer";
+  }
+
+  function inicializarEventos() {
+    const inputPdf = document.getElementById("pdfInput");
+    const selectEncuadernacion = document.getElementById(
+      "selectEncuadernacion",
+    );
+    const inputCopias = document.getElementById("inputCopias");
+    const btnWhatsApp = document.getElementById("btnEnviarWhatsApp");
+
+    // Manejo de archivo subido
+    inputPdf.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      estadoCotizador.nombreArchivo = file.name;
+      document.getElementById("fileName").textContent = file.name;
+      document.getElementById("fileStatus").textContent =
+        `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+
+      if (file.type === "application/pdf") {
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+              "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+            const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer })
+              .promise;
+            estadoCotizador.paginas = pdf.numPages;
+          } else {
+            estadoCotizador.paginas = 10; // Valor por defecto si falla el CDN
+          }
+        } catch (err) {
+          estadoCotizador.paginas = 10;
+        }
+      } else {
+        // En imágenes u otros documentos se toma como 1 página de base
+        estadoCotizador.paginas = 1;
+      }
+
+      calcularTotal();
+    });
+
+    // Alternar Modalidad (Simple / Doble)
+    document.querySelectorAll(".opt-impresion").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".opt-impresion").forEach((b) => {
+          b.classList.remove(
+            "active",
+            "border-indigo-600",
+            "bg-indigo-50/80",
+            "text-indigo-950",
+          );
+          b.classList.add("border-slate-200", "bg-white", "text-slate-600");
+        });
+        btn.classList.add(
+          "active",
+          "border-indigo-600",
+          "bg-indigo-50/80",
+          "text-indigo-950",
+        );
+        btn.classList.remove("border-slate-200", "bg-white", "text-slate-600");
+
+        estadoCotizador.modalidad = btn.dataset.type;
+        calcularTotal();
+      });
+    });
+
+    // Alternar Color (BN / Color)
+    document.querySelectorAll(".opt-color").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".opt-color").forEach((b) => {
+          b.classList.remove(
+            "active",
+            "border-indigo-600",
+            "bg-indigo-50/80",
+            "text-indigo-950",
+          );
+          b.classList.add("border-slate-200", "bg-white", "text-slate-600");
+        });
+        btn.classList.add(
+          "active",
+          "border-indigo-600",
+          "bg-indigo-50/80",
+          "text-indigo-950",
+        );
+        btn.classList.remove("border-slate-200", "bg-white", "text-slate-600");
+
+        estadoCotizador.color = btn.dataset.color;
+        calcularTotal();
+      });
+    });
+
+    // Encuadernación
+    selectEncuadernacion.addEventListener("change", (e) => {
+      estadoCotizador.encuadernacion = e.target.value;
+      calcularTotal();
+    });
+
+    // Copias
+    inputCopias.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value);
+      estadoCotizador.copias = isNaN(val) || val < 1 ? 1 : val;
+      calcularTotal();
+    });
+
+    // Enviar Pedido a WhatsApp
+    btnWhatsApp.addEventListener("click", () => {
+      if (estadoCotizador.paginas <= 0) return;
+
+      const mensaje = `¡Hola! Quisiera encargar la impresión de un documento con el siguiente detalle:
+• *Archivo:* ${estadoCotizador.nombreArchivo || "Documento"}
+• *Páginas:* ${estadoCotizador.paginas}
+• *Modalidad:* ${estadoCotizador.modalidad === "simple" ? "Simple Faz" : "Doble Faz"}
+• *Tipo:* ${estadoCotizador.color === "color" ? "Color" : "Blanco y Negro"}
+• *Terminación:* ${estadoCotizador.encuadernacion === "anillado" ? "Anillado / Espiralado" : "Sin encuadernar"}
+• *Copias:* ${estadoCotizador.copias}
+• *Total Estimado:* $${estadoCotizador.totalCalculado.toLocaleString("es-AR")}`;
+
+      const url = `https://api.whatsapp.com/send?phone=5493412141732&text=${encodeURIComponent(mensaje)}`;
+      window.open(url, "_blank");
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    await sincronizarPrecios();
+    inicializarEventos();
+  });
+</script>
