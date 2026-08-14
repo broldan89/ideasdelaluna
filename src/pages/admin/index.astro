@@ -91,6 +91,21 @@ import Greeting from "../../components/Greeting.astro";
     "Cancelado",
   ];
 
+  const MENSAJES_POR_ESTADO = {
+    "Pendiente de Pago": (p) =>
+      `¡Hola! Te escribimos de Ideas de la Luna sobre tu pedido #${p.order_code}. Todavía figura pendiente de pago, ¿nos podés enviar el comprobante de transferencia? Alias: ideas.de.la.luna`,
+    "Pago Confirmado": (p) =>
+      `¡Hola! Te confirmamos que recibimos el pago de tu pedido #${p.order_code}. Ya lo pasamos a preparación 🙌`,
+    "En Preparación": (p) =>
+      `¡Hola! Tu pedido #${p.order_code} está en preparación. Te avisamos apenas esté listo.`,
+    "Listo para Retirar": (p) =>
+      `¡Hola! Tu pedido #${p.order_code} ya está listo para retirar. Te esperamos 😊`,
+    Entregado: (p) =>
+      `¡Hola! Gracias por retirar tu pedido #${p.order_code}. ¡Cualquier cosa estamos a un mensaje de distancia!`,
+    Cancelado: (p) =>
+      `¡Hola! Te escribimos porque tu pedido #${p.order_code} quedó cancelado. Si fue un error o querés reactivarlo, avisanos.`,
+  };
+
   let pedidos = [];
   let filtroActual = "todos";
 
@@ -178,6 +193,8 @@ import Greeting from "../../components/Greeting.astro";
 
               ${p.pdf_url ? `<a href="${p.pdf_url}" target="_blank" class="text-xs font-medium bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg px-3 py-2 transition-colors">⬇️ Descargar archivo</a>` : ""}
 
+              ${p.customer_phone ? `<button class="btn-notificar text-xs font-medium bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg px-3 py-2 transition-colors">📲 Notificar por WhatsApp</button>` : ""}
+
               <span class="guardado-ok hidden text-xs text-emerald-600 font-medium">✅ Guardado</span>
             </div>
           </div>
@@ -192,6 +209,7 @@ import Greeting from "../../components/Greeting.astro";
       const checkDemora = card.querySelector(".check-demora");
       const inputMotivo = card.querySelector(".input-motivo");
       const guardadoOk = card.querySelector(".guardado-ok");
+      const btnNotificar = card.querySelector(".btn-notificar");
 
       const guardarCambios = async () => {
         const cambios = {
@@ -227,6 +245,24 @@ import Greeting from "../../components/Greeting.astro";
       inputMotivo.addEventListener("blur", () => {
         if (checkDemora.checked) guardarCambios();
       });
+
+      if (btnNotificar) {
+        btnNotificar.addEventListener("click", () => {
+          const pedido = pedidos.find((p) => String(p.id) === String(id));
+          if (!pedido) return;
+
+          const armarMensaje =
+            MENSAJES_POR_ESTADO[pedido.status] ||
+            MENSAJES_POR_ESTADO["Pendiente de Pago"];
+          const mensaje = armarMensaje(pedido);
+          const telefono = pedido.customer_phone.replace(/[^0-9]/g, "");
+
+          window.open(
+            `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`,
+            "_blank",
+          );
+        });
+      }
     });
   }
 

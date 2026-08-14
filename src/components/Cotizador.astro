@@ -151,6 +151,22 @@
               class="w-28 bg-slate-50 border border-slate-200 text-indigo-950 text-xs rounded-xl p-2.5 focus:outline-none font-bold text-center"
             />
           </div>
+
+          <!-- 6. TELÉFONO DE CONTACTO -->
+          <div>
+            <label
+              for="inputTelefono"
+              class="block text-[11px] sm:text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
+            >
+              6. Tu WhatsApp (para avisarte del estado)
+            </label>
+            <input
+              type="tel"
+              id="inputTelefono"
+              placeholder="Ej: 3411234567"
+              class="w-full bg-slate-50 border border-slate-200 text-indigo-950 text-xs rounded-xl p-2.5 focus:outline-none font-medium"
+            />
+          </div>
         </div>
 
         <!-- RESUMEN -->
@@ -241,6 +257,7 @@
     copias: 1,
     nombreArchivo: "",
     archivoUrl: "",
+    telefono: "",
     totalCalculado: 0,
   };
 
@@ -352,6 +369,7 @@
       "selectEncuadernacion",
     );
     const inputCopias = document.getElementById("inputCopias");
+    const inputTelefono = document.getElementById("inputTelefono");
     const btnWhatsApp = document.getElementById("btnEnviarWhatsApp");
 
     // Manejo de archivo subido
@@ -470,9 +488,22 @@
       calcularTotal();
     });
 
+    // Teléfono de contacto
+    inputTelefono.addEventListener("input", (e) => {
+      estadoCotizador.telefono = e.target.value.replace(/[^0-9]/g, "");
+    });
+
     // Enviar Pedido a WhatsApp
     btnWhatsApp.addEventListener("click", async () => {
       if (estadoCotizador.paginas <= 0 || !estadoCotizador.archivoUrl) return;
+
+      if (estadoCotizador.telefono.length < 8) {
+        alert(
+          "Ingresá tu número de WhatsApp para poder avisarte del estado de tu pedido.",
+        );
+        inputTelefono.focus();
+        return;
+      }
 
       btnWhatsApp.disabled = true;
       btnWhatsApp.textContent = "⏳ Generando pedido...";
@@ -513,6 +544,7 @@
                 subproducts: detalle,
                 total_price: estadoCotizador.totalCalculado,
                 pdf_url: estadoCotizador.archivoUrl,
+                customer_phone: estadoCotizador.telefono,
                 status: "Pendiente de Pago",
               },
             ])
