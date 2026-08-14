@@ -1,0 +1,109 @@
+---
+import Layout from "../../layouts/Layout.astro";
+const { codigo } = Astro.params;
+---
+
+<Layout title={`Seguimiento de pedido #${codigo} | Ideas de la Luna`}>
+  <section class="max-w-md mx-auto px-4 py-20 sm:py-28">
+    <div class="text-center mb-8">
+      <span
+        class="text-[10px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-2.5 py-1 rounded-full"
+      >
+        Seguimiento de pedido
+      </span>
+      <h1
+        class="text-2xl sm:text-3xl font-serif text-indigo-950 font-medium mt-3"
+      >
+        Pedido <span class="italic text-indigo-600">#{codigo}</span>
+      </h1>
+    </div>
+
+    <div
+      id="contenido"
+      class="bg-white p-6 sm:p-8 rounded-2xl border border-indigo-50 shadow-sm text-center"
+    >
+      <p id="cargando" class="text-sm text-slate-500">Buscando tu pedido...</p>
+
+      <div id="resultado" class="hidden">
+        <p
+          id="tituloPedido"
+          class="font-serif text-indigo-950 font-medium text-base mb-4"
+        >
+        </p>
+        <span
+          id="badgeEstado"
+          class="inline-block text-xs font-semibold uppercase tracking-wider border rounded-full px-3 py-1.5"
+        ></span>
+        <p
+          id="avisoDemora"
+          class="hidden text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-xl p-3 mt-4"
+        >
+        </p>
+      </div>
+
+      <div id="noEncontrado" class="hidden">
+        <p class="text-sm text-slate-500">
+          No encontramos ningún pedido con ese código. Revisá que esté bien
+          escrito o consultanos por WhatsApp.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // @ts-nocheck
+  import { supabase } from "../../lib/supabase.js";
+
+  function badgeColor(status) {
+    switch (status) {
+      case "Pendiente de Pago":
+        return "bg-amber-50 text-amber-700 border-amber-200";
+      case "Pago Confirmado":
+        return "bg-sky-50 text-sky-700 border-sky-200";
+      case "En Preparación":
+        return "bg-indigo-50 text-indigo-700 border-indigo-200";
+      case "Listo para Retirar":
+        return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      case "Entregado":
+        return "bg-slate-100 text-slate-500 border-slate-200";
+      case "Cancelado":
+        return "bg-red-50 text-red-600 border-red-200";
+      default:
+        return "bg-slate-50 text-slate-600 border-slate-200";
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const codigo = window.location.pathname.split("/").filter(Boolean).pop();
+
+    const { data, error } = await supabase.rpc("get_order_public", {
+      p_order_code: codigo,
+    });
+
+    document.getElementById("cargando").classList.add("hidden");
+
+    const pedido = !error && data && data.length > 0 ? data[0] : null;
+
+    if (!pedido) {
+      document.getElementById("noEncontrado").classList.remove("hidden");
+      return;
+    }
+
+    document.getElementById("resultado").classList.remove("hidden");
+    document.getElementById("tituloPedido").textContent =
+      pedido.product_title || "Tu pedido";
+
+    const badge = document.getElementById("badgeEstado");
+    badge.textContent = pedido.status || "Sin estado";
+    badge.className = `inline-block text-xs font-semibold uppercase tracking-wider border rounded-full px-3 py-1.5 ${badgeColor(pedido.status)}`;
+
+    if (pedido.delayed) {
+      const aviso = document.getElementById("avisoDemora");
+      aviso.textContent = pedido.delay_reason
+        ? `⚠️ Hay una demora: ${pedido.delay_reason}`
+        : "⚠️ Este pedido tiene una demora.";
+      aviso.classList.remove("hidden");
+    }
+  });
+</script>

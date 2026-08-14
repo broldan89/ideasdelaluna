@@ -537,6 +537,9 @@
       btnWhatsApp.innerHTML = "<span>💬</span> Encargar por WhatsApp";
 
       const encabezadoCodigo = codigoPedido ? ` *#${codigoPedido}*` : "";
+      const lineaSeguimiento = codigoPedido
+        ? `\n• *Seguí tu pedido:* https://ideasdelaluna.netlify.app/seguimiento/${codigoPedido}`
+        : "";
 
       const mensaje = `¡Hola! Quisiera encargar la impresión de un documento con el siguiente detalle${encabezadoCodigo}:
 • *Archivo:* ${estadoCotizador.nombreArchivo || "Documento"}
@@ -545,7 +548,7 @@
 • *Tipo:* ${estadoCotizador.color === "color" ? "Color" : "Blanco y Negro"}
 • *Terminación:* ${estadoCotizador.encuadernacion === "anillado" ? "Anillado / Espiralado" : "Sin encuadernar"}
 • *Copias:* ${estadoCotizador.copias}
-• *Total Estimado:* $${estadoCotizador.totalCalculado.toLocaleString("es-AR")}`;
+• *Total Estimado:* $${estadoCotizador.totalCalculado.toLocaleString("es-AR")}${lineaSeguimiento}`;
 
       const url = `https://api.whatsapp.com/send?phone=5493412141732&text=${encodeURIComponent(mensaje)}`;
       window.open(url, "_blank");

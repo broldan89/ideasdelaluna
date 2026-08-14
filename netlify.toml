@@ -4,3 +4,8 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/seguimiento/*"
+  to = "/seguimiento/index.html"
+  status = 200
