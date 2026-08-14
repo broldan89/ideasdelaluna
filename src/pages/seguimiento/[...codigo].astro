@@ -1,9 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-
-// Página catch-all: se genera UNA sola vez en el build.
-// Netlify reescribe /seguimiento/* hacia este mismo archivo (ver netlify.toml).
-// El código de pedido se lee del lado del cliente, no acá.
 export function getStaticPaths() {
   return [{ params: { codigo: undefined } }];
 }
