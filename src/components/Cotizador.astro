@@ -224,6 +224,8 @@
 
 <script>
   // @ts-nocheck
+  import { supabase } from "../lib/supabase.js";
+
   let tablaPrecios = {
     S01: 32, // Impresión Faz Simple (BN)
     S02: 32, // Impresión Faz Simple (Color)
@@ -238,6 +240,7 @@
     encuadernacion: "ninguno", // 'ninguno' | 'anillado'
     copias: 1,
     nombreArchivo: "",
+    archivoUrl: "",
     totalCalculado: 0,
   };
 
@@ -254,11 +257,44 @@
     }
   }
 
+  // Sube el archivo a Supabase Storage y devuelve la URL pública, o null si falla
+  async function subirArchivo(file) {
+    if (!supabase) return null;
+
+    try {
+      const ext = file.name.split(".").pop();
+      const nombreLimpio = file.name.replace(/[^a-zA-Z0-9]/g, "_");
+      const path = `pdf_${Date.now()}_${nombreLimpio}.${ext}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("pdfs-cotizador")
+        .upload(path, file, { cacheControl: "3600", upsert: true });
+
+      if (uploadError) {
+        alert(
+          `Atención: El archivo no se pudo subir a la nube (${uploadError.message}). Volvé a intentar.`,
+        );
+        return null;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("pdfs-cotizador")
+        .getPublicUrl(uploadData.path);
+
+      return publicUrlData?.publicUrl || null;
+    } catch (e) {
+      alert(
+        "Atención: El archivo no se pudo subir a la nube. Volvé a intentar.",
+      );
+      return null;
+    }
+  }
+
   function calcularTotal() {
-    const { paginas, modalidad, color, encuadernacion, copias } =
+    const { paginas, modalidad, color, encuadernacion, copias, archivoUrl } =
       estadoCotizador;
 
-    if (paginas <= 0) {
+    if (paginas <= 0 || !archivoUrl) {
       document.getElementById("resPaginas").textContent = "0 págs";
       document.getElementById("resHojas").textContent = "0 hojas";
       document.getElementById("resCostoHoja").textContent = "$0";
@@ -324,6 +360,7 @@
       if (!file) return;
 
       estadoCotizador.nombreArchivo = file.name;
+      estadoCotizador.archivoUrl = "";
       document.getElementById("fileName").textContent = file.name;
       document.getElementById("fileStatus").textContent =
         `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
@@ -347,6 +384,25 @@
         // En imágenes u otros documentos se toma como 1 página de base
         estadoCotizador.paginas = 1;
       }
+
+      // Subida a Supabase Storage
+      document.getElementById("fileStatus").textContent =
+        "☁️ Subiendo a la nube...";
+      const btnMientrasSube = document.getElementById("btnEnviarWhatsApp");
+      btnMientrasSube.disabled = true;
+
+      const urlSubida = await subirArchivo(file);
+      estadoCotizador.archivoUrl = urlSubida || "";
+
+      if (!urlSubida) {
+        document.getElementById("fileStatus").textContent =
+          "⚠️ No se pudo subir. Probá subiéndolo de nuevo.";
+        calcularTotal();
+        return;
+      }
+
+      document.getElementById("fileStatus").textContent =
+        `${(file.size / (1024 * 1024)).toFixed(2)} MB — subido ✅`;
 
       calcularTotal();
     });
@@ -415,10 +471,74 @@
     });
 
     // Enviar Pedido a WhatsApp
-    btnWhatsApp.addEventListener("click", () => {
-      if (estadoCotizador.paginas <= 0) return;
+    btnWhatsApp.addEventListener("click", async () => {
+      if (estadoCotizador.paginas <= 0 || !estadoCotizador.archivoUrl) return;
 
-      const mensaje = `¡Hola! Quisiera encargar la impresión de un documento con el siguiente detalle:
+      btnWhatsApp.disabled = true;
+      btnWhatsApp.textContent = "⏳ Generando pedido...";
+
+      let codigoPedido = "";
+
+      if (supabase) {
+        try {
+          const detalle = [
+            { label: "Páginas", value: estadoCotizador.paginas },
+            {
+              label: "Modalidad",
+              value:
+                estadoCotizador.modalidad === "simple"
+                  ? "Simple Faz"
+                  : "Doble Faz",
+            },
+            {
+              label: "Tipo",
+              value:
+                estadoCotizador.color === "color" ? "Color" : "Blanco y Negro",
+            },
+            {
+              label: "Terminación",
+              value:
+                estadoCotizador.encuadernacion === "anillado"
+                  ? "Anillado / Espiralado"
+                  : "Sin encuadernar",
+            },
+            { label: "Copias", value: estadoCotizador.copias },
+          ];
+
+          const { data, error } = await supabase
+            .from("orders")
+            .insert([
+              {
+                product_title: `Imprenta: ${estadoCotizador.nombreArchivo}`,
+                subproducts: detalle,
+                total_price: estadoCotizador.totalCalculado,
+                pdf_url: estadoCotizador.archivoUrl,
+                status: "Pendiente de Pago",
+              },
+            ])
+            .select("order_code")
+            .single();
+
+          if (!error && data) {
+            codigoPedido = data.order_code;
+          } else if (error) {
+            alert(
+              `Atención: El pedido no se pudo guardar en el sistema (${error.message}). El mensaje de WhatsApp se va a enviar igual, pero avisá para registrar la orden manualmente.`,
+            );
+          }
+        } catch (e) {
+          alert(
+            "Atención: El pedido no se pudo guardar en el sistema. El mensaje de WhatsApp se va a enviar igual, pero avisá para registrar la orden manualmente.",
+          );
+        }
+      }
+
+      btnWhatsApp.disabled = false;
+      btnWhatsApp.innerHTML = "<span>💬</span> Encargar por WhatsApp";
+
+      const encabezadoCodigo = codigoPedido ? ` *#${codigoPedido}*` : "";
+
+      const mensaje = `¡Hola! Quisiera encargar la impresión de un documento con el siguiente detalle${encabezadoCodigo}:
 • *Archivo:* ${estadoCotizador.nombreArchivo || "Documento"}
 • *Páginas:* ${estadoCotizador.paginas}
 • *Modalidad:* ${estadoCotizador.modalidad === "simple" ? "Simple Faz" : "Doble Faz"}
