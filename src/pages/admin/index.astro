@@ -19,12 +19,24 @@ import Greeting from "../../components/Greeting.astro";
         </h1>
         <Greeting />
       </div>
-      <button
-        id="btnLogout"
-        class="text-xs font-medium text-slate-500 hover:text-indigo-600 border border-slate-200 hover:border-indigo-300 rounded-full px-4 py-2 transition-all"
-      >
-        Cerrar sesión
-      </button>
+      <div class="flex items-center gap-2">
+        <button
+          id="btnLimpiar"
+          class="relative text-xs font-medium text-slate-500 hover:text-amber-600 border border-slate-200 hover:border-amber-300 rounded-full px-4 py-2 transition-all"
+        >
+          🧹 Limpiar archivos viejos
+          <span
+            id="badgeLimpiar"
+            class="hidden absolute -top-2 -right-2 bg-amber-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center"
+          ></span>
+        </button>
+        <button
+          id="btnLogout"
+          class="text-xs font-medium text-slate-500 hover:text-indigo-600 border border-slate-200 hover:border-indigo-300 rounded-full px-4 py-2 transition-all"
+        >
+          Cerrar sesión
+        </button>
+      </div>
     </div>
 
     <div id="metricas" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
@@ -215,6 +227,99 @@ import Greeting from "../../components/Greeting.astro";
       `$${facturado.toLocaleString("es-AR")}`;
   }
 
+  const DIAS_LIMITE_LIMPIEZA = 30;
+
+  function extraerPathStorage(pdfUrl) {
+    const marcador = "/pdfs-cotizador/";
+    const idx = pdfUrl.indexOf(marcador);
+    if (idx === -1) return null;
+    return pdfUrl.slice(idx + marcador.length);
+  }
+
+  function pedidosParaLimpiar() {
+    const limite = new Date();
+    limite.setDate(limite.getDate() - DIAS_LIMITE_LIMPIEZA);
+
+    return pedidos.filter((p) => {
+      if (!p.pdf_url) return false;
+      if (p.status !== "Entregado" && p.status !== "Cancelado") return false;
+      if (!p.created_at) return false;
+      return new Date(p.created_at) < limite;
+    });
+  }
+
+  function actualizarBadgeLimpieza() {
+    const badge = document.getElementById("badgeLimpiar");
+    const cantidad = pedidosParaLimpiar().length;
+
+    if (cantidad > 0) {
+      badge.textContent = cantidad > 99 ? "99+" : cantidad;
+      badge.classList.remove("hidden");
+    } else {
+      badge.classList.add("hidden");
+    }
+  }
+
+  async function limpiarArchivosViejos() {
+    const candidatos = pedidosParaLimpiar();
+
+    if (candidatos.length === 0) {
+      alert("No hay archivos para limpiar por ahora.");
+      return;
+    }
+
+    const confirmar = confirm(
+      `Se van a borrar ${candidatos.length} archivo(s) de pedidos Entregados/Cancelados con más de ${DIAS_LIMITE_LIMPIEZA} días. El registro del pedido se mantiene, solo se libera el archivo. ¿Confirmás?`,
+    );
+    if (!confirmar) return;
+
+    const btnLimpiar = document.getElementById("btnLimpiar");
+    btnLimpiar.disabled = true;
+
+    let borrados = 0;
+    let fallidos = 0;
+
+    for (const pedido of candidatos) {
+      const path = extraerPathStorage(pedido.pdf_url);
+      if (!path) {
+        fallidos++;
+        continue;
+      }
+
+      const { error: errorStorage } = await supabase.storage
+        .from("pdfs-cotizador")
+        .remove([path]);
+
+      if (errorStorage) {
+        fallidos++;
+        continue;
+      }
+
+      const { error: errorUpdate } = await supabase
+        .from("orders")
+        .update({ pdf_url: null })
+        .eq("id", pedido.id);
+
+      if (errorUpdate) {
+        fallidos++;
+        continue;
+      }
+
+      pedido.pdf_url = null;
+      borrados++;
+    }
+
+    btnLimpiar.disabled = false;
+    renderPedidos();
+    actualizarBadgeLimpieza();
+
+    alert(
+      fallidos > 0
+        ? `Se borraron ${borrados} archivo(s). ${fallidos} no se pudieron borrar (revisá la consola o probá de nuevo).`
+        : `Se borraron ${borrados} archivo(s) correctamente.`,
+    );
+  }
+
   function renderPedidos() {
     const cont = document.getElementById("listaPedidos");
     const vacio = document.getElementById("vacio");
@@ -376,6 +481,7 @@ import Greeting from "../../components/Greeting.astro";
 
     pedidos = data || [];
     calcularMetricas();
+    actualizarBadgeLimpieza();
     renderPedidos();
   }
 
@@ -387,6 +493,10 @@ import Greeting from "../../components/Greeting.astro";
       window.location.href = "/admin/login";
       return;
     }
+
+    document
+      .getElementById("btnLimpiar")
+      .addEventListener("click", limpiarArchivosViejos);
 
     document.getElementById("btnLogout").addEventListener("click", async () => {
       await supabase.auth.signOut();
