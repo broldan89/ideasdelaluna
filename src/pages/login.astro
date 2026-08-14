@@ -1,0 +1,110 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Ingreso Administrador | Ideas de la Luna">
+  <section class="max-w-md mx-auto px-4 py-20 sm:py-28">
+    <div class="text-center mb-8">
+      <span
+        class="text-[10px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-2.5 py-1 rounded-full"
+      >
+        Panel privado
+      </span>
+      <h1
+        class="text-2xl sm:text-3xl font-serif text-indigo-950 font-medium mt-3"
+      >
+        Ingreso <span class="italic text-indigo-600">Administrador</span>
+      </h1>
+    </div>
+
+    <form
+      id="formLogin"
+      class="bg-white p-6 sm:p-8 rounded-2xl border border-indigo-50 shadow-sm space-y-4"
+    >
+      <div>
+        <label
+          for="email"
+          class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
+        >
+          Email
+        </label>
+        <input
+          type="email"
+          id="email"
+          required
+          class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl p-3 focus:outline-none focus:border-indigo-500"
+        />
+      </div>
+
+      <div>
+        <label
+          for="password"
+          class="block text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
+        >
+          Contraseña
+        </label>
+        <input
+          type="password"
+          id="password"
+          required
+          class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl p-3 focus:outline-none focus:border-indigo-500"
+        />
+      </div>
+
+      <p id="loginError" class="text-xs text-red-500 hidden"></p>
+
+      <button
+        type="submit"
+        id="btnLogin"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-full text-xs tracking-wider transition-all"
+      >
+        Ingresar
+      </button>
+    </form>
+  </section>
+</Layout>
+
+<script>
+  // @ts-nocheck
+  import { supabase } from "../../lib/supabase.js";
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Si ya hay sesión activa, vamos directo al panel
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (session) {
+      window.location.href = "/admin";
+      return;
+    }
+
+    const form = document.getElementById("formLogin");
+    const btnLogin = document.getElementById("btnLogin");
+    const loginError = document.getElementById("loginError");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      loginError.classList.add("hidden");
+      btnLogin.disabled = true;
+      btnLogin.textContent = "Ingresando...";
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        loginError.textContent = "Email o contraseña incorrectos.";
+        loginError.classList.remove("hidden");
+        btnLogin.disabled = false;
+        btnLogin.textContent = "Ingresar";
+        return;
+      }
+
+      window.location.href = "/admin";
+    });
+  });
+</script>
