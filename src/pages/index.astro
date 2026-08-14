@@ -1,288 +1,800 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import Layout from "../layouts/Layout.astro";
+import TopBar from "../components/TopBar.astro";
+import Navbar from "../components/Navbar.astro";
+import Hero from "../components/Hero.astro";
+import Cotizador from "../components/Cotizador.astro";
+import ProductCard from "../components/ProductCard.astro";
+import Faq from "../components/Faq.astro";
+import GalleryModal from "../components/GalleryModal.astro";
 ---
 
-<Layout title="Panel de Pedidos | Ideas de la Luna">
-  <section class="max-w-5xl mx-auto px-4 py-10 sm:py-16">
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <span
-          class="text-[10px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-2.5 py-1 rounded-full"
-        >
-          Panel privado
-        </span>
-        <h1
-          class="text-2xl sm:text-3xl font-serif text-indigo-950 font-medium mt-3"
-        >
-          Pedidos del <span class="italic text-indigo-600">Cotizador</span>
-        </h1>
+<Layout title="Ideas de la Luna | Papelería de otro planeta">
+  <TopBar />
+  <Navbar />
+  <Hero />
+
+  <!-- CALCULADORA / COTIZADOR AUTOMÁTICO DE IMPRESIONES -->
+  <Cotizador />
+
+  <main class="max-w-7xl mx-auto px-6 py-12 space-y-24">
+    <!-- SECCIÓN 1: UNIVERSO EMPRENDEDOR -->
+    <section id="marcas" class="scroll-mt-24">
+      <div class="max-w-xl mb-8">
+        <h2 class="text-3xl font-normal text-indigo-950">
+          El Universo <span class="italic text-indigo-600">Emprendedor</span>
+        </h2>
+        <p class="text-slate-500 text-sm mt-2 font-light">
+          Packaging e identidad 100% personalizada para marcas que quieren dejar
+          una huella imborrable al abrir sus cajas. Haz clic en la foto para ver
+          las opciones disponibles.
+        </p>
       </div>
-      <button
-        id="btnLogout"
-        class="text-xs font-medium text-slate-500 hover:text-indigo-600 border border-slate-200 hover:border-indigo-300 rounded-full px-4 py-2 transition-all"
+
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-fit"
       >
-        Cerrar sesión
+        <ProductCard
+          id="stickers"
+          title="Stickers, Tags & QR's"
+          description="Impresión por plancha A4 (mínimo 20 unidades). Papel fotográfico (200g), mate (260g) o material fílmico resistente al agua. Corte troquelado listo para despegar."
+          badge="100% Personalizado"
+          imageSrc="/catalog/emprendedores/stickers/promo2.jpeg"
+          hoverImageSrc="/catalog/emprendedores/stickers/promo.jpeg"
+          galleryImages={[
+            "/catalog/emprendedores/stickers/sticker_emp.jpeg",
+            "/catalog/emprendedores/stickers/sticker_emp2.jpeg",
+            "/catalog/emprendedores/stickers/promo2.jpeg",
+            "/catalog/emprendedores/stickers/promo.jpeg",
+          ]}
+          subProducts={[
+            {
+              name: "Planchas de stickers con logo",
+              desc: "Mínimo 20 unidades. La cantidad por plancha A4 depende del tamaño de tu diseño.",
+            },
+            {
+              name: "Etiquetas con código QR",
+              desc: "Listas para cobros por transferencia, Mercado Pago o redes sociales.",
+            },
+            {
+              name: "Material Filmilo Waterproof",
+              desc: "Resistente al agua y humedad, ideal para frascos, vasos o cosmética.",
+            },
+          ]}
+        />
+
+        <ProductCard
+          id="tarjetas"
+          title="Tarjetas Profesionales & Personales"
+          description="Diseño 100% personalizado en medidas estándar (4x9 cm o 5x9 cm). Opción simple o doble faz en papel pesado de alta calidad."
+          badge="Contacto"
+          imageSrc="/catalog/emprendedores/tarjetas/tarjetasPersonales_main.jpeg"
+          hoverImageSrc="/catalog/emprendedores/tarjetas/tarjetas_profesionales.jpeg"
+          galleryImages={[
+            "/catalog/emprendedores/tarjetas/tarjetas_profesionales2.jpeg",
+            "/catalog/emprendedores/tarjetas/tarjetasPersonales_main.jpeg",
+            "/catalog/emprendedores/tarjetas/tarjetas_profesionales.jpeg",
+          ]}
+          subProducts={[
+            {
+              name: "Tarjetas Estándar (4x9 cm / 5x9 cm)",
+              desc: "Impresión simple o doble faz adaptada a tu identidad visual.",
+            },
+            {
+              name: "Tarjetas de contacto corporativas",
+              desc: "Presentación impecable con tus redes, datos de pago y QR.",
+            },
+            {
+              name: "Tarjetas dobles desplegables",
+              desc: "Mayor espacio para mostrar tus servicios o recomendaciones de uso.",
+            },
+          ]}
+        />
+
+        <ProductCard
+          id="packaging"
+          title="Packaging & Presentación de Marca"
+          description="Detalles gráficos impresos para sellar y dar el toque final a tus paquetes antes de enviarlos."
+          badge="Packaging"
+          imageSrc="/catalog/emprendedores/packaging/tarjetones.jpeg"
+          hoverImageSrc="/catalog/emprendedores/packaging/tags_1.jpeg"
+          galleryImages={[
+            "/catalog/emprendedores/packaging/tags_1.jpeg",
+            "/catalog/emprendedores/packaging/cierraBolsas.jpeg",
+            "/catalog/emprendedores/packaging/tarjetones.jpeg",
+            "/catalog/emprendedores/packaging/tarjetoness_2.jpeg",
+          ]}
+          subProducts={[
+            {
+              name: "Stickers cierrabolsas",
+              desc: "Formatos rectangulares o circulares para asegurar tus envíos.",
+            },
+            {
+              name: "Fajas térmicas para vasos",
+              desc: "Sleeves en papel de 300g personalizables para vasos de café o bebidas.",
+            },
+            {
+              name: "Tarjetas e instructivos (10x15 cm)",
+              desc: "Agradecimientos, recomendaciones de uso o enlaces QR a tu catálogo.",
+            },
+            {
+              name: "Tags y etiquetas colgantes",
+              desc: "Con perforación para atar a prendas, regalos o packaging de autor.",
+            },
+          ]}
+        />
+
+        <ProductCard
+          id="fidelizacion"
+          title="Fidelización & Gift Cards"
+          description="Tarjetas impresas 100% personalizadas en papel pesado diseñadas para premiar la lealtad e incentivar la recompra."
+          badge="Clientes"
+          imageSrc="/catalog/emprendedores/packaging/agradecimiento_main.jpeg"
+          hoverImageSrc="/catalog/emprendedores/packaging/agradecimiento_main.jpeg"
+          galleryImages={[
+            "/catalog/emprendedores/packaging/tags_1.jpeg",
+            "/catalog/emprendedores/packaging/cierraBolsas.jpeg",
+            "/catalog/emprendedores/packaging/tarjetones.jpeg",
+            "/catalog/emprendedores/packaging/tarjetoness_2.jpeg",
+          ]}
+          subProducts={[
+            {
+              name: "Tarjetas 'Gracias por tu compra' (5x5 cm)",
+              desc: "Mensajes cálidos y recomendaciones impresas en formato cuadrado estándar.",
+            },
+            {
+              name: "Tarjetas de fidelización",
+              desc: "Sistema impreso de puntos o sellos simple o doble faz para premiar clientes.",
+            },
+            {
+              name: "Gift Cards impresas",
+              desc: "Tarjetas de regalo personalizadas con montos o servicios.",
+            },
+          ]}
+        />
+
+        <ProductCard
+          id="folleteria"
+          title="Folletería & Material Promocional"
+          description="Volantes, flyers y folletos impresos en alta calidad para difundir tus promociones o catálogo de servicios."
+          badge="Difusión"
+          imageSrc="/catalog/tarjetas_profesionales.jpeg"
+          hoverImageSrc="/catalog/tarjetas_profesionales2.jpeg"
+          galleryImages={[
+            "/catalog/emprendedores/packaging/tags_1.jpeg",
+            "/catalog/emprendedores/packaging/cierraBolsas.jpeg",
+            "/catalog/emprendedores/packaging/tarjetones.jpeg",
+            "/catalog/emprendedores/packaging/tarjetoness_2.jpeg",
+          ]}
+          subProducts={[
+            {
+              name: "Flyers A6 / A5 promocionales",
+              desc: "Formatos ideales para incluir en cada entrega o repartir.",
+            },
+            {
+              name: "Volantes informativos",
+              desc: "Papel liviano o pesado según la necesidad del proyecto.",
+            },
+            {
+              name: "Cartas o menús desplegables",
+              desc: "Para locales gastronómicos, servicios o catálogos impresos.",
+            },
+          ]}
+        />
+      </div>
+    </section>
+
+    <!-- SECCIÓN ESPECIAL DESTACADA: ÓRBITA DOCENTE & SEÑOS -->
+    <section
+      id="docentes"
+      class="scroll-mt-24 p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white shadow-2xl relative overflow-hidden border border-indigo-500/20"
+    >
+      <!-- Resplandores de luz de fondo -->
+      <div
+        class="absolute -right-20 -bottom-20 w-80 h-80 bg-purple-500/15 rounded-full blur-3xl pointer-events-none"
+      >
+      </div>
+      <div
+        class="absolute -left-20 -top-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"
+      >
+      </div>
+
+      <!-- Encabezado de la sección -->
+      <div class="max-w-2xl mb-12 relative z-10">
+        <span
+          class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest px-3.5 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/30 mb-3 shadow-inner"
+        >
+          <span>✨</span> Espacio Exclusivo
+        </span>
+        <h2
+          class="text-3xl sm:text-4xl font-serif font-normal text-white tracking-wide"
+        >
+          Órbita <span class="italic text-amber-300">Docente</span>
+        </h2>
+        <p class="text-indigo-200/80 text-sm mt-3 font-light leading-relaxed">
+          Diseñado con amor para maestras y educadores. Herramientas físicas e
+          imprimibles en PDF para organizar el aula, calificar con ternura e
+          inspirar todos los días.
+        </p>
+      </div>
+
+      <!-- Grilla de Tarjetas Cristalinas (Glassmorphism) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+        <!-- TARJETA 1 -->
+        <div
+          class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg"
+        >
+          <div>
+            <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
+              <span
+                class="absolute top-2.5 left-2.5 z-10 text-[10px] font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-amber-300 px-2.5 py-1 rounded-md border border-amber-300/20"
+              >
+                Impreso
+              </span>
+              <img
+                src="/catalog/cuaderno.jpeg"
+                alt="Planificadores"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <h3 class="text-lg font-serif font-medium text-white mb-2">
+              Planificadores & Agendas
+            </h3>
+            <p
+              class="text-indigo-200/70 text-xs font-light leading-relaxed mb-4"
+            >
+              Organización integral con asistencia, notas y grilla de clases.
+              Tapa dura personalizada.
+            </p>
+          </div>
+          <a
+            href="#contacto"
+            class="w-full text-center py-2.5 px-4 rounded-xl bg-amber-300/10 hover:bg-amber-300/20 text-amber-300 border border-amber-300/30 text-xs font-semibold tracking-wider uppercase transition-all"
+          >
+            Cotizar esta línea
+          </a>
+        </div>
+
+        <!-- TARJETA 2 -->
+        <div
+          class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg"
+        >
+          <div>
+            <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
+              <span
+                class="absolute top-2.5 left-2.5 z-10 text-[10px] font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-amber-300 px-2.5 py-1 rounded-md border border-amber-300/20"
+              >
+                Impreso
+              </span>
+              <img
+                src="/catalog/sticker_5.jpeg"
+                alt="Stickers motivacionales"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <h3 class="text-lg font-serif font-medium text-white mb-2">
+              Stickers Motivacionales
+            </h3>
+            <p
+              class="text-indigo-200/70 text-xs font-light leading-relaxed mb-4"
+            >
+              Planchas A4 impresas con mensajes hermosos para evaluar cuadernos
+              con ternura.
+            </p>
+          </div>
+          <a
+            href="#contacto"
+            class="w-full text-center py-2.5 px-4 rounded-xl bg-amber-300/10 hover:bg-amber-300/20 text-amber-300 border border-amber-300/30 text-xs font-semibold tracking-wider uppercase transition-all"
+          >
+            Cotizar esta línea
+          </a>
+        </div>
+
+        <!-- TARJETA 3: DESCARGABLES PDF -->
+        <div
+          class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg"
+        >
+          <div>
+            <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
+              <div class="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
+                <span
+                  class="text-[10px] font-bold uppercase tracking-wider bg-amber-400 text-slate-950 px-2.5 py-1 rounded-md"
+                >
+                  ⚡ Descarga PDF
+                </span>
+                <span
+                  class="text-[9px] font-semibold tracking-wide bg-slate-900/80 backdrop-blur-md text-amber-200 border border-amber-300/30 px-2 py-0.5 rounded-md w-fit"
+                >
+                  Próximamente
+                </span>
+              </div>
+              <img
+                src="/catalog/libreta.jpeg"
+                alt="Recursos PDF"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
+              />
+            </div>
+
+            <h3 class="text-lg font-serif font-medium text-white mb-2">
+              Recursos Digitales en PDF
+            </h3>
+            <p
+              class="text-indigo-200/70 text-xs font-light leading-relaxed mb-4"
+            >
+              Archivos listos para descargar e imprimir. Efemérides, carteles de
+              aula y fichas por grado.
+            </p>
+          </div>
+
+          <!-- BOTÓN DESHABILITADO / EN PREPARACIÓN -->
+          <button
+            disabled
+            type="button"
+            class="w-full text-center py-2.5 px-4 rounded-xl bg-white/10 text-indigo-200/60 border border-white/10 text-xs font-medium transition-all cursor-not-allowed select-none flex items-center justify-center gap-2"
+          >
+            <span>🎨</span> En el taller de diseño
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: PARA EVENTOS -->
+    <section id="eventos" class="scroll-mt-24">
+      <div class="max-w-xl mb-8">
+        <h2 class="text-3xl font-normal text-indigo-950">
+          Fases de <span class="italic text-indigo-600">Celebración</span>
+        </h2>
+        <p class="text-slate-500 text-sm mt-2 font-light">
+          Papelería fina y detalles completamente personalizados para eventos
+          que merecen ser recordados para siempre.
+        </p>
+      </div>
+
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-fit"
+      >
+        <ProductCard
+          id="invitaciones"
+          title="Invitaciones Especiales"
+          description="Diseños 100% personalizados en papeles de alta calidad para bodas, XV años y cumpleaños."
+          badge="Premium"
+          imageSrc="/catalog/invitaciones.jpeg"
+          hoverImageSrc="/catalog/invitaciones.jpeg"
+          galleryImages={[
+            "/catalog/emprendedores/packaging/tags_1.jpeg",
+            "/catalog/emprendedores/packaging/cierraBolsas.jpeg",
+            "/catalog/emprendedores/packaging/tarjetones.jpeg",
+            "/catalog/emprendedores/packaging/tarjetoness_2.jpeg",
+          ]}
+          subProducts={[
+            {
+              name: "Tarjetas de Invitación",
+              desc: "Impresión en papeles especiales, simple o doble faz.",
+            },
+            {
+              name: "Sobres artesanales",
+              desc: "Con o sin liner personalizado impreso en el interior.",
+            },
+          ]}
+        />
+
+        <ProductCard
+          id="souvenirs"
+          title="Souvennirs"
+          description="Pequeños complementos que hacen la diferencia: indicadores de sitio, menús impresos y tarjetas de recuerdo."
+          badge="Eventos"
+          imageSrc="https://images.unsplash.com/photo-1513151233558-d860c5398git176?q=80&w=600"
+          hoverImageSrc="https://images.unsplash.com/photo-1542435503-956c469947f6?q=80&w=600"
+        />
+
+        <ProductCard
+          id="candybar"
+          title="Candy Bar Temático"
+          description="Kits de papelería para mesas dulces de cumpleaños, XV años y eventos. Diseños 100% a medida con los personajes o temática que elijas."
+          badge="Popular"
+          imageSrc="/catalog/candybar.jpeg"
+          hoverImageSrc="/catalog/candybar.jpeg"
+          galleryImages={["/catalog/candybar.jpeg"]}
+          subProducts={[
+            {
+              name: "Cajitas y Bolsitas golosineras",
+              desc: "Formatos tipo milkbox, pochocleras o caladas para sorpresas y golosinas.",
+            },
+            {
+              name: "Envoltorios y fajas personalizadas",
+              desc: "Vestimos turrones, chocolates, alfajores, moneditas y jugos con la gráfica del evento.",
+            },
+            {
+              name: "Cartelería y Banderines de mesa",
+              desc: "Toppers para torta, nombres en relieve y cartelitos identificadores para la mesa dulce.",
+            },
+            {
+              name: "Diseños y combos a pedido",
+              desc: "¡Las opciones son infinitas! Consultanos con la temática de tu fiesta para cotizar tu kit ideal.",
+            },
+          ]}
+        />
+
+        <ProductCard
+          id="papeleria-eventos"
+          title="Papelería Especial para Eventos"
+          description="Detalles impresos para ambientar y organizar las mesas de tu fiesta o evento corporativo con la mejor presentación."
+          badge="Elegante"
+          imageSrc="/catalog/papeleria-eventos.jpeg"
+          hoverImageSrc="/catalog/papeleria-eventos.jpeg"
+          galleryImages={["/catalog/papeleria-eventos.jpeg"]}
+          subProducts={[
+            {
+              name: "Menúes y Cartas individuales",
+              desc: "Impresos en papeles especiales, vegetal o kraft para cada comensal o centro de mesa.",
+            },
+            {
+              name: "Numeradores y Carteles QR",
+              desc: "Identificadores de mesa, códigos para fotos colectivas o transferencia de regalos.",
+            },
+            {
+              name: "Fajas para servilletas y cubiertos",
+              desc: "Detalles personalizados para envolver la cubertería y servilleteros temáticos.",
+            },
+            {
+              name: "Bandejas y Papelería de recepción",
+              desc: "Bandejitas impresas para souvenir, cartel de bienvenida y seating chart.",
+            },
+          ]}
+        />
+
+        <ProductCard
+          id="deco-eventos"
+          title="Deco para Eventos"
+          description="Guirnaldas, banderines y cartelería modular en formato A4. Todo lo necesario para vestir paredes y espacios con la identidad de tu festejo."
+          badge="Tendencia"
+          imageSrc="/catalog/deco-eventos.jpeg"
+          hoverImageSrc="/catalog/deco-eventos.jpeg"
+          galleryImages={["/catalog/deco-eventos.jpeg"]}
+          subProducts={[
+            {
+              name: "Banderines y Guirnaldas",
+              desc: "Cartelera 'Feliz Cumple', nombres o frases compuestas letra por letra en papel de alto gramaje.",
+            },
+            {
+              name: "Stickers cierrabolsas temáticos",
+              desc: "Adhesivos personalizados para cerrar las bolsitas de souvenirs o regalitos.",
+            },
+            {
+              name: "Cartelería y Propagandas de pared",
+              desc: "Pósters e ilustraciones en A4 para enmarcar, pegar o usar como fondo en la mesa principal.",
+            },
+            {
+              name: "Carteles modulares ensamblables",
+              desc: "Diseños divididos en varias hojas A4 que se unen fácilmente para formar carteles más grandes.",
+            },
+          ]}
+        />
+      </div>
+    </section>
+
+    <section id="tienda" class="scroll-mt-24 mb-12">
+      <div class="max-w-xl mb-8">
+        <h2 class="text-3xl font-normal text-indigo-950">
+          La Tienda de la <span class="italic text-indigo-600">Luna</span>
+        </h2>
+        <p class="text-slate-500 text-sm mt-2 font-light">
+          Nuestra línea exclusiva de papelería de diseño hecha a mano. Productos
+          listos para usar, regalar o personalizar según tu estilo e ideas.
+        </p>
+      </div>
+
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-fit"
+      >
+        <!-- CARD 1: ENCUADERNACIÓN & LECTURA -->
+        <ProductCard
+          id="cuadernos-journals"
+          title="Encuadernación & Journals"
+          description="Cuadernos artesanales y bitácoras con tapa dura laminada. Hojas punteadas, rayadas, lisas o temáticas para cada proyecto."
+          badge="Línea Propia"
+          imageSrc="/catalog/cuaderno.jpeg"
+          hoverImageSrc="/catalog/cuaderno.jpeg"
+          galleryImages={["/catalog/cuaderno.jpeg"]}
+          subProducts={[
+            {
+              name: "Cuadernos A5 Anillados",
+              desc: "Tapa dura laminada, cierre elástico, sobre interno y hojas de alto gramaje.",
+            },
+            {
+              name: "Book Journals & Diarios de Lectura",
+              desc: "Espacios diseñados para reseñar libros, llevar registros y trackers de lectura.",
+            },
+            {
+              name: "Bitácoras & Cuadernos de apuntes",
+              desc: "Formato práctico y resistente para trasladar a todos lados.",
+            },
+            {
+              name: "Diseños 100% Personalizados",
+              desc: "¡Elegí la portada, frase o ilustración que más te guste para tu cuaderno!",
+            },
+          ]}
+        />
+
+        <!-- CARD 2: ORGANIZACIÓN & PLANIFICACIÓN -->
+        <ProductCard
+          id="agendas-planners"
+          title="Agendas, Planners & Blocs"
+          description="Herramientas de organización personal para estructurar tus metas, días y notas de forma práctica."
+          badge="Popular"
+          imageSrc="/catalog/libreta.jpeg"
+          hoverImageSrc="/catalog/libreta.jpeg"
+          galleryImages={["/catalog/libreta.jpeg"]}
+          subProducts={[
+            {
+              name: "Agendas Perpetuas y Anuales",
+              desc: "Vista semanal o diaria con tapa dura laminada, elástico y sobre organizador.",
+            },
+            {
+              name: "Planners Semanales & Mensuales",
+              desc: "Formatos anillados o de escritorio para tener tus prioridades siempre a la vista.",
+            },
+            {
+              name: "Blocs de Notas (Adhesivo Superior)",
+              desc: "Blocs arrancables encolados en el borde superior, ideales para anotaciones rápidas.",
+            },
+            {
+              name: "Almanaques & Calendarios",
+              desc: "Calendarios de escritorio o pared en papel de alto gramaje con diseño exclusivo.",
+            },
+          ]}
+        />
+
+        <!-- CARD 3: DECO & MAGNÉTICOS DE HOGAR -->
+        <ProductCard
+          id="deco-magneticos"
+          title="Posters & Accesorios Imantados"
+          description="Detalles impresos y soluciones magnéticas para decorar tu espacio o mantener la heladera súper organizada."
+          badge="Novedad"
+          imageSrc="/catalog/posters.jpeg"
+          hoverImageSrc="/catalog/posters.jpeg"
+          galleryImages={["/catalog/posters.jpeg"]}
+          subProducts={[
+            {
+              name: "Pizarras & Planners Imantados",
+              desc: "Organizadores con base magnética para heladera, ideales para menúes o listas de compras.",
+            },
+            {
+              name: "Posters e Ilustraciones (hasta A4)",
+              desc: "Láminas impresas en alta resolución listas para enmarcar o decorar tus ambientes.",
+            },
+            {
+              name: "Almanaques Magnéticos",
+              desc: "Calendarios imantados para tener el mes siempre a mano en la cocina u oficina.",
+            },
+            {
+              name: "Proyectos e Ideas a Medida",
+              desc: "¿Tenés un diseño o idea en mente? Consultanos y le damos forma en papel o imán.",
+            },
+          ]}
+        />
+      </div>
+    </section>
+  </main>
+
+  <!-- SECCIÓN PREGUNTAS FRECUENTES -->
+  <Faq />
+
+  <!-- FOOTER CON SOMBRA DE PAPEL SOBREPUESTO -->
+  <div class="paper-footer-wrapper relative z-20">
+    <!-- SEPARADOR ESTILO PAPEL RASGADO -->
+    <div
+      class="w-full overflow-hidden leading-[0] rotate-180 bg-transparent -mb-1"
+    >
+      <svg
+        viewBox="0 0 1200 120"
+        preserveAspectRatio="none"
+        class="relative block w-full h-12 fill-white/95"
+      >
+        <path
+          d="M0,0 L1200,0 L1200,20 L1180,45 L1150,25 L1100,55 L1060,30 L1020,50 L980,20 L940,45 L900,15 L850,50 L800,25 L750,55 L700,30 L650,50 L600,20 L550,45 L500,15 L450,55 L400,25 L350,50 L300,20 L250,45 L200,15 L150,55 L100,30 L50,50 L0,20 Z"
+        ></path>
+      </svg>
+    </div>
+
+    <!-- FOOTER LIMPIO E INTEGRADO -->
+    <footer
+      id="contacto"
+      class="bg-white/95 backdrop-blur-md text-indigo-950 pb-16 pt-4 px-6 relative"
+    >
+      <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
+        <!-- LOGO INTEGRADO -->
+        <div class="mb-5 flex justify-center">
+          <img
+            src="/logo.png"
+            alt="Ideas de la Luna Logo"
+            class="h-20 w-auto object-contain transition-transform duration-300 hover:scale-105 opacity-90"
+          />
+        </div>
+
+        <!-- TÍTULO Y DESCRIPCIÓN -->
+        <h2
+          class="text-3xl font-serif mb-2 text-indigo-950 font-medium tracking-wide"
+        >
+          ¿Tenés una idea fuera de órbita?
+        </h2>
+        <p
+          class="text-slate-500 text-sm max-w-sm mx-auto font-light mb-8 leading-relaxed"
+        >
+          Hablemos de tu proyecto y creemos algo mágico juntos.
+        </p>
+
+        <!-- BOTONES DE CONTACTO -->
+        <div
+          class="flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-auto"
+        >
+          <!-- BOTÓN WHATSAPP -->
+          <a
+            href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Vi%20tu%20web%20y%20me%20gustar%C3%ADa%20hacerte%20una%20consulta."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto inline-flex items-center justify-center bg-[#10B981] hover:bg-[#059669] text-white font-semibold px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5 hover:-translate-y-0.5"
+          >
+            <span class="text-base">💬</span>
+            Escríbenos por WhatsApp
+          </a>
+
+          <!-- BOTÓN INSTAGRAM -->
+          <a
+            href="https://www.instagram.com/ideas.de.la.luna/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-[#A855F7] to-[#EC4899] hover:opacity-95 text-white font-semibold px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5 hover:-translate-y-0.5"
+          >
+            <span class="text-base">📸</span>
+            Seguinos en Instagram
+          </a>
+        </div>
+
+        <!-- COPYRIGHT -->
+        <p class="text-xs text-slate-400 mt-14 font-light">
+          © 2026 Ideas de la Luna. Todos los derechos reservados.
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- CÓDIGO DEL MODAL DE RECURSOS DIGITALES -->
+  <div
+    id="pdf-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300"
+  >
+    <div
+      class="bg-slate-900 border border-indigo-500/30 rounded-3xl p-6 sm:p-8 max-w-xl w-full text-white shadow-2xl relative overflow-hidden"
+    >
+      <!-- Botón Cerrar (X) -->
+      <button
+        id="close-modal"
+        class="absolute top-4 right-4 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer"
+      >
+        ✕
       </button>
+
+      <!-- Encabezado del Modal -->
+      <div class="mb-6">
+        <span
+          class="text-xs font-semibold uppercase tracking-widest text-amber-300 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20"
+        >
+          ⚡ Descarga Inmediata
+        </span>
+        <h3 class="text-2xl font-serif font-normal mt-3 text-white">
+          Catálogo de Recursos PDF
+        </h3>
+        <p class="text-indigo-200/70 text-xs mt-1 font-light">
+          Elegí el kit imprimible que necesitas para tu aula.
+        </p>
+      </div>
+
+      <!-- Lista de Productos Digitales -->
+      <div class="space-y-3.5 max-h-[60vh] overflow-y-auto pr-1">
+        <!-- ITEM 1 -->
+        <div
+          class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between gap-4 hover:border-amber-300/30 transition-all"
+        >
+          <div>
+            <h4 class="font-medium text-sm text-white">
+              Kit Efemérides & Actos Escolares
+            </h4>
+            <p class="text-xs text-indigo-200/60 mt-0.5">
+              Láminas, guirnaldas y fichas de actividades en alta resolución.
+            </p>
+          </div>
+          <a
+            href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Me%20interesa%20adquirir%20el%20Kit%20Efem%C3%A9rides%20en%20PDF."
+            target="_blank"
+            class="shrink-0 bg-amber-300 hover:bg-amber-200 text-slate-950 text-xs font-bold px-3.5 py-2 rounded-xl transition-all"
+          >
+            Solicitar
+          </a>
+        </div>
+
+        <!-- ITEM 2 -->
+        <div
+          class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between gap-4 hover:border-amber-300/30 transition-all"
+        >
+          <div>
+            <h4 class="font-medium text-sm text-white">
+              Kit Organización de Aula (Inicial / Primaria)
+            </h4>
+            <p class="text-xs text-indigo-200/60 mt-0.5">
+              Calendarios, carteles de clima, cumpleaños y abecedarios.
+            </p>
+          </div>
+          <a
+            href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Me%20interesa%20adquirir%20el%20Kit%20Organizaci%C3%B3n%20de%20Aula%20en%20PDF."
+            target="_blank"
+            class="shrink-0 bg-amber-300 hover:bg-amber-200 text-slate-950 text-xs font-bold px-3.5 py-2 rounded-xl transition-all"
+          >
+            Solicitar
+          </a>
+        </div>
+
+        <!-- ITEM 3: RECURSO GRATUITO / FREEBIE -->
+        <div
+          class="p-4 rounded-2xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-between gap-4"
+        >
+          <div>
+            <span
+              class="text-[10px] uppercase tracking-wider font-bold text-amber-300"
+              >Regalo de Bienvenida 🎁</span
+            >
+            <h4 class="font-medium text-sm text-white mt-0.5">
+              Plantilla de Seguimiento Pedagógico
+            </h4>
+            <p class="text-xs text-indigo-200/60 mt-0.5">
+              Ficha de muestra lista para imprimir en A4.
+            </p>
+          </div>
+          <a
+            href="/downloads/muestra-docente-ideas-de-la-luna.pdf"
+            download
+            class="shrink-0 bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all"
+          >
+            Descargar Gratis
+          </a>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="flex flex-wrap gap-2 mb-6" id="filtros">
-      <button
-        data-filtro="todos"
-        class="filtro-estado active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >Todos</button
-      >
-      <button
-        data-filtro="Pendiente de Pago"
-        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >Pendiente de Pago</button
-      >
-      <button
-        data-filtro="Pago Confirmado"
-        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >Pago Confirmado</button
-      >
-      <button
-        data-filtro="En Preparación"
-        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >En Preparación</button
-      >
-      <button
-        data-filtro="Listo para Retirar"
-        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >Listo para Retirar</button
-      >
-      <button
-        data-filtro="Entregado"
-        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >Entregado</button
-      >
-    </div>
-
-    <p id="cargando" class="text-sm text-slate-500">Cargando pedidos...</p>
-    <p id="vacio" class="text-sm text-slate-500 hidden">
-      No hay pedidos en este estado.
-    </p>
-
-    <div id="listaPedidos" class="space-y-4"></div>
-  </section>
+  <GalleryModal />
 </Layout>
 
+<script>
+  const openBtn = document.getElementById("btn-open-pdf-modal");
+  const closeBtn = document.getElementById("close-modal");
+  const modal = document.getElementById("pdf-modal");
+
+  if (openBtn && closeBtn && modal) {
+    openBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    });
+  }
+</script>
+
 <style>
-  .pedido-card {
-    background: white;
-    border: 1px solid rgba(99, 102, 241, 0.08);
-    border-radius: 1rem;
-    padding: 1.25rem;
+  /* Sombra profunda tipo capa de papel flotante para todo el footer */
+  .paper-footer-wrapper {
+    filter: drop-shadow(0px -10px 18px rgba(35, 25, 60, 0.12))
+      drop-shadow(0px -2px 6px rgba(35, 25, 60, 0.08));
   }
 </style>
-
-<script>
-  // @ts-nocheck
-  import { supabase } from "../../lib/supabase.js";
-
-  const ESTADOS = [
-    "Pendiente de Pago",
-    "Pago Confirmado",
-    "En Preparación",
-    "Listo para Retirar",
-    "Entregado",
-    "Cancelado",
-  ];
-
-  let pedidos = [];
-  let filtroActual = "todos";
-
-  function badgeColor(status) {
-    switch (status) {
-      case "Pendiente de Pago":
-        return "bg-amber-50 text-amber-700 border-amber-200";
-      case "Pago Confirmado":
-        return "bg-sky-50 text-sky-700 border-sky-200";
-      case "En Preparación":
-        return "bg-indigo-50 text-indigo-700 border-indigo-200";
-      case "Listo para Retirar":
-        return "bg-emerald-50 text-emerald-700 border-emerald-200";
-      case "Entregado":
-        return "bg-slate-100 text-slate-500 border-slate-200";
-      case "Cancelado":
-        return "bg-red-50 text-red-600 border-red-200";
-      default:
-        return "bg-slate-50 text-slate-600 border-slate-200";
-    }
-  }
-
-  function renderPedidos() {
-    const cont = document.getElementById("listaPedidos");
-    const vacio = document.getElementById("vacio");
-
-    const visibles =
-      filtroActual === "todos"
-        ? pedidos
-        : pedidos.filter((p) => p.status === filtroActual);
-
-    if (visibles.length === 0) {
-      cont.innerHTML = "";
-      vacio.classList.remove("hidden");
-      return;
-    }
-    vacio.classList.add("hidden");
-
-    cont.innerHTML = visibles
-      .map((p) => {
-        const detalle = (p.subproducts || [])
-          .map(
-            (d) =>
-              `<span class="text-slate-500">${d.label}:</span> <span class="font-medium text-indigo-950">${d.value}</span>`,
-          )
-          .join(" &nbsp;•&nbsp; ");
-
-        const opciones = ESTADOS.map(
-          (e) =>
-            `<option value="${e}" ${e === p.status ? "selected" : ""}>${e}</option>`,
-        ).join("");
-
-        return `
-          <div class="pedido-card" data-id="${p.id}">
-            <div class="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p class="font-serif text-indigo-950 font-medium text-base">
-                  ${p.product_title || "Pedido"}
-                  ${p.order_code ? `<span class="text-xs text-indigo-400 font-sans font-normal ml-1">#${p.order_code}</span>` : ""}
-                </p>
-                <p class="text-xs text-slate-500 mt-1">${detalle}</p>
-                <p class="text-sm font-semibold text-indigo-950 mt-2">$${Number(p.total_price || 0).toLocaleString("es-AR")}</p>
-              </div>
-              <span class="text-[10px] font-semibold uppercase tracking-wider border rounded-full px-2.5 py-1 ${badgeColor(p.status)}">
-                ${p.status || "Sin estado"}
-              </span>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-indigo-50">
-              <select class="select-estado bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg p-2 focus:outline-none">
-                ${opciones}
-              </select>
-
-              <label class="flex items-center gap-1.5 text-xs text-slate-500 cursor-pointer ml-2">
-                <input type="checkbox" class="check-demora" ${p.delayed ? "checked" : ""} />
-                Con demora
-              </label>
-
-              <input
-                type="text"
-                placeholder="Motivo de la demora (opcional)"
-                class="input-motivo bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg p-2 focus:outline-none flex-1 min-w-[160px] ${p.delayed ? "" : "hidden"}"
-                value="${p.delay_reason ? p.delay_reason.replace(/"/g, "&quot;") : ""}"
-              />
-
-              ${p.pdf_url ? `<a href="${p.pdf_url}" target="_blank" class="text-xs font-medium bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg px-3 py-2 transition-colors">⬇️ Descargar archivo</a>` : ""}
-
-              <span class="guardado-ok hidden text-xs text-emerald-600 font-medium">✅ Guardado</span>
-            </div>
-          </div>
-        `;
-      })
-      .join("");
-
-    // Listeners por card
-    cont.querySelectorAll(".pedido-card").forEach((card) => {
-      const id = card.getAttribute("data-id");
-      const selectEstado = card.querySelector(".select-estado");
-      const checkDemora = card.querySelector(".check-demora");
-      const inputMotivo = card.querySelector(".input-motivo");
-      const guardadoOk = card.querySelector(".guardado-ok");
-
-      const guardarCambios = async () => {
-        const cambios = {
-          status: selectEstado.value,
-          delayed: checkDemora.checked,
-          delay_reason: checkDemora.checked ? inputMotivo.value.trim() : null,
-        };
-
-        const { error } = await supabase
-          .from("orders")
-          .update(cambios)
-          .eq("id", id);
-
-        if (error) {
-          alert(`No se pudo guardar el cambio: ${error.message}`);
-          return;
-        }
-
-        const pedido = pedidos.find((p) => String(p.id) === String(id));
-        if (pedido) Object.assign(pedido, cambios);
-
-        guardadoOk.classList.remove("hidden");
-        setTimeout(() => guardadoOk.classList.add("hidden"), 1500);
-      };
-
-      selectEstado.addEventListener("change", guardarCambios);
-
-      checkDemora.addEventListener("change", () => {
-        inputMotivo.classList.toggle("hidden", !checkDemora.checked);
-        guardarCambios();
-      });
-
-      inputMotivo.addEventListener("blur", () => {
-        if (checkDemora.checked) guardarCambios();
-      });
-    });
-  }
-
-  async function cargarPedidos() {
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .order("id", { ascending: false });
-
-    document.getElementById("cargando").classList.add("hidden");
-
-    if (error) {
-      alert(`No se pudieron cargar los pedidos: ${error.message}`);
-      return;
-    }
-
-    pedidos = data || [];
-    renderPedidos();
-  }
-
-  document.addEventListener("DOMContentLoaded", async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) {
-      window.location.href = "/admin/login";
-      return;
-    }
-
-    document.getElementById("btnLogout").addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      window.location.href = "/admin/login";
-    });
-
-    document.querySelectorAll(".filtro-estado").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".filtro-estado").forEach((b) => {
-          b.classList.remove(
-            "active",
-            "border-indigo-600",
-            "bg-indigo-50/80",
-            "text-indigo-950",
-          );
-          b.classList.add("border-slate-200", "bg-white", "text-slate-600");
-        });
-        btn.classList.add(
-          "active",
-          "border-indigo-600",
-          "bg-indigo-50/80",
-          "text-indigo-950",
-        );
-        btn.classList.remove("border-slate-200", "bg-white", "text-slate-600");
-
-        filtroActual = btn.getAttribute("data-filtro");
-        renderPedidos();
-      });
-    });
-
-    await cargarPedidos();
-  });
-</script>
