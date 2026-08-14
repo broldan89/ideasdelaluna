@@ -27,6 +27,60 @@ import Greeting from "../../components/Greeting.astro";
       </button>
     </div>
 
+    <div id="metricas" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div class="bg-white border border-indigo-50 rounded-xl p-3 text-center">
+        <p
+          id="metricaPendientes"
+          class="text-xl font-serif font-bold text-amber-600"
+        >
+          0
+        </p>
+        <p class="text-[10px] uppercase tracking-wider text-slate-500 mt-1">
+          Pendientes de pago
+        </p>
+      </div>
+      <div class="bg-white border border-indigo-50 rounded-xl p-3 text-center">
+        <p
+          id="metricaPreparacion"
+          class="text-xl font-serif font-bold text-indigo-600"
+        >
+          0
+        </p>
+        <p class="text-[10px] uppercase tracking-wider text-slate-500 mt-1">
+          En preparación
+        </p>
+      </div>
+      <div class="bg-white border border-indigo-50 rounded-xl p-3 text-center">
+        <p
+          id="metricaListos"
+          class="text-xl font-serif font-bold text-emerald-600"
+        >
+          0
+        </p>
+        <p class="text-[10px] uppercase tracking-wider text-slate-500 mt-1">
+          Listos para retirar
+        </p>
+      </div>
+      <div class="bg-white border border-indigo-50 rounded-xl p-3 text-center">
+        <p
+          id="metricaFacturado"
+          class="text-xl font-serif font-bold text-indigo-950"
+        >
+          $0
+        </p>
+        <p class="text-[10px] uppercase tracking-wider text-slate-500 mt-1">
+          Facturado este mes
+        </p>
+      </div>
+    </div>
+
+    <input
+      type="text"
+      id="inputBuscar"
+      placeholder="Buscar por código de pedido o archivo..."
+      class="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-xl p-3 mb-4 focus:outline-none focus:border-indigo-500"
+    />
+
     <div class="flex flex-wrap gap-2 mb-6" id="filtros">
       <button
         data-filtro="todos"
@@ -108,6 +162,7 @@ import Greeting from "../../components/Greeting.astro";
 
   let pedidos = [];
   let filtroActual = "todos";
+  let busquedaActual = "";
 
   function badgeColor(status) {
     switch (status) {
@@ -128,14 +183,53 @@ import Greeting from "../../components/Greeting.astro";
     }
   }
 
+  function calcularMetricas() {
+    const ahora = new Date();
+    const mesActual = ahora.getMonth();
+    const anioActual = ahora.getFullYear();
+
+    const pendientes = pedidos.filter(
+      (p) => p.status === "Pendiente de Pago",
+    ).length;
+    const preparacion = pedidos.filter(
+      (p) => p.status === "En Preparación",
+    ).length;
+    const listos = pedidos.filter(
+      (p) => p.status === "Listo para Retirar",
+    ).length;
+
+    const facturado = pedidos
+      .filter((p) => {
+        if (p.status === "Cancelado" || !p.created_at) return false;
+        const fecha = new Date(p.created_at);
+        return (
+          fecha.getMonth() === mesActual && fecha.getFullYear() === anioActual
+        );
+      })
+      .reduce((acc, p) => acc + Number(p.total_price || 0), 0);
+
+    document.getElementById("metricaPendientes").textContent = pendientes;
+    document.getElementById("metricaPreparacion").textContent = preparacion;
+    document.getElementById("metricaListos").textContent = listos;
+    document.getElementById("metricaFacturado").textContent =
+      `$${facturado.toLocaleString("es-AR")}`;
+  }
+
   function renderPedidos() {
     const cont = document.getElementById("listaPedidos");
     const vacio = document.getElementById("vacio");
 
-    const visibles =
-      filtroActual === "todos"
-        ? pedidos
-        : pedidos.filter((p) => p.status === filtroActual);
+    const busqueda = busquedaActual.trim().toLowerCase();
+
+    const visibles = pedidos.filter((p) => {
+      const coincideEstado =
+        filtroActual === "todos" || p.status === filtroActual;
+      const coincideBusqueda =
+        !busqueda ||
+        (p.order_code || "").toLowerCase().includes(busqueda) ||
+        (p.product_title || "").toLowerCase().includes(busqueda);
+      return coincideEstado && coincideBusqueda;
+    });
 
     if (visibles.length === 0) {
       cont.innerHTML = "";
@@ -231,6 +325,7 @@ import Greeting from "../../components/Greeting.astro";
         const pedido = pedidos.find((p) => String(p.id) === String(id));
         if (pedido) Object.assign(pedido, cambios);
 
+        calcularMetricas();
         guardadoOk.classList.remove("hidden");
         setTimeout(() => guardadoOk.classList.add("hidden"), 1500);
       };
@@ -280,6 +375,7 @@ import Greeting from "../../components/Greeting.astro";
     }
 
     pedidos = data || [];
+    calcularMetricas();
     renderPedidos();
   }
 
@@ -295,6 +391,11 @@ import Greeting from "../../components/Greeting.astro";
     document.getElementById("btnLogout").addEventListener("click", async () => {
       await supabase.auth.signOut();
       window.location.href = "/admin/login";
+    });
+
+    document.getElementById("inputBuscar").addEventListener("input", (e) => {
+      busquedaActual = e.target.value;
+      renderPedidos();
     });
 
     document.querySelectorAll(".filtro-estado").forEach((btn) => {
