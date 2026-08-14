@@ -1,0 +1,288 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Panel de Pedidos | Ideas de la Luna">
+  <section class="max-w-5xl mx-auto px-4 py-10 sm:py-16">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <span
+          class="text-[10px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-2.5 py-1 rounded-full"
+        >
+          Panel privado
+        </span>
+        <h1
+          class="text-2xl sm:text-3xl font-serif text-indigo-950 font-medium mt-3"
+        >
+          Pedidos del <span class="italic text-indigo-600">Cotizador</span>
+        </h1>
+      </div>
+      <button
+        id="btnLogout"
+        class="text-xs font-medium text-slate-500 hover:text-indigo-600 border border-slate-200 hover:border-indigo-300 rounded-full px-4 py-2 transition-all"
+      >
+        Cerrar sesión
+      </button>
+    </div>
+
+    <div class="flex flex-wrap gap-2 mb-6" id="filtros">
+      <button
+        data-filtro="todos"
+        class="filtro-estado active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+        >Todos</button
+      >
+      <button
+        data-filtro="Pendiente de Pago"
+        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+        >Pendiente de Pago</button
+      >
+      <button
+        data-filtro="Pago Confirmado"
+        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+        >Pago Confirmado</button
+      >
+      <button
+        data-filtro="En Preparación"
+        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+        >En Preparación</button
+      >
+      <button
+        data-filtro="Listo para Retirar"
+        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+        >Listo para Retirar</button
+      >
+      <button
+        data-filtro="Entregado"
+        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+        >Entregado</button
+      >
+    </div>
+
+    <p id="cargando" class="text-sm text-slate-500">Cargando pedidos...</p>
+    <p id="vacio" class="text-sm text-slate-500 hidden">
+      No hay pedidos en este estado.
+    </p>
+
+    <div id="listaPedidos" class="space-y-4"></div>
+  </section>
+</Layout>
+
+<style>
+  .pedido-card {
+    background: white;
+    border: 1px solid rgba(99, 102, 241, 0.08);
+    border-radius: 1rem;
+    padding: 1.25rem;
+  }
+</style>
+
+<script>
+  // @ts-nocheck
+  import { supabase } from "../../lib/supabase.js";
+
+  const ESTADOS = [
+    "Pendiente de Pago",
+    "Pago Confirmado",
+    "En Preparación",
+    "Listo para Retirar",
+    "Entregado",
+    "Cancelado",
+  ];
+
+  let pedidos = [];
+  let filtroActual = "todos";
+
+  function badgeColor(status) {
+    switch (status) {
+      case "Pendiente de Pago":
+        return "bg-amber-50 text-amber-700 border-amber-200";
+      case "Pago Confirmado":
+        return "bg-sky-50 text-sky-700 border-sky-200";
+      case "En Preparación":
+        return "bg-indigo-50 text-indigo-700 border-indigo-200";
+      case "Listo para Retirar":
+        return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      case "Entregado":
+        return "bg-slate-100 text-slate-500 border-slate-200";
+      case "Cancelado":
+        return "bg-red-50 text-red-600 border-red-200";
+      default:
+        return "bg-slate-50 text-slate-600 border-slate-200";
+    }
+  }
+
+  function renderPedidos() {
+    const cont = document.getElementById("listaPedidos");
+    const vacio = document.getElementById("vacio");
+
+    const visibles =
+      filtroActual === "todos"
+        ? pedidos
+        : pedidos.filter((p) => p.status === filtroActual);
+
+    if (visibles.length === 0) {
+      cont.innerHTML = "";
+      vacio.classList.remove("hidden");
+      return;
+    }
+    vacio.classList.add("hidden");
+
+    cont.innerHTML = visibles
+      .map((p) => {
+        const detalle = (p.subproducts || [])
+          .map(
+            (d) =>
+              `<span class="text-slate-500">${d.label}:</span> <span class="font-medium text-indigo-950">${d.value}</span>`,
+          )
+          .join(" &nbsp;•&nbsp; ");
+
+        const opciones = ESTADOS.map(
+          (e) =>
+            `<option value="${e}" ${e === p.status ? "selected" : ""}>${e}</option>`,
+        ).join("");
+
+        return `
+          <div class="pedido-card" data-id="${p.id}">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p class="font-serif text-indigo-950 font-medium text-base">
+                  ${p.product_title || "Pedido"}
+                  ${p.order_code ? `<span class="text-xs text-indigo-400 font-sans font-normal ml-1">#${p.order_code}</span>` : ""}
+                </p>
+                <p class="text-xs text-slate-500 mt-1">${detalle}</p>
+                <p class="text-sm font-semibold text-indigo-950 mt-2">$${Number(p.total_price || 0).toLocaleString("es-AR")}</p>
+              </div>
+              <span class="text-[10px] font-semibold uppercase tracking-wider border rounded-full px-2.5 py-1 ${badgeColor(p.status)}">
+                ${p.status || "Sin estado"}
+              </span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-indigo-50">
+              <select class="select-estado bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg p-2 focus:outline-none">
+                ${opciones}
+              </select>
+
+              <label class="flex items-center gap-1.5 text-xs text-slate-500 cursor-pointer ml-2">
+                <input type="checkbox" class="check-demora" ${p.delayed ? "checked" : ""} />
+                Con demora
+              </label>
+
+              <input
+                type="text"
+                placeholder="Motivo de la demora (opcional)"
+                class="input-motivo bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg p-2 focus:outline-none flex-1 min-w-[160px] ${p.delayed ? "" : "hidden"}"
+                value="${p.delay_reason ? p.delay_reason.replace(/"/g, "&quot;") : ""}"
+              />
+
+              ${p.pdf_url ? `<a href="${p.pdf_url}" target="_blank" class="text-xs font-medium bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg px-3 py-2 transition-colors">⬇️ Descargar archivo</a>` : ""}
+
+              <span class="guardado-ok hidden text-xs text-emerald-600 font-medium">✅ Guardado</span>
+            </div>
+          </div>
+        `;
+      })
+      .join("");
+
+    // Listeners por card
+    cont.querySelectorAll(".pedido-card").forEach((card) => {
+      const id = card.getAttribute("data-id");
+      const selectEstado = card.querySelector(".select-estado");
+      const checkDemora = card.querySelector(".check-demora");
+      const inputMotivo = card.querySelector(".input-motivo");
+      const guardadoOk = card.querySelector(".guardado-ok");
+
+      const guardarCambios = async () => {
+        const cambios = {
+          status: selectEstado.value,
+          delayed: checkDemora.checked,
+          delay_reason: checkDemora.checked ? inputMotivo.value.trim() : null,
+        };
+
+        const { error } = await supabase
+          .from("orders")
+          .update(cambios)
+          .eq("id", id);
+
+        if (error) {
+          alert(`No se pudo guardar el cambio: ${error.message}`);
+          return;
+        }
+
+        const pedido = pedidos.find((p) => String(p.id) === String(id));
+        if (pedido) Object.assign(pedido, cambios);
+
+        guardadoOk.classList.remove("hidden");
+        setTimeout(() => guardadoOk.classList.add("hidden"), 1500);
+      };
+
+      selectEstado.addEventListener("change", guardarCambios);
+
+      checkDemora.addEventListener("change", () => {
+        inputMotivo.classList.toggle("hidden", !checkDemora.checked);
+        guardarCambios();
+      });
+
+      inputMotivo.addEventListener("blur", () => {
+        if (checkDemora.checked) guardarCambios();
+      });
+    });
+  }
+
+  async function cargarPedidos() {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .order("id", { ascending: false });
+
+    document.getElementById("cargando").classList.add("hidden");
+
+    if (error) {
+      alert(`No se pudieron cargar los pedidos: ${error.message}`);
+      return;
+    }
+
+    pedidos = data || [];
+    renderPedidos();
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = "/admin/login";
+      return;
+    }
+
+    document.getElementById("btnLogout").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.href = "/admin/login";
+    });
+
+    document.querySelectorAll(".filtro-estado").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filtro-estado").forEach((b) => {
+          b.classList.remove(
+            "active",
+            "border-indigo-600",
+            "bg-indigo-50/80",
+            "text-indigo-950",
+          );
+          b.classList.add("border-slate-200", "bg-white", "text-slate-600");
+        });
+        btn.classList.add(
+          "active",
+          "border-indigo-600",
+          "bg-indigo-50/80",
+          "text-indigo-950",
+        );
+        btn.classList.remove("border-slate-200", "bg-white", "text-slate-600");
+
+        filtroActual = btn.getAttribute("data-filtro");
+        renderPedidos();
+      });
+    });
+
+    await cargarPedidos();
+  });
+</script>
