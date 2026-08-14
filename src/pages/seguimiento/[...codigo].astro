@@ -1,9 +1,15 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-const { codigo } = Astro.params;
+
+// Página catch-all: se genera UNA sola vez en el build.
+// Netlify reescribe /seguimiento/* hacia este mismo archivo (ver netlify.toml).
+// El código de pedido se lee del lado del cliente, no acá.
+export function getStaticPaths() {
+  return [{ params: { codigo: undefined } }];
+}
 ---
 
-<Layout title={`Seguimiento de pedido #${codigo} | Ideas de la Luna`}>
+<Layout title="Seguimiento de pedido | Ideas de la Luna">
   <section class="max-w-md mx-auto px-4 py-20 sm:py-28">
     <div class="text-center mb-8">
       <span
@@ -12,9 +18,10 @@ const { codigo } = Astro.params;
         Seguimiento de pedido
       </span>
       <h1
+        id="tituloCodigo"
         class="text-2xl sm:text-3xl font-serif text-indigo-950 font-medium mt-3"
       >
-        Pedido <span class="italic text-indigo-600">#{codigo}</span>
+        Tu pedido
       </h1>
     </div>
 
@@ -76,6 +83,15 @@ const { codigo } = Astro.params;
 
   document.addEventListener("DOMContentLoaded", async () => {
     const codigo = window.location.pathname.split("/").filter(Boolean).pop();
+
+    if (!codigo || codigo.toLowerCase() === "seguimiento") {
+      document.getElementById("cargando").classList.add("hidden");
+      document.getElementById("noEncontrado").classList.remove("hidden");
+      return;
+    }
+
+    document.getElementById("tituloCodigo").innerHTML =
+      `Pedido <span class="italic text-indigo-600">#${codigo}</span>`;
 
     const { data, error } = await supabase.rpc("get_order_public", {
       p_order_code: codigo,
