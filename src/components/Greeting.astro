@@ -1,0 +1,54 @@
+<!-- src/components/Greeting.astro -->
+<div id="admin-greeting" class="text-lg font-medium text-indigo-800 mt-1"></div>
+
+<script>
+  import { createClient } from "@supabase/supabase-js";
+
+  const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+  );
+
+  const frases = [
+    "¿por dónde empezamos hoy?",
+    "¿ponemos manos a la obra?",
+    "¿le damos tinta a esta tirada?",
+    "¿preparamos la prensa?",
+    "¿qué pedido arrancamos primero?",
+    "¿a qué le damos forma hoy?",
+    "¿sellamos algún trato?",
+    "¿imprimimos futuro?",
+    "¿alineamos los colores?",
+    "¿cortamos y plegamos?",
+    "¿qué sale del horno hoy?",
+    "¿a quién le damos vida con tinta?",
+  ];
+
+  async function mostrarSaludo() {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const nombre =
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name ||
+          user.email?.split("@")[0] ||
+          "Admin";
+
+        const frase = frases[Math.floor(Math.random() * frases.length)];
+        document.getElementById("admin-greeting").innerHTML = `
+          <p class="text-indigo-700">Hola ${nombre}, ${frase}</p>
+        `;
+      } else {
+        document.getElementById("admin-greeting").innerHTML = "";
+      }
+    } catch (error) {
+      console.error("Error al obtener el usuario:", error);
+      document.getElementById("admin-greeting").innerHTML = "";
+    }
+  }
+
+  mostrarSaludo();
+</script>
