@@ -1,0 +1,136 @@
+---
+
+---
+
+<section
+  id="seccionPromociones"
+  class="hidden max-w-7xl mx-auto px-6 pt-10 sm:pt-14"
+>
+  <div id="listaPromociones" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  </div>
+</section>
+
+<style>
+  .promo-card {
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.06),
+      rgba(236, 72, 153, 0.06)
+    );
+    border: 1px solid rgba(99, 102, 241, 0.12);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+  }
+</style>
+
+<script>
+  // @ts-nocheck
+
+  // TODO: reemplazar por el link publicado de la pestaña "Promociones".
+  // Cómo obtenerlo: en la planilla → Archivo → Compartir → Publicar en la web
+  // → elegís la hoja "Promociones" (no "Toda la planilla") → formato CSV →
+  // Publicar → copiás el link que te da y lo pegás acá abajo.
+  const CSV_URL_PROMOCIONES =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRVnI_RqxCSt1wAfQthb5aG1m1NVIbiyjF6rovbmM0hUk2ZoNrLSWkDIlTsRTn2B3PbUXv_NFq8l3q/pub?gid=116458534&single=true&output=csv";
+
+  // Parser de CSV simple que respeta comillas (para que las descripciones
+  // puedan tener comas sin romper las columnas).
+  function parsearCSV(texto) {
+    const filas = [];
+    let fila = [];
+    let campo = "";
+    let dentroComillas = false;
+
+    for (let i = 0; i < texto.length; i++) {
+      const c = texto[i];
+
+      if (dentroComillas) {
+        if (c === '"' && texto[i + 1] === '"') {
+          campo += '"';
+          i++;
+        } else if (c === '"') {
+          dentroComillas = false;
+        } else {
+          campo += c;
+        }
+      } else {
+        if (c === '"') {
+          dentroComillas = true;
+        } else if (c === ",") {
+          fila.push(campo);
+          campo = "";
+        } else if (c === "\n" || c === "\r") {
+          if (c === "\r" && texto[i + 1] === "\n") i++;
+          fila.push(campo);
+          filas.push(fila);
+          fila = [];
+          campo = "";
+        } else {
+          campo += c;
+        }
+      }
+    }
+    if (campo.length > 0 || fila.length > 0) {
+      fila.push(campo);
+      filas.push(fila);
+    }
+    return filas.filter((f) => f.some((c) => c.trim() !== ""));
+  }
+
+  function esActiva(promo, hoy) {
+    const activa = (promo.Activa || "").trim().toUpperCase();
+    if (activa !== "SI" && activa !== "SÍ" && activa !== "TRUE") return false;
+
+    if (promo.FechaInicio) {
+      const inicio = new Date(promo.FechaInicio);
+      if (!isNaN(inicio) && hoy < inicio) return false;
+    }
+    if (promo.FechaFin) {
+      const fin = new Date(promo.FechaFin);
+      if (!isNaN(fin) && hoy > fin) return false;
+    }
+    return true;
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      const response = await fetch(CSV_URL_PROMOCIONES);
+      const texto = await response.text();
+      const filas = parsearCSV(texto);
+
+      if (filas.length < 2) return;
+
+      const encabezados = filas[0].map((h) => h.trim());
+      const promociones = filas.slice(1).map((fila) => {
+        const obj = {};
+        encabezados.forEach((h, i) => (obj[h] = (fila[i] || "").trim()));
+        return obj;
+      });
+
+      const hoy = new Date();
+      const activas = promociones.filter((p) => esActiva(p, hoy));
+
+      if (activas.length === 0) return;
+
+      const cont = document.getElementById("listaPromociones");
+      cont.innerHTML = activas
+        .map((p) => {
+          const contenido = `
+            <span class="text-[10px] font-semibold tracking-widest text-pink-600 uppercase bg-pink-50 px-2.5 py-1 rounded-full">
+              Promo
+            </span>
+            <p class="font-serif text-indigo-950 font-medium text-lg mt-3">${p.Titulo || ""}</p>
+            <p class="text-sm text-slate-600 mt-1.5">${p.Descripcion || ""}</p>
+          `;
+
+          if (p.Link) {
+            return `<a href="${p.Link}" target="_blank" class="promo-card block hover:shadow-md transition-shadow">${contenido}</a>`;
+          }
+          return `<div class="promo-card">${contenido}</div>`;
+        })
+        .join("");
+
+      document.getElementById("seccionPromociones").classList.remove("hidden");
+    } catch (e) {}
+  });
+</script>

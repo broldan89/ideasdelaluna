@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import TopBar from "../components/TopBar.astro";
 import Navbar from "../components/Navbar.astro";
 import Hero from "../components/Hero.astro";
+import Promociones from "../components/Promociones.astro";
 import Cotizador from "../components/Cotizador.astro";
 import ProductCard from "../components/ProductCard.astro";
 import Faq from "../components/Faq.astro";
@@ -13,6 +14,8 @@ import GalleryModal from "../components/GalleryModal.astro";
   <TopBar />
   <Navbar />
   <Hero />
+
+  <Promociones />
 
   <!-- CALCULADORA / COTIZADOR AUTOMÁTICO DE IMPRESIONES -->
   <Cotizador />
@@ -39,13 +42,13 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Stickers, Tags & QR's"
           description="Impresión por plancha A4 (mínimo 20 unidades). Papel fotográfico (200g), mate (260g) o material fílmico resistente al agua. Corte troquelado listo para despegar."
           badge="100% Personalizado"
-          imageSrc="/catalog/02_Mundo_Emprendedor/stickers_cierrabolsas/02_sticker_cierrabolsas_main.jpeg"
-          hoverImageSrc="/catalog/02_Mundo_Emprendedor/stickers_cierrabolsas/02_sticker_cierrabolsas_galeria_02.jpeg"
+          imageSrc="/catalog/emprendedores/stickers/promo2.jpeg"
+          hoverImageSrc="/catalog/emprendedores/stickers/promo.jpeg"
           galleryImages={[
-            "/catalog/02_Mundo_Emprendedor/stickers_cierrabolsas/02_sticker_cierrabolsas_galeria_01.jpeg",
-            "/catalog/02_Mundo_Emprendedor/stickers_cierrabolsas/02_sticker_cierrabolsas_galeria_02.jpeg",
-            "/catalog/02_Mundo_Emprendedor/stickers_cierrabolsas/02_sticker_cierrabolsas_galeria_03.jpeg",
-            "/catalog/02_Mundo_Emprendedor/stickers_cierrabolsas/02_sticker_cierrabolsas_galeria_04.jpeg",
+            "/catalog/emprendedores/stickers/sticker_emp.jpeg",
+            "/catalog/emprendedores/stickers/sticker_emp2.jpeg",
+            "/catalog/emprendedores/stickers/promo2.jpeg",
+            "/catalog/emprendedores/stickers/promo.jpeg",
           ]}
           subProducts={[
             {
@@ -68,13 +71,12 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Tarjetas Profesionales & Personales"
           description="Diseño 100% personalizado en medidas estándar (4x9 cm o 5x9 cm). Opción simple o doble faz en papel pesado de alta calidad."
           badge="Contacto"
-          imageSrc="/catalog/02_Mundo_Emprendedor/tarjetas_cuidados_qr/02_tarjetas_cuidados_qr_main.jpeg"
-          hoverImageSrc="/catalog/02_Mundo_Emprendedor/tarjetas_cuidados_qr/02_tarjetas_cuidados_qr_galeria_01.jpeg"
+          imageSrc="/catalog/emprendedores/tarjetas/tarjetasPersonales_main.jpeg"
+          hoverImageSrc="/catalog/emprendedores/tarjetas/tarjetas_profesionales.jpeg"
           galleryImages={[
-            "/catalog/02_Mundo_Emprendedor/tarjetas_cuidados_qr/02_tarjetas_cuidados_qr_galeria_main.jpeg",
-            "/catalog/02_Mundo_Emprendedor/tarjetas_cuidados_qr/02_tarjetas_cuidados_qr_galeria_01.jpeg",
-            "/catalog/02_Mundo_Emprendedor/tarjetas_cuidados_qr/02_tarjetas_cuidados_qr_galeria_02.jpeg",
-            "/catalog/02_Mundo_Emprendedor/tarjetas_cuidados_qr/02_tarjetas_cuidados_qr_galeria_03.jpeg",
+            "/catalog/emprendedores/tarjetas/tarjetas_profesionales2.jpeg",
+            "/catalog/emprendedores/tarjetas/tarjetasPersonales_main.jpeg",
+            "/catalog/emprendedores/tarjetas/tarjetas_profesionales.jpeg",
           ]}
           subProducts={[
             {
@@ -97,12 +99,13 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Packaging & Presentación de Marca"
           description="Detalles gráficos impresos para sellar y dar el toque final a tus paquetes antes de enviarlos."
           badge="Packaging"
-          imageSrc="/catalog/02_Mundo_Emprendedor/tags_etiquetas_colgantes/02_tags_etiquetas_colgantes_main.jpeg"
-          hoverImageSrc="/catalog/02_Mundo_Emprendedor/tags_etiquetas_colgantes/02_tags_etiquetas_colgantes_galeria_01.jpeg"
+          imageSrc="/catalog/emprendedores/packaging/tarjetones.jpeg"
+          hoverImageSrc="/catalog/emprendedores/packaging/tags_1.jpeg"
           galleryImages={[
-            "/catalog/02_Mundo_Emprendedor/tags_etiquetas_colgantes/02_tags_etiquetas_colgantes_galeria_main.jpeg",
-            "/catalog/02_Mundo_Emprendedor/tags_etiquetas_colgantes/02_tags_etiquetas_colgantes_galeria_01.jpeg",
-            "/catalog/02_Mundo_Emprendedor/tags_etiquetas_colgantes/02_tags_etiquetas_colgantes_galeria_02.jpeg",
+            "/catalog/emprendedores/packaging/tags_1.jpeg",
+            "/catalog/emprendedores/packaging/cierraBolsas.jpeg",
+            "/catalog/emprendedores/packaging/tarjetones.jpeg",
+            "/catalog/emprendedores/packaging/tarjetoness_2.jpeg",
           ]}
           subProducts={[
             {
@@ -129,7 +132,7 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Fidelización & Gift Cards"
           description="Tarjetas impresas 100% personalizadas en papel pesado diseñadas para premiar la lealtad e incentivar la recompra."
           badge="Clientes"
-          imageSrc="/catalog/02_Mundo_Emprendedor/stickers_cierrabolsas/02_sticker_cierrabolsas_galeria_01.jpeg"
+          imageSrc="/catalog/emprendedores/packaging/agradecimiento_main.jpeg"
           hoverImageSrc="/catalog/emprendedores/packaging/agradecimiento_main.jpeg"
           galleryImages={[
             "/catalog/emprendedores/packaging/tags_1.jpeg",
@@ -158,12 +161,13 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Folletería & Material Promocional"
           description="Volantes, flyers y folletos impresos en alta calidad para difundir tus promociones o catálogo de servicios."
           badge="Difusión"
-          imageSrc="/catalog/02_Mundo_Emprendedor/folleteria_papeleria/02_folleteria_main.jpeg"
-          hoverImageSrc="/catalog/02_Mundo_Emprendedor/folleteria_papeleria/02_folleteria_galeria_01.jpeg"
+          imageSrc="/catalog/tarjetas_profesionales.jpeg"
+          hoverImageSrc="/catalog/tarjetas_profesionales2.jpeg"
           galleryImages={[
-            "/catalog/02_Mundo_Emprendedor/folleteria_papeleria/02_folleteria_galeria_main.jpeg",
-            "/catalog/02_Mundo_Emprendedor/folleteria_papeleria/02_folleteria_galeria_01.jpeg",
-            "/catalog/02_Mundo_Emprendedor/folleteria_papeleria/02_folleteria_galeria_02.jpeg",
+            "/catalog/emprendedores/packaging/tags_1.jpeg",
+            "/catalog/emprendedores/packaging/cierraBolsas.jpeg",
+            "/catalog/emprendedores/packaging/tarjetones.jpeg",
+            "/catalog/emprendedores/packaging/tarjetoness_2.jpeg",
           ]}
           subProducts={[
             {
@@ -357,13 +361,13 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Invitaciones Especiales"
           description="Diseños 100% personalizados en papeles de alta calidad para bodas, XV años y cumpleaños."
           badge="Premium"
-          imageSrc="/catalog/03_Eventos/papeleria_eventos/03_papeleria_eventos_main.jpeg"
-          hoverImageSrc="/catalog/03_Eventos/papeleria_eventos/03_papeleria_eventos_galeria_01.jpeg"
+          imageSrc="/catalog/invitaciones.jpeg"
+          hoverImageSrc="/catalog/invitaciones.jpeg"
           galleryImages={[
-            "/catalog/03_Eventos/papeleria_eventos/03_papeleria_eventos_galeria_main.jpeg",
-            "/catalog/03_Eventos/papeleria_eventos/03_papeleria_eventos_galeria_01.jpeg",
-            "/catalog/03_Eventos/papeleria_eventos/03_papeleria_eventos_galeria_02.jpeg",
-            "/catalog/03_Eventos/papeleria_eventos/03_papeleria_eventos_galeria_03.jpeg",
+            "/catalog/emprendedores/packaging/tags_1.jpeg",
+            "/catalog/emprendedores/packaging/cierraBolsas.jpeg",
+            "/catalog/emprendedores/packaging/tarjetones.jpeg",
+            "/catalog/emprendedores/packaging/tarjetoness_2.jpeg",
           ]}
           subProducts={[
             {
@@ -391,13 +395,9 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Candy Bar Temático"
           description="Kits de papelería para mesas dulces de cumpleaños, XV años y eventos. Diseños 100% a medida con los personajes o temática que elijas."
           badge="Popular"
-          imageSrc="/catalog/03_Eventos/candy_bar/03_candy_bar_main.jpeg"
-          hoverImageSrc="/catalog/03_Eventos/candy_bar/03_candy_bar_galeria_01.jpeg"
-          galleryImages={[
-            "/catalog/03_Eventos/candy_bar/03_candy_bar_galeria_main.jpeg",
-            "/catalog/03_Eventos/candy_bar/03_candy_bar_galeria_01.jpeg",
-            "/catalog/03_Eventos/candy_bar/03_candy_bar_galeria_02.jpeg",
-          ]}
+          imageSrc="/catalog/candybar.jpeg"
+          hoverImageSrc="/catalog/candybar.jpeg"
+          galleryImages={["/catalog/candybar.jpeg"]}
           subProducts={[
             {
               name: "Cajitas y Bolsitas golosineras",
@@ -423,7 +423,7 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Papelería Especial para Eventos"
           description="Detalles impresos para ambientar y organizar las mesas de tu fiesta o evento corporativo con la mejor presentación."
           badge="Elegante"
-          imageSrc="/catalog/03_Eventos/papeleria_eventos/03_papeleria_eventos_main.jpeg"
+          imageSrc="/catalog/papeleria-eventos.jpeg"
           hoverImageSrc="/catalog/papeleria-eventos.jpeg"
           galleryImages={["/catalog/papeleria-eventos.jpeg"]}
           subProducts={[
@@ -451,12 +451,9 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Deco para Eventos"
           description="Guirnaldas, banderines y cartelería modular en formato A4. Todo lo necesario para vestir paredes y espacios con la identidad de tu festejo."
           badge="Tendencia"
-          imageSrc="/catalog/03_Eventos/deco_eventos/03_deco_eventos_main.jpeg"
-          hoverImageSrc="/catalog/03_Eventos/deco_eventos/03_deco_eventos_galeria_01.jpeg"
-          galleryImages={[
-            "/catalog/03_Eventos/deco_eventos/03_deco_eventos_galeria_01.jpeg",
-            "/catalog/03_Eventos/deco_eventos/03_deco_eventos_galeria_02.jpeg",
-          ]}
+          imageSrc="/catalog/deco-eventos.jpeg"
+          hoverImageSrc="/catalog/deco-eventos.jpeg"
+          galleryImages={["/catalog/deco-eventos.jpeg"]}
           subProducts={[
             {
               name: "Banderines y Guirnaldas",
@@ -528,13 +525,9 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Agendas, Planners & Blocs"
           description="Herramientas de organización personal para estructurar tus metas, días y notas de forma práctica."
           badge="Popular"
-          imageSrc="/catalog/04_La_Tienda_de_la_Luna/04_agendas_planners_main.jpeg"
-          hoverImageSrc="/catalog/04_La_Tienda_de_la_Luna/04_agendas_planners_galeria_01.jpeg"
-          galleryImages={[
-            "/catalog/04_La_Tienda_de_la_Luna/04_agendas_planners_galeria_01.jpeg",
-            "/catalog/04_La_Tienda_de_la_Luna/04_agendas_planners_galeria_02.jpeg",
-            "/catalog/04_La_Tienda_de_la_Luna/04_agendas_planners_galeria_03.jpeg",
-          ]}
+          imageSrc="/catalog/libreta.jpeg"
+          hoverImageSrc="/catalog/libreta.jpeg"
+          galleryImages={["/catalog/libreta.jpeg"]}
           subProducts={[
             {
               name: "Agendas Perpetuas y Anuales",
@@ -561,13 +554,9 @@ import GalleryModal from "../components/GalleryModal.astro";
           title="Posters & Accesorios Imantados"
           description="Detalles impresos y soluciones magnéticas para decorar tu espacio o mantener la heladera súper organizada."
           badge="Novedad"
-          imageSrc="/catalog/04_La_Tienda_de_la_Luna/deco_magneticos/04_deco_magneticos_01.jpeg"
-          hoverImageSrc="/catalog/04_La_Tienda_de_la_Luna/deco_magneticos/04_deco_magneticos_02.jpeg"
-          galleryImages={[
-            "/catalog/04_La_Tienda_de_la_Luna/deco_magneticos/04_deco_magneticos_01.jpeg",
-            "/catalog/04_La_Tienda_de_la_Luna/deco_magneticos/04_deco_magneticos_02.jpeg",
-            "/catalog/04_La_Tienda_de_la_Luna/deco_magneticos/04_deco_magneticos_03.jpeg",
-          ]}
+          imageSrc="/catalog/posters.jpeg"
+          hoverImageSrc="/catalog/posters.jpeg"
+          galleryImages={["/catalog/posters.jpeg"]}
           subProducts={[
             {
               name: "Pizarras & Planners Imantados",
