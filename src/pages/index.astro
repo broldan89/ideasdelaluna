@@ -17,13 +17,11 @@ import GalleryModal from "../components/GalleryModal.astro";
 
   <Promociones />
 
-  <!-- CALCULADORA / COTIZADOR AUTOMÁTICO DE IMPRESIONES -->
   <Cotizador />
 
   <main
     class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-16 sm:space-y-24"
   >
-    <!-- SECCIÓN 1: UNIVERSO EMPRENDEDOR -->
     <section id="marcas" class="scroll-mt-24">
       <div class="max-w-xl mb-8">
         <h2 class="text-3xl font-normal text-indigo-950">
@@ -42,7 +40,7 @@ import GalleryModal from "../components/GalleryModal.astro";
         <ProductCard
           id="stickers"
           title="Stickers, Tags & QR's"
-          description="Impresión por plancha A4 (mínimo 20 unidades). Papel fotográfico (200g), mate (260g) o material fílmico resistente al agua. Corte troquelado listo para despegar."
+          description="Impresión por plancha A4 (mínimo 20 unidades). Papel fotográfico (200g), mate (260g) o papel filmilo resistente al agua. Corte troquelado listo para despegar."
           badge="100% Personalizado"
           imageSrc="/catalog/02_Mundo_Emprendedor/stickers_tags_qr/02_stickers_tags_qr_main.jpeg"
           hoverImageSrc="/catalog/02_Mundo_Emprendedor/stickers_tags_qr/02_stickers_tags_qr_galeria_01.jpeg"
@@ -76,7 +74,7 @@ import GalleryModal from "../components/GalleryModal.astro";
         <ProductCard
           id="tarjetas"
           title="Tarjetas Profesionales & Personales"
-          description="Diseño 100% personalizado en medidas estándar (4x9 cm o 5x9 cm). Opción simple o doble faz en papel pesado de alta calidad."
+          description="Diseño 100% personalizado en medidas estándar (4x9 cm o 5x9 cm). Opción simple o doble faz en papel mate de excelente calidad y buen acabado."
           badge="Contacto"
           imageSrc="/catalog/02_Mundo_Emprendedor/tarjetas_profesionales/02_tarjetas_profecionales_main.jpeg"
           hoverImageSrc="/catalog/02_Mundo_Emprendedor/tarjetas_profesionales/02_tarjetas_profecionales_galeria_01.jpeg"
@@ -160,6 +158,10 @@ import GalleryModal from "../components/GalleryModal.astro";
               name: "Gift Cards impresas",
               desc: "Tarjetas de regalo personalizadas con montos o servicios.",
             },
+            {
+              name: "Tarjetas de felicitaciones & días de celebración",
+              desc: "Diseños especiales para fechas festivas, cumpleaños y reconocimientos.",
+            },
           ]}
         />
 
@@ -190,12 +192,15 @@ import GalleryModal from "../components/GalleryModal.astro";
               name: "Cartas o menús desplegables",
               desc: "Para locales gastronómicos, servicios o catálogos impresos.",
             },
+            {
+              name: "Menús con QR o laminados",
+              desc: "Opciones digitales con QR o totalmente impresos y laminados para mayor protección.",
+            },
           ]}
         />
       </div>
     </section>
 
-    <!-- SECCIÓN ESPECIAL DESTACADA: ÓRBITA DOCENTE & SEÑOS -->
     <section
       id="docentes"
       class="scroll-mt-24 p-6 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white shadow-2xl relative overflow-hidden border border-indigo-500/20"
@@ -228,7 +233,6 @@ import GalleryModal from "../components/GalleryModal.astro";
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10 w-full">
-        <!-- TARJETA 1 -->
         <div
           class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg"
         >
@@ -263,7 +267,6 @@ import GalleryModal from "../components/GalleryModal.astro";
           </a>
         </div>
 
-        <!-- TARJETA 2 -->
         <div
           class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg"
         >
@@ -298,7 +301,6 @@ import GalleryModal from "../components/GalleryModal.astro";
           </a>
         </div>
 
-        <!-- TARJETA 3: DESCARGABLES PDF -->
         <div
           class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg"
         >
@@ -340,7 +342,6 @@ import GalleryModal from "../components/GalleryModal.astro";
       </div>
     </section>
 
-    <!-- SECCIÓN 3: PARA EVENTOS -->
     <section id="eventos" class="scroll-mt-24">
       <div class="max-w-xl mb-8">
         <h2 class="text-3xl font-normal text-indigo-950">
@@ -471,7 +472,6 @@ import GalleryModal from "../components/GalleryModal.astro";
       </div>
     </section>
 
-    <!-- SECCIÓN 4: LA TIENDA DE LA LUNA -->
     <section id="tienda" class="scroll-mt-24 mb-12">
       <div class="max-w-xl mb-8">
         <h2 class="text-3xl font-normal text-indigo-950">
@@ -537,6 +537,10 @@ import GalleryModal from "../components/GalleryModal.astro";
             {
               name: "Agendas Perpetuas y Anuales",
               desc: "Vista semanal o diaria con tapa dura laminada, elástico y sobre organizador.",
+            },
+            {
+              name: "Agendas & Cuadernos Corporativos",
+              desc: "Herramientas organizativas adaptadas con la identidad visual y marca de tu empresa.",
             },
             {
               name: "Planners Semanales & Mensuales",
@@ -622,10 +626,8 @@ import GalleryModal from "../components/GalleryModal.astro";
     </section>
   </main>
 
-  <!-- SECCIÓN PREGUNTAS FRECUENTES -->
   <Faq />
 
-  <!-- FOOTER CON SOMBRA DE PAPEL SOBREPUESTO -->
   <div class="paper-footer-wrapper relative z-20">
     <div
       class="w-full overflow-hidden leading-[0] rotate-180 bg-transparent -mb-1"
@@ -696,7 +698,6 @@ import GalleryModal from "../components/GalleryModal.astro";
     </footer>
   </div>
 
-  <!-- MODAL DE RECURSOS DIGITALES -->
   <div
     id="pdf-modal"
     class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300"
