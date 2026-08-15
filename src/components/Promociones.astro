@@ -1,31 +1,24 @@
 ---
-
+// Banner de Promociones — se alimenta de una pestaña dedicada en la misma
+// planilla de Sheets que usa el Cotizador. Se lee directo desde el navegador
+// (no pasa por un endpoint del sitio) para que actualizar la planilla alcance,
+// sin necesidad de un nuevo deploy.
 ---
 
 <section
   id="seccionPromociones"
-  class="hidden max-w-7xl mx-auto px-6 pt-10 sm:pt-14"
+  class="hidden max-w-7xl mx-auto px-6 pt-10 pb-4 sm:pt-14"
 >
-  <div id="listaPromociones" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-  </div>
+  <div id="listaPromociones" class="flex flex-wrap justify-center gap-4"></div>
 </section>
-
-<style>
-  .promo-card {
-    background: linear-gradient(
-      135deg,
-      rgba(99, 102, 241, 0.06),
-      rgba(236, 72, 153, 0.06)
-    );
-    border: 1px solid rgba(99, 102, 241, 0.12);
-    border-radius: 1.25rem;
-    padding: 1.5rem;
-  }
-</style>
 
 <script>
   // @ts-nocheck
 
+  // TODO: reemplazar por el link publicado de la pestaña "Promociones".
+  // Cómo obtenerlo: en la planilla → Archivo → Compartir → Publicar en la web
+  // → elegís la hoja "Promociones" (no "Toda la planilla") → formato CSV →
+  // Publicar → copiás el link que te da y lo pegás acá abajo.
   const CSV_URL_PROMOCIONES =
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRVnI_RqxCSt1wAfQthb5aG1m1NVIbiyjF6rovbmM0hUk2ZoNrLSWkDIlTsRTn2B3PbUXv_NFq8l3q/pub?gid=116458534&single=true&output=csv";
 
@@ -119,14 +112,20 @@
             <p class="text-sm text-slate-600 mt-1.5">${p.Descripcion || ""}</p>
           `;
 
+          const claseCard =
+            "block w-full sm:w-72 bg-gradient-to-br from-indigo-50 via-white to-pink-50 border border-indigo-100 rounded-2xl p-6 hover:shadow-md hover:-translate-y-0.5 transition-all";
+
           if (p.Link) {
-            return `<a href="${p.Link}" target="_blank" class="promo-card block hover:shadow-md transition-shadow">${contenido}</a>`;
+            return `<a href="${p.Link}" target="_blank" class="${claseCard}">${contenido}</a>`;
           }
-          return `<div class="promo-card">${contenido}</div>`;
+          return `<div class="${claseCard}">${contenido}</div>`;
         })
         .join("");
 
       document.getElementById("seccionPromociones").classList.remove("hidden");
-    } catch (e) {}
+    } catch (e) {
+      // Si falla la carga de promociones, el sitio sigue funcionando normal
+      // y la sección simplemente no aparece.
+    }
   });
 </script>
