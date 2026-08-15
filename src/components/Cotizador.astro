@@ -242,11 +242,18 @@
   // @ts-nocheck
   import { supabase } from "../lib/supabase.js";
 
+  // Tablas de precios por defecto en caso de fallo de red
   let tablaPrecios = {
-    S01: 32, // Impresión Faz Simple (BN)
-    S02: 32, // Impresión Faz Simple (Color)
-    S03: 64, // Impresión Doble Faz (Color/BN)
-    S05: 1500, // Anillado A4 + tapas
+    S01: 32, // Impresión Simple Faz B/N
+    S02: 32, // Impresión Simple Faz Color
+    S03: 64, // Impresión Doble Faz B/N
+    S04: 64, // Impresión Doble Faz Color
+    S13: 3000, // Anillado 1 a 9 copias
+    S14: 2500, // Anillado 10+ copias
+  };
+
+  let tablaPapeles = {
+    P01: 12.8, // Hoja Obra 70g (por defecto)
   };
 
   let estadoCotizador = {
@@ -254,6 +261,7 @@
     modalidad: "simple", // 'simple' | 'doble'
     color: "bn", // 'bn' | 'color'
     encuadernacion: "ninguno", // 'ninguno' | 'anillado'
+    idPapel: "P01", // Papel base utilizado
     copias: 1,
     nombreArchivo: "",
     archivoUrl: "",
@@ -261,13 +269,22 @@
     totalCalculado: 0,
   };
 
-  // Cargar lista actualizada desde el API
+  // Cargar lista actualizada desde ambos endpoints
   async function sincronizarPrecios() {
     try {
-      const response = await fetch("/api/precios.json");
-      if (response.ok) {
-        const data = await response.json();
-        tablaPrecios = { ...tablaPrecios, ...data };
+      const [resServicios, resPapeles] = await Promise.all([
+        fetch("/api/precios.json"),
+        fetch("/api/precios-papel.json"),
+      ]);
+
+      if (resServicios.ok) {
+        const dataServicios = await resServicios.json();
+        tablaPrecios = { ...tablaPrecios, ...dataServicios };
+      }
+
+      if (resPapeles.ok) {
+        const dataPapeles = await resPapeles.json();
+        tablaPapeles = { ...tablaPapeles, ...dataPapeles };
       }
     } catch (e) {
       console.warn("Utilizando valores locales por omisión.", e);
@@ -308,8 +325,15 @@
   }
 
   function calcularTotal() {
-    const { paginas, modalidad, color, encuadernacion, copias, archivoUrl } =
-      estadoCotizador;
+    const {
+      paginas,
+      modalidad,
+      color,
+      encuadernacion,
+      copias,
+      idPapel,
+      archivoUrl,
+    } = estadoCotizador;
 
     if (paginas <= 0 || !archivoUrl) {
       document.getElementById("resPaginas").textContent = "0 págs";
@@ -325,24 +349,40 @@
       return;
     }
 
-    // Cálculo de hojas físicas
+    // 1. Cálculo de hojas físicas necesarias
     const hojas = modalidad === "doble" ? Math.ceil(paginas / 2) : paginas;
 
-    // Obtención del costo unitario según selección
-    let costoUnitarioImpresion = 0;
+    // 2. Costo del papel por hoja física
+    const costoHojaPapel = tablaPapeles[idPapel] || 12.8;
+    const costoTotalPapelUnidad = hojas * costoHojaPapel;
+
+    // 3. Costo del servicio de impresión
+    let costoServicioImpresion = 0;
     if (modalidad === "doble") {
-      costoUnitarioImpresion = tablaPrecios.S03 || 64;
+      costoServicioImpresion =
+        color === "color" ? tablaPrecios.S04 || 64 : tablaPrecios.S03 || 64;
     } else {
-      costoUnitarioImpresion =
+      costoServicioImpresion =
         color === "color" ? tablaPrecios.S02 || 32 : tablaPrecios.S01 || 32;
     }
+    const costoTotalServicioUnidad = hojas * costoServicioImpresion;
 
-    const subtotalImpresion = hojas * costoUnitarioImpresion;
-    const costoAnilladoUnitario =
-      encuadernacion === "anillado" ? tablaPrecios.S05 || 1500 : 0;
+    // Total de Impresión (Papel + Servicio) por cada juego/copia
+    const subtotalImpresionPorCopia =
+      costoTotalPapelUnidad + costoTotalServicioUnidad;
 
-    const subtotalUnidad = subtotalImpresion + costoAnilladoUnitario;
-    const totalFinal = subtotalUnidad * copias;
+    // 4. Costo de Anillado / Encuadernación por copia
+    // Si la cantidad de copias es >= 10 toma S14 ($2.500), de lo contrario S13 ($3.000)
+    let costoAnilladoUnitario = 0;
+    if (encuadernacion === "anillado") {
+      costoAnilladoUnitario =
+        copias >= 10 ? tablaPrecios.S14 || 2500 : tablaPrecios.S13 || 3000;
+    }
+
+    // 5. Totales generales del pedido
+    const costoImpresionTotal = subtotalImpresionPorCopia * copias;
+    const costoAnilladoTotal = costoAnilladoUnitario * copias;
+    const totalFinal = costoImpresionTotal + costoAnilladoTotal;
 
     estadoCotizador.totalCalculado = totalFinal;
 
@@ -350,9 +390,9 @@
     document.getElementById("resPaginas").textContent = `${paginas} págs`;
     document.getElementById("resHojas").textContent = `${hojas} hojas`;
     document.getElementById("resCostoHoja").textContent =
-      `$${subtotalImpresion.toLocaleString("es-AR")}`;
+      `$${costoImpresionTotal.toLocaleString("es-AR")}`;
     document.getElementById("resEncuadernacion").textContent =
-      `$${costoAnilladoUnitario.toLocaleString("es-AR")}`;
+      `$${costoAnilladoTotal.toLocaleString("es-AR")}`;
     document.getElementById("totalPrecio").textContent =
       `$${totalFinal.toLocaleString("es-AR")}`;
 
@@ -393,13 +433,12 @@
               .promise;
             estadoCotizador.paginas = pdf.numPages;
           } else {
-            estadoCotizador.paginas = 10; // Valor por defecto si falla el CDN
+            estadoCotizador.paginas = 10;
           }
         } catch (err) {
           estadoCotizador.paginas = 10;
         }
       } else {
-        // En imágenes u otros documentos se toma como 1 página de base
         estadoCotizador.paginas = 1;
       }
 
