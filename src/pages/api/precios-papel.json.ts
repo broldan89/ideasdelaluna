@@ -1,6 +1,9 @@
 import type { APIRoute } from 'astro';
 
+export const prerender = false;
+
 export const GET: APIRoute = async () => {
+
   // URL de tu Google Sheets publicado como CSV para la solapa Precios_Base_Papel (gid=0)
   const CSV_URL =
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRVnI_RqxCSt1wAfQthb5aG1m1NVIbiyjF6rovbmM0hUk2ZoNrLSWkDIlTsRTn2B3PbUXv_NFq8l3q/pub?gid=0&single=true&output=csv";
