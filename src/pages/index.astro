@@ -20,7 +20,9 @@ import GalleryModal from "../components/GalleryModal.astro";
   <!-- CALCULADORA / COTIZADOR AUTOMÁTICO DE IMPRESIONES -->
   <Cotizador />
 
-  <main class="max-w-7xl mx-auto px-6 py-12 space-y-24">
+  <main
+    class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-16 sm:space-y-24"
+  >
     <!-- SECCIÓN 1: UNIVERSO EMPRENDEDOR -->
     <section id="marcas" class="scroll-mt-24">
       <div class="max-w-xl mb-8">
@@ -35,7 +37,7 @@ import GalleryModal from "../components/GalleryModal.astro";
       </div>
 
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-fit"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 w-full"
       >
         <ProductCard
           id="stickers"
@@ -190,7 +192,7 @@ import GalleryModal from "../components/GalleryModal.astro";
     <!-- SECCIÓN ESPECIAL DESTACADA: ÓRBITA DOCENTE & SEÑOS -->
     <section
       id="docentes"
-      class="scroll-mt-24 p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white shadow-2xl relative overflow-hidden border border-indigo-500/20"
+      class="scroll-mt-24 p-6 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white shadow-2xl relative overflow-hidden border border-indigo-500/20"
     >
       <!-- Resplandores de luz de fondo -->
       <div
@@ -203,7 +205,7 @@ import GalleryModal from "../components/GalleryModal.astro";
       </div>
 
       <!-- Encabezado de la sección -->
-      <div class="max-w-2xl mb-12 relative z-10">
+      <div class="max-w-2xl mb-8 sm:mb-12 relative z-10">
         <span
           class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest px-3.5 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/30 mb-3 shadow-inner"
         >
@@ -222,7 +224,7 @@ import GalleryModal from "../components/GalleryModal.astro";
       </div>
 
       <!-- Grilla de Tarjetas Cristalinas (Glassmorphism) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10 w-full">
         <!-- TARJETA 1 -->
         <div
           class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 hover:border-amber-300/40 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-lg"
@@ -305,11 +307,6 @@ import GalleryModal from "../components/GalleryModal.astro";
                 >
                   ⚡ Descarga PDF
                 </span>
-                <span
-                  class="text-[9px] font-semibold tracking-wide bg-slate-900/80 backdrop-blur-md text-amber-200 border border-amber-300/30 px-2 py-0.5 rounded-md w-fit"
-                >
-                  Próximamente
-                </span>
               </div>
               <img
                 src="/catalog/libreta.jpeg"
@@ -329,13 +326,13 @@ import GalleryModal from "../components/GalleryModal.astro";
             </p>
           </div>
 
-          <!-- BOTÓN DESHABILITADO / EN PREPARACIÓN -->
+          <!-- BOTÓN ACTIVO QUE ABRE EL MODAL -->
           <button
-            disabled
+            id="btn-open-pdf-modal"
             type="button"
-            class="w-full text-center py-2.5 px-4 rounded-xl bg-white/10 text-indigo-200/60 border border-white/10 text-xs font-medium transition-all cursor-not-allowed select-none flex items-center justify-center gap-2"
+            class="w-full text-center py-2.5 px-4 rounded-xl bg-amber-300/20 hover:bg-amber-300/30 text-amber-300 border border-amber-300/40 text-xs font-semibold tracking-wider uppercase transition-all cursor-pointer shadow-md"
           >
-            <span>🎨</span> En el taller de diseño
+            <span>⚡</span> Ver Recursos PDF
           </button>
         </div>
       </div>
@@ -354,7 +351,7 @@ import GalleryModal from "../components/GalleryModal.astro";
       </div>
 
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-fit"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 w-full"
       >
         <ProductCard
           id="invitaciones"
@@ -383,7 +380,7 @@ import GalleryModal from "../components/GalleryModal.astro";
 
         <ProductCard
           id="souvenirs"
-          title="Souvennirs"
+          title="Souvenirs"
           description="Pequeños complementos que hacen la diferencia: indicadores de sitio, menús impresos y tarjetas de recuerdo."
           badge="Eventos"
           imageSrc="https://images.unsplash.com/photo-1513151233558-d860c5398git176?q=80&w=600"
@@ -488,7 +485,7 @@ import GalleryModal from "../components/GalleryModal.astro";
       </div>
 
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-fit"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 w-full"
       >
         <!-- CARD 1: ENCUADERNACIÓN & LECTURA -->
         <ProductCard
@@ -828,7 +825,6 @@ import GalleryModal from "../components/GalleryModal.astro";
 </script>
 
 <style>
-  /* Sombra profunda tipo capa de papel flotante para todo el footer */
   .paper-footer-wrapper {
     filter: drop-shadow(0px -10px 18px rgba(35, 25, 60, 0.12))
       drop-shadow(0px -2px 6px rgba(35, 25, 60, 0.08));

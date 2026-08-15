@@ -1,174 +1,35 @@
 ---
-interface SubProduct {
-  name: string;
-  desc: string;
-}
-
-interface Props {
-  id: string;
-  title: string;
-  description: string;
-  badge: string;
-  imageSrc: string;
-  hoverImageSrc: string;
-  galleryImages?: string[];
-  subProducts?: SubProduct[];
-  isProximamente?: boolean;
-  proximamenteText?: string;
-}
-
-const {
-  id,
-  title,
-  description,
-  badge,
-  imageSrc,
-  hoverImageSrc,
-  galleryImages = [],
-  subProducts = [],
-  isProximamente = false,
-  proximamenteText = "En el taller de diseño",
-} = Astro.props;
-
-const allImages =
-  galleryImages.length > 0
-    ? galleryImages
-    : [imageSrc, hoverImageSrc].filter(Boolean);
+// src/components/GalleryModal.astro
+// No requiere las props de ProductCard
 ---
 
 <div
-  class="snap-center shrink-0 w-[82vw] sm:w-full max-w-[300px] sm:max-w-[320px] bg-[#FAF8FC]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#EBE3F0] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group transform hover:-translate-y-1"
+  id="pdf-modal"
+  class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
 >
-  <!-- IMAGEN CON BOTÓN -->
-  <div
-    class="relative overflow-hidden aspect-[16/10] bg-slate-100 w-full group/img"
-  >
-    <img
-      src={imageSrc}
-      alt={title}
-      class="w-full h-full object-cover absolute inset-0 z-10 transition-opacity duration-500 group-hover/img:opacity-0"
-    />
-    <img
-      src={hoverImageSrc || imageSrc}
-      alt={`${title} detalle`}
-      class="w-full h-full object-cover absolute inset-0 z-0 transition-transform duration-500 scale-100 group-hover/img:scale-105"
-    />
-
-    <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 z-20">
-      <span
-        class="bg-white/90 backdrop-blur-md text-slate-700 text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs"
-      >
-        {badge}
-      </span>
-      {
-        isProximamente && (
-          <span class="bg-amber-100/90 backdrop-blur-md text-amber-900 border border-amber-200/60 text-[9px] font-semibold tracking-wide px-2 py-0.5 rounded-full shadow-xs">
-            Próximamente
-          </span>
-        )
-      }
-    </div>
-
+  <div class="bg-white rounded-2xl max-w-2xl w-full p-6 relative">
     <button
-      id={`gallery-btn-${id}`}
-      type="button"
-      data-gallery-images={JSON.stringify(allImages)}
-      data-gallery-title={title}
-      class="absolute bottom-2.5 right-2.5 bg-white/90 hover:bg-indigo-600 text-indigo-950 hover:text-white text-[9px] sm:text-[10px] font-semibold px-2.5 py-1 rounded-full z-20 shadow-md backdrop-blur-md transition-all flex items-center gap-1"
+      id="close-modal"
+      class="absolute top-4 right-4 text-gray-500 hover:text-black"
     >
-      <span>📸</span> Galería
-    </button>
-  </div>
-
-  <div class="p-3.5 sm:p-4 flex flex-col flex-grow">
-    <button
-      id={`toggle-btn-${id}`}
-      class="toggle-subproducts text-left w-full focus:outline-none group/title"
-      data-target={`sub-${id}`}
-    >
-      <h3
-        class="font-serif text-base sm:text-lg text-indigo-950 font-medium group-hover/title:text-indigo-600 transition-colors flex items-center justify-between"
-      >
-        {title}
-        {
-          subProducts.length > 0 && (
-            <span class="toggle-arrow text-xs text-indigo-400 transition-transform">
-              ▼
-            </span>
-          )
-        }
-      </h3>
+      ✕
     </button>
 
-    <p
-      class="text-slate-500 text-xs mt-1 flex-grow font-light leading-relaxed line-clamp-3 sm:line-clamp-none"
-    >
-      {description}
-    </p>
-
-    {
-      subProducts.length > 0 && (
-        <div
-          id={`sub-${id}`}
-          class="hidden mt-3 pt-2.5 border-t border-slate-100 space-y-1.5 animate-fade-in"
-        >
-          <p class="text-[9px] font-bold text-indigo-600 tracking-wider uppercase">
-            ¿Qué incluye?
-          </p>
-          <div class="grid grid-cols-1 gap-1">
-            {subProducts.map((sub) => (
-              <div class="p-1.5 bg-slate-50 rounded-lg border border-slate-100">
-                <h4 class="text-[10px] sm:text-[11px] font-semibold text-slate-800">
-                  {sub.name}
-                </h4>
-                <p class="text-[9px] text-slate-500">{sub.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )
-    }
-
-    <div class="mt-3 pt-2.5 border-t border-slate-50">
-      {
-        isProximamente ? (
-          <button
-            type="button"
-            disabled
-            class="w-full text-center bg-slate-100 text-slate-400 text-xs font-medium py-2 rounded-lg cursor-not-allowed"
-          >
-            🎨 {proximamenteText}
-          </button>
-        ) : (
-          <a
-            href={`https://api.whatsapp.com/send?phone=5493412141732&text=${encodeURIComponent("¡Hola! Me interesa obtener más información y cotizar la línea de: " + title)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-full text-center block bg-slate-50 hover:bg-indigo-600 hover:text-white text-slate-700 text-xs font-semibold py-2 rounded-lg transition-all"
-          >
-            COTIZAR ESTA LÍNEA
-          </a>
-        )
-      }
+    <!-- Contenido del Modal -->
+    <div id="modal-content">
+      <!-- Aquí va la galería o vista previa -->
     </div>
   </div>
 </div>
 
 <script>
-  // @ts-nocheck
-  // Este script se declara en cada tarjeta pero Astro lo deduplica en el HTML final,
-  // así que corre una sola vez sin importar cuántas ProductCard haya en la página.
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".toggle-subproducts").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const target = document.getElementById(btn.dataset.target);
-        const arrow = btn.querySelector(".toggle-arrow");
-        if (!target) return;
+  // Tu lógica para abrir y cerrar el modal usando los botones
+  const openBtn = document.getElementById("btn-open-pdf-modal");
+  const closeBtn = document.getElementById("close-modal");
+  const modal = document.getElementById("pdf-modal");
 
-        const abierto = !target.classList.contains("hidden");
-        target.classList.toggle("hidden");
-        if (arrow) arrow.style.transform = abierto ? "" : "rotate(180deg)";
-      });
-    });
-  });
+  if (openBtn && closeBtn && modal) {
+    openBtn.addEventListener("click", () => modal.classList.remove("hidden"));
+    closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+  }
 </script>
