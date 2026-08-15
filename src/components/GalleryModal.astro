@@ -4,57 +4,62 @@
 
 <div
   id="gallery-modal"
-  class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md transition-opacity duration-300"
+  class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-md transition-opacity duration-300"
 >
-  <div class="relative max-w-4xl w-full flex flex-col items-center">
+  <div
+    class="relative max-w-3xl w-full bg-[#FAF8FC]/90 backdrop-blur-xl border border-[#EBE3F0] rounded-3xl p-5 sm:p-7 shadow-2xl flex flex-col items-center overflow-hidden"
+  >
     <!-- Botón Cerrar -->
     <button
       id="close-gallery-modal"
       type="button"
-      class="absolute -top-12 right-0 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer z-10"
+      class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100/60 hover:bg-slate-200/80 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer z-20 text-sm font-medium"
+      aria-label="Cerrar"
     >
       ✕
     </button>
 
-    <!-- Título -->
+    <!-- Título con estilo pastel -->
     <h3
       id="gallery-modal-title"
-      class="text-white text-lg font-serif mb-4 text-center"
+      class="text-[#2D2A4A] text-lg sm:text-xl font-serif font-medium mb-4 text-center pr-8"
     >
     </h3>
 
     <!-- Visor de Imagen Principal -->
     <div
-      class="relative w-full aspect-[4/3] max-h-[70vh] flex items-center justify-center overflow-hidden rounded-2xl bg-black/40"
+      class="relative w-full aspect-[4/3] max-h-[65vh] flex items-center justify-center overflow-hidden rounded-2xl bg-white/60 border border-[#EBE3F0]/60 shadow-inner group"
     >
       <img
         id="gallery-modal-image"
         src=""
         alt="Vista ampliada"
-        class="max-w-full max-h-full object-contain"
+        class="max-w-full max-h-full object-contain transition-all duration-300"
       />
 
-      <!-- Navegación -->
+      <!-- Botones de Navegación sutiles -->
       <button
         id="prev-gallery-img"
         type="button"
-        class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer"
+        class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-700 hover:text-pink-600 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md border border-white/60 backdrop-blur-xs text-sm"
+        aria-label="Anterior"
       >
         ❮
       </button>
       <button
         id="next-gallery-img"
         type="button"
-        class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer"
+        class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-700 hover:text-pink-600 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md border border-white/60 backdrop-blur-xs text-sm"
+        aria-label="Siguiente"
       >
         ❯
       </button>
     </div>
 
-    <!-- Tiras de Miniaturas -->
+    <!-- Tira de Miniaturas -->
     <div
       id="gallery-thumbnails"
-      class="flex gap-2 mt-4 overflow-x-auto max-w-full p-2"
+      class="flex gap-2.5 mt-4 overflow-x-auto max-w-full p-1.5 scrollbar-thin"
     >
     </div>
   </div>
@@ -82,10 +87,20 @@
     if (thumbnailsContainer) {
       Array.from(thumbnailsContainer.children).forEach((thumb, idx) => {
         if (idx === currentIndex) {
-          thumb.classList.add("ring-2", "ring-pink-500", "opacity-100");
+          thumb.classList.add(
+            "ring-2",
+            "ring-pink-400",
+            "opacity-100",
+            "scale-105",
+          );
           thumb.classList.remove("opacity-50");
         } else {
-          thumb.classList.remove("ring-2", "ring-pink-500", "opacity-100");
+          thumb.classList.remove(
+            "ring-2",
+            "ring-pink-400",
+            "opacity-100",
+            "scale-105",
+          );
           thumb.classList.add("opacity-50");
         }
       });
@@ -103,7 +118,7 @@
         const thumb = document.createElement("img");
         thumb.src = imgSrc;
         thumb.className =
-          "w-12 h-12 object-cover rounded-lg cursor-pointer transition-all opacity-50 hover:opacity-100";
+          "w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-xl cursor-pointer transition-all border border-[#EBE3F0] opacity-50 hover:opacity-100 shadow-xs";
         thumb.addEventListener("click", () => updateGalleryImage(idx));
         thumbnailsContainer.appendChild(thumb);
       });
@@ -120,7 +135,6 @@
     modal.classList.remove("flex");
   }
 
-  // Escuchar el evento personalizado enviado desde ProductCard.astro
   window.addEventListener("open-gallery", (e: any) => {
     const { title, images, index } = e.detail || {};
     if (images && images.length > 0) {
