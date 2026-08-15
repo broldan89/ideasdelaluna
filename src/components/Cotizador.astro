@@ -353,8 +353,14 @@
     const hojas = modalidad === "doble" ? Math.ceil(paginas / 2) : paginas;
 
     // 2. Costo del papel por hoja física
-    const costoHojaPapel = tablaPapeles[idPapel] || 12.8;
-    const costoTotalPapelUnidad = hojas * costoHojaPapel;
+    let costoServicioImpresion = 0;
+    if (modalidad === "doble") {
+      costoServicioImpresion =
+        color === "color" ? tablaPrecios.S04 || 270 : tablaPrecios.S03 || 180;
+    } else {
+      costoServicioImpresion =
+        color === "color" ? tablaPrecios.S02 || 220 : tablaPrecios.S01 || 150;
+    }
 
     // 3. Costo del servicio de impresión
     let costoServicioImpresion = 0;
@@ -368,8 +374,7 @@
     const costoTotalServicioUnidad = hojas * costoServicioImpresion;
 
     // Total de Impresión (Papel + Servicio) por cada juego/copia
-    const subtotalImpresionPorCopia =
-      costoTotalPapelUnidad + costoTotalServicioUnidad;
+    const subtotalImpresionPorCopia = hojas * costoServicioImpresion;
 
     // 4. Costo de Anillado / Encuadernación por copia
     // Si la cantidad de copias es >= 10 toma S14 ($2.500), de lo contrario S13 ($3.000)
