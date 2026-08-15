@@ -39,9 +39,12 @@ const allImages =
 <div
   class="w-full bg-[#FAF8FC]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#EBE3F0] shadow-xs hover:shadow-md transition-all duration-300 flex flex-col group transform hover:-translate-y-1 mx-auto"
 >
-  <!-- IMAGEN CON BOTÓN -->
+  <!-- CONTENEDOR DE IMAGEN (CLICKEABLE) -->
   <div
-    class="relative overflow-hidden aspect-[4/3] bg-slate-100 w-full group/img"
+    class="relative overflow-hidden aspect-[4/3] bg-slate-100 w-full group/img cursor-pointer"
+    data-action="open-card-gallery"
+    data-title={title}
+    data-images={JSON.stringify(allImages)}
   >
     <img
       src={imageSrc}
@@ -54,7 +57,7 @@ const allImages =
       class="w-full h-full object-cover absolute inset-0 z-0 transition-transform duration-500 scale-100 group-hover/img:scale-105"
     />
 
-    <!-- Badges superiores alineados con fondo oscuro/luz limpio -->
+    <!-- Badges superiores -->
     <div
       class="absolute top-2.5 left-2.5 right-2.5 flex flex-wrap items-center justify-between gap-1 z-20 pointer-events-none"
     >
@@ -72,16 +75,12 @@ const allImages =
       }
     </div>
 
-    <!-- Botón Galería -->
-    <button
-      type="button"
-      data-action="open-card-gallery"
-      data-title={title}
-      data-images={JSON.stringify(allImages)}
-      class="absolute bottom-2.5 right-2.5 bg-white/95 hover:bg-pink-600 text-indigo-950 hover:text-white text-[10px] font-semibold px-3 py-1 rounded-full z-20 shadow-xs backdrop-blur-md transition-all flex items-center gap-1 cursor-pointer border border-white/50"
+    <!-- Indicador de Galería -->
+    <div
+      class="absolute bottom-2.5 right-2.5 bg-white/95 group-hover/img:bg-pink-600 text-indigo-950 group-hover/img:text-white text-[10px] font-semibold px-3 py-1 rounded-full z-20 shadow-xs backdrop-blur-md transition-all flex items-center gap-1 border border-white/50 pointer-events-none"
     >
       <span>📸</span> Galería
-    </button>
+    </div>
   </div>
 
   <!-- CONTENIDO DE LA TARJETA -->

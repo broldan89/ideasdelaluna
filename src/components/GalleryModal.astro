@@ -1,35 +1,148 @@
 ---
 // src/components/GalleryModal.astro
-// No requiere las props de ProductCard
 ---
 
 <div
-  id="pdf-modal"
-  class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+  id="gallery-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md transition-opacity duration-300"
 >
-  <div class="bg-white rounded-2xl max-w-2xl w-full p-6 relative">
+  <div class="relative max-w-4xl w-full flex flex-col items-center">
+    <!-- Botón Cerrar -->
     <button
-      id="close-modal"
-      class="absolute top-4 right-4 text-gray-500 hover:text-black"
+      id="close-gallery-modal"
+      type="button"
+      class="absolute -top-12 right-0 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer z-10"
     >
       ✕
     </button>
 
-    <!-- Contenido del Modal -->
-    <div id="modal-content">
-      <!-- Aquí va la galería o vista previa -->
+    <!-- Título -->
+    <h3
+      id="gallery-modal-title"
+      class="text-white text-lg font-serif mb-4 text-center"
+    >
+    </h3>
+
+    <!-- Visor de Imagen Principal -->
+    <div
+      class="relative w-full aspect-[4/3] max-h-[70vh] flex items-center justify-center overflow-hidden rounded-2xl bg-black/40"
+    >
+      <img
+        id="gallery-modal-image"
+        src=""
+        alt="Vista ampliada"
+        class="max-w-full max-h-full object-contain"
+      />
+
+      <!-- Navegación -->
+      <button
+        id="prev-gallery-img"
+        type="button"
+        class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer"
+      >
+        ❮
+      </button>
+      <button
+        id="next-gallery-img"
+        type="button"
+        class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer"
+      >
+        ❯
+      </button>
+    </div>
+
+    <!-- Tiras de Miniaturas -->
+    <div
+      id="gallery-thumbnails"
+      class="flex gap-2 mt-4 overflow-x-auto max-w-full p-2"
+    >
     </div>
   </div>
 </div>
 
 <script>
-  // Tu lógica para abrir y cerrar el modal usando los botones
-  const openBtn = document.getElementById("btn-open-pdf-modal");
-  const closeBtn = document.getElementById("close-modal");
-  const modal = document.getElementById("pdf-modal");
+  let currentImages: string[] = [];
+  let currentIndex = 0;
 
-  if (openBtn && closeBtn && modal) {
-    openBtn.addEventListener("click", () => modal.classList.remove("hidden"));
-    closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+  const modal = document.getElementById("gallery-modal");
+  const modalImg = document.getElementById(
+    "gallery-modal-image",
+  ) as HTMLImageElement;
+  const modalTitle = document.getElementById("gallery-modal-title");
+  const thumbnailsContainer = document.getElementById("gallery-thumbnails");
+  const closeBtn = document.getElementById("close-gallery-modal");
+  const prevBtn = document.getElementById("prev-gallery-img");
+  const nextBtn = document.getElementById("next-gallery-img");
+
+  function updateGalleryImage(index: number) {
+    if (!currentImages.length) return;
+    currentIndex = index;
+    if (modalImg) modalImg.src = currentImages[currentIndex];
+
+    if (thumbnailsContainer) {
+      Array.from(thumbnailsContainer.children).forEach((thumb, idx) => {
+        if (idx === currentIndex) {
+          thumb.classList.add("ring-2", "ring-pink-500", "opacity-100");
+          thumb.classList.remove("opacity-50");
+        } else {
+          thumb.classList.remove("ring-2", "ring-pink-500", "opacity-100");
+          thumb.classList.add("opacity-50");
+        }
+      });
+    }
+  }
+
+  function openGallery(title: string, images: string[], initialIndex = 0) {
+    if (!modal || !images.length) return;
+    currentImages = images;
+    if (modalTitle) modalTitle.textContent = title;
+
+    if (thumbnailsContainer) {
+      thumbnailsContainer.innerHTML = "";
+      images.forEach((imgSrc, idx) => {
+        const thumb = document.createElement("img");
+        thumb.src = imgSrc;
+        thumb.className =
+          "w-12 h-12 object-cover rounded-lg cursor-pointer transition-all opacity-50 hover:opacity-100";
+        thumb.addEventListener("click", () => updateGalleryImage(idx));
+        thumbnailsContainer.appendChild(thumb);
+      });
+    }
+
+    updateGalleryImage(initialIndex);
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  function closeGallery() {
+    if (!modal) return;
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
+
+  // Escuchar el evento personalizado enviado desde ProductCard.astro
+  window.addEventListener("open-gallery", (e: any) => {
+    const { title, images, index } = e.detail || {};
+    if (images && images.length > 0) {
+      openGallery(title, images, index || 0);
+    }
+  });
+
+  if (closeBtn) closeBtn.addEventListener("click", closeGallery);
+  if (prevBtn)
+    prevBtn.addEventListener("click", () =>
+      updateGalleryImage(
+        (currentIndex - 1 + currentImages.length) % currentImages.length,
+      ),
+    );
+  if (nextBtn)
+    nextBtn.addEventListener("click", () =>
+      updateGalleryImage((currentIndex + 1) % currentImages.length),
+    );
+
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeGallery();
+    });
   }
 </script>
