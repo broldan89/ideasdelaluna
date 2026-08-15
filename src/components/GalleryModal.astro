@@ -1,200 +1,174 @@
 ---
-// Componente Modal de Galería de Fotos - Glassmorphism Pastel & Chic
+interface SubProduct {
+  name: string;
+  desc: string;
+}
+
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  badge: string;
+  imageSrc: string;
+  hoverImageSrc: string;
+  galleryImages?: string[];
+  subProducts?: SubProduct[];
+  isProximamente?: boolean;
+  proximamenteText?: string;
+}
+
+const {
+  id,
+  title,
+  description,
+  badge,
+  imageSrc,
+  hoverImageSrc,
+  galleryImages = [],
+  subProducts = [],
+  isProximamente = false,
+  proximamenteText = "En el taller de diseño",
+} = Astro.props;
+
+const allImages =
+  galleryImages.length > 0
+    ? galleryImages
+    : [imageSrc, hoverImageSrc].filter(Boolean);
 ---
 
 <div
-  id="gallery-modal"
-  class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-indigo-950/30 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none"
-  aria-hidden="true"
+  class="snap-center shrink-0 w-[82vw] sm:w-full max-w-[300px] sm:max-w-[320px] bg-[#FAF8FC]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#EBE3F0] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group transform hover:-translate-y-1"
 >
-  <!-- Contenedor Principal Glassmorphism Claro -->
+  <!-- IMAGEN CON BOTÓN -->
   <div
-    class="relative w-full max-w-4xl bg-white/80 border border-white/60 rounded-3xl p-5 sm:p-7 shadow-[0_20px_50px_rgba(79,70,229,0.15)] backdrop-blur-xl flex flex-col items-center overflow-hidden transform scale-95 transition-all duration-300"
-    id="gallery-content"
+    class="relative overflow-hidden aspect-[16/10] bg-slate-100 w-full group/img"
   >
-    <!-- Destellos pastel de fondo -->
-    <div
-      class="absolute -top-24 -left-24 w-64 h-64 bg-pink-200/40 rounded-full blur-3xl pointer-events-none"
-    >
-    </div>
-    <div
-      class="absolute -bottom-24 -right-24 w-64 h-64 bg-indigo-200/40 rounded-full blur-3xl pointer-events-none"
-    >
+    <img
+      src={imageSrc}
+      alt={title}
+      class="w-full h-full object-cover absolute inset-0 z-10 transition-opacity duration-500 group-hover/img:opacity-0"
+    />
+    <img
+      src={hoverImageSrc || imageSrc}
+      alt={`${title} detalle`}
+      class="w-full h-full object-cover absolute inset-0 z-0 transition-transform duration-500 scale-100 group-hover/img:scale-105"
+    />
+
+    <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 z-20">
+      <span
+        class="bg-white/90 backdrop-blur-md text-slate-700 text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs"
+      >
+        {badge}
+      </span>
+      {
+        isProximamente && (
+          <span class="bg-amber-100/90 backdrop-blur-md text-amber-900 border border-amber-200/60 text-[9px] font-semibold tracking-wide px-2 py-0.5 rounded-full shadow-xs">
+            Próximamente
+          </span>
+        )
+      }
     </div>
 
-    <!-- Encabezado -->
-    <div
-      class="w-full flex items-center justify-between mb-4 relative z-10 px-1"
+    <button
+      id={`gallery-btn-${id}`}
+      type="button"
+      data-gallery-images={JSON.stringify(allImages)}
+      data-gallery-title={title}
+      class="absolute bottom-2.5 right-2.5 bg-white/90 hover:bg-indigo-600 text-indigo-950 hover:text-white text-[9px] sm:text-[10px] font-semibold px-2.5 py-1 rounded-full z-20 shadow-md backdrop-blur-md transition-all flex items-center gap-1"
     >
-      <div>
-        <span
-          class="text-[10px] font-bold tracking-widest text-indigo-600 uppercase bg-indigo-50/80 border border-indigo-100 px-3 py-1 rounded-full shadow-xs"
+      <span>📸</span> Galería
+    </button>
+  </div>
+
+  <div class="p-3.5 sm:p-4 flex flex-col flex-grow">
+    <button
+      id={`toggle-btn-${id}`}
+      class="toggle-subproducts text-left w-full focus:outline-none group/title"
+      data-target={`sub-${id}`}
+    >
+      <h3
+        class="font-serif text-base sm:text-lg text-indigo-950 font-medium group-hover/title:text-indigo-600 transition-colors flex items-center justify-between"
+      >
+        {title}
+        {
+          subProducts.length > 0 && (
+            <span class="toggle-arrow text-xs text-indigo-400 transition-transform">
+              ▼
+            </span>
+          )
+        }
+      </h3>
+    </button>
+
+    <p
+      class="text-slate-500 text-xs mt-1 flex-grow font-light leading-relaxed line-clamp-3 sm:line-clamp-none"
+    >
+      {description}
+    </p>
+
+    {
+      subProducts.length > 0 && (
+        <div
+          id={`sub-${id}`}
+          class="hidden mt-3 pt-2.5 border-t border-slate-100 space-y-1.5 animate-fade-in"
         >
-          ✨ Detalle de producto
-        </span>
-        <h3
-          id="gallery-title"
-          class="font-serif text-indigo-950 text-xl sm:text-2xl font-medium mt-1"
-        >
-          Galería de fotos
-        </h3>
-      </div>
+          <p class="text-[9px] font-bold text-indigo-600 tracking-wider uppercase">
+            ¿Qué incluye?
+          </p>
+          <div class="grid grid-cols-1 gap-1">
+            {subProducts.map((sub) => (
+              <div class="p-1.5 bg-slate-50 rounded-lg border border-slate-100">
+                <h4 class="text-[10px] sm:text-[11px] font-semibold text-slate-800">
+                  {sub.name}
+                </h4>
+                <p class="text-[9px] text-slate-500">{sub.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
 
-      <!-- Botón Cerrar (X) -->
-      <button
-        id="gallery-close"
-        type="button"
-        class="text-slate-400 hover:text-indigo-950 bg-slate-100/80 hover:bg-white border border-slate-200/60 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-xs"
-        aria-label="Cerrar Galería"
-      >
-        ✕
-      </button>
-    </div>
-
-    <!-- Visor de Imagen Principal -->
-    <div
-      class="relative w-full aspect-[4/3] sm:aspect-[16/10] max-h-[60vh] rounded-2xl overflow-hidden bg-slate-50 border border-indigo-50 flex items-center justify-center group relative z-10 shadow-inner"
-    >
-      <img
-        id="gallery-main-img"
-        src=""
-        alt="Foto ampliada"
-        class="w-full h-full object-contain transition-all duration-300"
-      />
-
-      <!-- Flechas de navegación -->
-      <button
-        id="gallery-prev"
-        type="button"
-        class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-indigo-950 border border-indigo-100 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md backdrop-blur-sm"
-      >
-        ❮
-      </button>
-
-      <button
-        id="gallery-next"
-        type="button"
-        class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-indigo-950 border border-indigo-100 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md backdrop-blur-sm"
-      >
-        ❯
-      </button>
-    </div>
-
-    <!-- Carrusel de Miniaturas -->
-    <div
-      id="gallery-thumbs"
-      class="flex items-center justify-center gap-3 mt-4 w-full overflow-x-auto py-2 relative z-10 scrollbar-none"
-    >
-      <!-- Miniaturas inyectadas dinámicamente -->
+    <div class="mt-3 pt-2.5 border-t border-slate-50">
+      {
+        isProximamente ? (
+          <button
+            type="button"
+            disabled
+            class="w-full text-center bg-slate-100 text-slate-400 text-xs font-medium py-2 rounded-lg cursor-not-allowed"
+          >
+            🎨 {proximamenteText}
+          </button>
+        ) : (
+          <a
+            href={`https://api.whatsapp.com/send?phone=5493412141732&text=${encodeURIComponent("¡Hola! Me interesa obtener más información y cotizar la línea de: " + title)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full text-center block bg-slate-50 hover:bg-indigo-600 hover:text-white text-slate-700 text-xs font-semibold py-2 rounded-lg transition-all"
+          >
+            COTIZAR ESTA LÍNEA
+          </a>
+        )
+      }
     </div>
   </div>
 </div>
 
 <script>
   // @ts-nocheck
+  // Este script se declara en cada tarjeta pero Astro lo deduplica en el HTML final,
+  // así que corre una sola vez sin importar cuántas ProductCard haya en la página.
   document.addEventListener("DOMContentLoaded", () => {
-    const modal = document.getElementById("gallery-modal");
-    const modalContent = document.getElementById("gallery-content");
-    const closeBtn = document.getElementById("gallery-close");
-    const mainImg = document.getElementById("gallery-main-img");
-    const titleEl = document.getElementById("gallery-title");
-    const thumbsCont = document.getElementById("gallery-thumbs");
-    const prevBtn = document.getElementById("gallery-prev");
-    const nextBtn = document.getElementById("gallery-next");
+    document.querySelectorAll(".toggle-subproducts").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = document.getElementById(btn.dataset.target);
+        const arrow = btn.querySelector(".toggle-arrow");
+        if (!target) return;
 
-    let currentImages = [];
-    let currentIndex = 0;
-
-    function abrirModal(titulo, imagenes, indexInicial = 0) {
-      if (!imagenes || imagenes.length === 0) return;
-
-      currentImages = imagenes;
-      currentIndex = indexInicial;
-      titleEl.textContent = titulo || "Galería de imágenes";
-
-      actualizarVista();
-
-      modal.classList.remove("hidden", "opacity-0", "pointer-events-none");
-      modal.classList.add("flex", "opacity-100", "pointer-events-auto");
-      modalContent.classList.remove("scale-95");
-      modalContent.classList.add("scale-100");
-
-      document.body.style.overflow = "hidden";
-    }
-
-    function cerrarModal() {
-      modal.classList.remove("opacity-100", "pointer-events-auto");
-      modal.classList.add("opacity-0", "pointer-events-none");
-      modalContent.classList.remove("scale-100");
-      modalContent.classList.add("scale-95");
-
-      setTimeout(() => {
-        modal.classList.remove("flex");
-        modal.classList.add("hidden");
-        document.body.style.overflow = "";
-      }, 300);
-    }
-
-    function actualizarVista() {
-      mainImg.src = currentImages[currentIndex];
-
-      thumbsCont.innerHTML = currentImages
-        .map((src, i) => {
-          const esActiva = i === currentIndex;
-          return `
-            <button
-              type="button"
-              data-index="${i}"
-              class="thumb-btn shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                esActiva
-                  ? "border-indigo-600 scale-105 shadow-sm"
-                  : "border-slate-200 opacity-60 hover:opacity-100"
-              }"
-            >
-              <img src="${src}" class="w-full h-full object-cover" />
-            </button>
-          `;
-        })
-        .join("");
-    }
-
-    function imagenSiguiente() {
-      currentIndex = (currentIndex + 1) % currentImages.length;
-      actualizarVista();
-    }
-
-    function imagenAnterior() {
-      currentIndex =
-        (currentIndex - 1 + currentImages.length) % currentImages.length;
-      actualizarVista();
-    }
-
-    window.addEventListener("open-gallery", (e) => {
-      const { title, images, index } = e.detail;
-      abrirModal(title, images, index);
-    });
-
-    thumbsCont.addEventListener("click", (e) => {
-      const btn = e.target.closest(".thumb-btn");
-      if (btn) {
-        currentIndex = parseInt(btn.dataset.index, 10);
-        actualizarVista();
-      }
-    });
-
-    nextBtn.addEventListener("click", imagenSiguiente);
-    prevBtn.addEventListener("click", imagenAnterior);
-    closeBtn.addEventListener("click", cerrarModal);
-
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) cerrarModal();
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (modal.classList.contains("hidden")) return;
-      if (e.key === "Escape") cerrarModal();
-      if (e.key === "ArrowRight") imagenSiguiente();
-      if (e.key === "ArrowLeft") imagenAnterior();
+        const abierto = !target.classList.contains("hidden");
+        target.classList.toggle("hidden");
+        if (arrow) arrow.style.transform = abierto ? "" : "rotate(180deg)";
+      });
     });
   });
 </script>
