@@ -1,0 +1,211 @@
+<div
+  class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-xl mx-auto my-6"
+>
+  <div class="flex items-center gap-3 mb-4">
+    <span class="p-2 bg-indigo-50 text-indigo-600 rounded-lg text-xl">🎨</span>
+    <div>
+      <h2 class="text-base font-bold text-slate-800">
+        Nuevo Pedido Personalizado
+      </h2>
+      <p class="text-xs text-slate-500">
+        Registrá un pedido acordado por WhatsApp para generarle el código de
+        seguimiento.
+      </p>
+    </div>
+  </div>
+
+  <form id="formPedidoPersonalizado" class="space-y-4">
+    <div>
+      <label class="block text-xs font-semibold text-slate-700 mb-1"
+        >Nombre o Trabajo</label
+      >
+      <input
+        id="inputTituloAdmin"
+        type="text"
+        placeholder="Ej: Invitaciones Cumple - Sofia"
+        required
+        class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
+      />
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1"
+          >WhatsApp del Cliente</label
+        >
+        <input
+          id="inputTelefonoAdmin"
+          type="text"
+          placeholder="Ej: 3412141732"
+          required
+          class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
+        />
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1"
+          >Monto Acordado ($)</label
+        >
+        <input
+          id="inputMontoAdmin"
+          type="number"
+          placeholder="Ej: 18500"
+          required
+          class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
+        />
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-xs font-semibold text-slate-700 mb-1"
+        >Detalles / Especificaciones</label
+      >
+      <textarea
+        id="inputDetallesAdmin"
+        rows="3"
+        placeholder="Ej: 50 estampitas 10x15, papel ilustración 300g, cinta de raso rosa"
+        class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
+      ></textarea>
+    </div>
+
+    <div>
+      <label class="block text-xs font-semibold text-slate-700 mb-1"
+        >Estado Inicial</label
+      >
+      <select
+        id="selectEstadoAdmin"
+        class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
+      >
+        <option value="En Proceso de Diseño">En Proceso de Diseño</option>
+        <option value="Esperando Aprobación de Boceto"
+          >Esperando Aprobación de Boceto</option
+        >
+        <option value="Pendiente de Pago">Pendiente de Pago</option>
+        <option value="En Producción">En Imprenta / Producción</option>
+      </select>
+    </div>
+
+    <button
+      type="submit"
+      id="btnCrearOrden"
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs transition-all shadow-sm"
+    >
+      Generar Orden de Seguimiento
+    </button>
+  </form>
+
+  <!-- Resultado con mensaje para WhatsApp -->
+  <div
+    id="boxResultadoAdmin"
+    class="hidden mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3"
+  >
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold text-slate-700"
+        >✅ Orden creada: <strong id="outCodigo" class="text-indigo-600"
+        ></strong></span
+      >
+      <a
+        id="outLink"
+        target="_blank"
+        class="text-xs text-indigo-600 underline font-medium">Probar enlace</a
+      >
+    </div>
+
+    <div>
+      <label class="block text-[11px] font-semibold text-slate-500 mb-1"
+        >Mensaje para copiar y enviar al cliente por WhatsApp:</label
+      >
+      <textarea
+        id="outMensajeWA"
+        readonly
+        class="w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-white text-slate-700 h-24 font-mono"
+      ></textarea>
+    </div>
+
+    <button
+      id="btnCopiarMsg"
+      type="button"
+      class="w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium py-2 rounded-lg transition-all"
+    >
+      📋 Copiar mensaje al portapapeles
+    </button>
+  </div>
+</div>
+
+<script>
+  // @ts-nocheck
+  import { supabase } from "../lib/supabase.js"; // Ajustá la ruta según tu estructura
+
+  const form = document.getElementById("formPedidoPersonalizado");
+  const boxResultado = document.getElementById("boxResultadoAdmin");
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById("btnCrearOrden");
+    btn.disabled = true;
+    btn.textContent = "Guardando...";
+
+    const titulo = document.getElementById("inputTituloAdmin").value;
+    const telefono = document.getElementById("inputTelefonoAdmin").value;
+    const monto =
+      parseFloat(document.getElementById("inputMontoAdmin").value) || 0;
+    const detalles = document.getElementById("inputDetallesAdmin").value;
+    const estado = document.getElementById("selectEstadoAdmin").value;
+
+    try {
+      const { data, error } = await supabase
+        .from("orders")
+        .insert([
+          {
+            product_title: `Personalizado: ${titulo}`,
+            subproducts: detalles
+              ? [{ label: "Detalles del trabajo", value: detalles }]
+              : [],
+            total_price: monto,
+            customer_phone: telefono,
+            status: estado,
+          },
+        ])
+        .select("order_code")
+        .single();
+
+      if (error) {
+        alert("Error al crear la orden: " + error.message);
+        btn.disabled = false;
+        btn.textContent = "Generar Orden de Seguimiento";
+        return;
+      }
+
+      const codigo = data.order_code;
+      const linkSeguimiento = `https://ideasdelaluna.netlify.app/seguimiento/${codigo}`;
+
+      const mensajeWA = `¡Hola! Ya registramos tu pedido personalized (*#${codigo}*).
+
+• *Trabajo:* ${titulo}
+• *Estado:* ${estado}
+• *Total acordado:* $${monto.toLocaleString("es-AR")}
+
+Podés seguir el avance de tu pedido en tiempo real desde este enlace:
+${linkSeguimiento}`;
+
+      document.getElementById("outCodigo").textContent = `#${codigo}`;
+      document.getElementById("outLink").href = linkSeguimiento;
+      document.getElementById("outMensajeWA").value = mensajeWA;
+
+      boxResultado.classList.remove("hidden");
+      form.reset();
+    } catch (err) {
+      alert("Error inesperado en el servidor.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Generar Orden de Seguimiento";
+    }
+  });
+
+  document.getElementById("btnCopiarMsg")?.addEventListener("click", () => {
+    const txt = document.getElementById("outMensajeWA");
+    txt.select();
+    navigator.clipboard.writeText(txt.value);
+    alert("¡Mensaje copiado! Ya podés pegarlo en la conversación de WhatsApp.");
+  });
+</script>

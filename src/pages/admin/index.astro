@@ -1,10 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Greeting from "../../components/Greeting.astro";
+import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.astro";
 ---
 
 <Layout title="Panel de Pedidos | Ideas de la Luna">
-  <section class="max-w-5xl mx-auto px-4 py-10 sm:py-16">
+  <section class="max-w-7xl mx-auto px-4 py-10 sm:py-16">
     <div class="flex items-center justify-between mb-8">
       <div>
         <span
@@ -15,7 +16,7 @@ import Greeting from "../../components/Greeting.astro";
         <h1
           class="text-2xl sm:text-3xl font-serif text-indigo-950 font-medium mt-3"
         >
-          Pedidos del <span class="italic text-indigo-600">Cotizador</span>
+          Gestión de Pedidos
         </h1>
         <Greeting />
       </div>
@@ -86,52 +87,60 @@ import Greeting from "../../components/Greeting.astro";
       </div>
     </div>
 
-    <input
-      type="text"
-      id="inputBuscar"
-      placeholder="Buscar por código de pedido o archivo..."
-      class="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-xl p-3 mb-4 focus:outline-none focus:border-indigo-500"
-    />
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <div class="lg:col-span-1">
+        <NuevoPedidoPersonalizado />
+      </div>
 
-    <div class="flex flex-wrap gap-2 mb-6" id="filtros">
-      <button
-        data-filtro="todos"
-        class="filtro-estado active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >Todos</button
-      >
-      <button
-        data-filtro="Pendiente de Pago"
-        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >Pendiente de Pago</button
-      >
-      <button
-        data-filtro="Pago Confirmado"
-        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >Pago Confirmado</button
-      >
-      <button
-        data-filtro="En Preparación"
-        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >En Preparación</button
-      >
-      <button
-        data-filtro="Listo para Retirar"
-        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >Listo para Retirar</button
-      >
-      <button
-        data-filtro="Entregado"
-        class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-        >Entregado</button
-      >
+      <div class="lg:col-span-2">
+        <input
+          type="text"
+          id="inputBuscar"
+          placeholder="Buscar por código de pedido o archivo..."
+          class="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-xl p-3 mb-4 focus:outline-none focus:border-indigo-500"
+        />
+
+        <div class="flex flex-wrap gap-2 mb-6" id="filtros">
+          <button
+            data-filtro="todos"
+            class="filtro-estado active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+            >Todos</button
+          >
+          <button
+            data-filtro="Pendiente de Pago"
+            class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+            >Pendiente de Pago</button
+          >
+          <button
+            data-filtro="Pago Confirmado"
+            class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+            >Pago Confirmado</button
+          >
+          <button
+            data-filtro="En Preparación"
+            class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+            >En Preparación</button
+          >
+          <button
+            data-filtro="Listo para Retirar"
+            class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+            >Listo para Retirar</button
+          >
+          <button
+            data-filtro="Entregado"
+            class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
+            >Entregado</button
+          >
+        </div>
+
+        <p id="cargando" class="text-sm text-slate-500">Cargando pedidos...</p>
+        <p id="vacio" class="text-sm text-slate-500 hidden">
+          No hay pedidos en este estado.
+        </p>
+
+        <div id="listaPedidos" class="space-y-4"></div>
+      </div>
     </div>
-
-    <p id="cargando" class="text-sm text-slate-500">Cargando pedidos...</p>
-    <p id="vacio" class="text-sm text-slate-500 hidden">
-      No hay pedidos en este estado.
-    </p>
-
-    <div id="listaPedidos" class="space-y-4"></div>
   </section>
 </Layout>
 
@@ -315,7 +324,7 @@ import Greeting from "../../components/Greeting.astro";
 
     alert(
       fallidos > 0
-        ? `Se borraron ${borrados} archivo(s). ${fallidos} no se pudieron borrar (revisá la consola o probá de nuevo).`
+        ? `Se borraron ${borrados} archivo(s). ${fallidos} no se pudieron borrar.`
         : `Se borraron ${borrados} archivo(s) correctamente.`,
     );
   }
@@ -403,7 +412,6 @@ import Greeting from "../../components/Greeting.astro";
       })
       .join("");
 
-    // Listeners por card
     cont.querySelectorAll(".pedido-card").forEach((card) => {
       const id = card.getAttribute("data-id");
       const selectEstado = card.querySelector(".select-estado");
@@ -478,7 +486,6 @@ import Greeting from "../../components/Greeting.astro";
           );
           if (!confirmar) return;
 
-          // Borrar archivo PDF si existe
           if (pedido.pdf_url) {
             const path = extraerPathStorage(pedido.pdf_url);
             if (path) {
@@ -486,7 +493,6 @@ import Greeting from "../../components/Greeting.astro";
             }
           }
 
-          // Borrar registro de la base de datos
           const { error } = await supabase.from("orders").delete().eq("id", id);
 
           if (error) {
