@@ -1,40 +1,40 @@
 ---
-// Componente Modal de Galería de Fotos - Glassmorphism & Cosmic Glam
+// Componente Modal de Galería de Fotos - Glassmorphism Pastel & Chic
 ---
 
 <div
   id="gallery-modal"
-  class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none"
+  class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-indigo-950/30 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none"
   aria-hidden="true"
 >
-  <!-- Contenedor Principal Glassmorphism -->
+  <!-- Contenedor Principal Glassmorphism Claro -->
   <div
-    class="relative w-full max-w-4xl bg-white/10 border border-white/20 rounded-3xl p-4 sm:p-6 shadow-[0_0_50px_rgba(236,72,153,0.25)] backdrop-blur-xl flex flex-col items-center overflow-hidden transform scale-95 transition-all duration-300"
+    class="relative w-full max-w-4xl bg-white/80 border border-white/60 rounded-3xl p-5 sm:p-7 shadow-[0_20px_50px_rgba(79,70,229,0.15)] backdrop-blur-xl flex flex-col items-center overflow-hidden transform scale-95 transition-all duration-300"
     id="gallery-content"
   >
-    <!-- Luces y Resplandor de fondo -->
+    <!-- Destellos pastel de fondo -->
     <div
-      class="absolute -top-20 -left-20 w-60 h-60 bg-pink-500/20 rounded-full blur-3xl pointer-events-none"
+      class="absolute -top-24 -left-24 w-64 h-64 bg-pink-200/40 rounded-full blur-3xl pointer-events-none"
     >
     </div>
     <div
-      class="absolute -bottom-20 -right-20 w-60 h-60 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"
+      class="absolute -bottom-24 -right-24 w-64 h-64 bg-indigo-200/40 rounded-full blur-3xl pointer-events-none"
     >
     </div>
 
-    <!-- Encabezado del Modal -->
+    <!-- Encabezado -->
     <div
-      class="w-full flex items-center justify-between mb-4 relative z-10 px-2"
+      class="w-full flex items-center justify-between mb-4 relative z-10 px-1"
     >
       <div>
         <span
-          class="text-[10px] font-bold tracking-widest text-pink-300 uppercase bg-pink-500/20 border border-pink-500/30 px-2.5 py-0.5 rounded-full"
+          class="text-[10px] font-bold tracking-widest text-indigo-600 uppercase bg-indigo-50/80 border border-indigo-100 px-3 py-1 rounded-full shadow-xs"
         >
-          ✨ Vista Previa
+          ✨ Detalle de producto
         </span>
         <h3
           id="gallery-title"
-          class="font-serif text-white text-xl sm:text-2xl font-normal mt-1"
+          class="font-serif text-indigo-950 text-xl sm:text-2xl font-medium mt-1"
         >
           Galería de fotos
         </h3>
@@ -44,7 +44,7 @@
       <button
         id="gallery-close"
         type="button"
-        class="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 border border-white/15 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md"
+        class="text-slate-400 hover:text-indigo-950 bg-slate-100/80 hover:bg-white border border-slate-200/60 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-xs"
         aria-label="Cerrar Galería"
       >
         ✕
@@ -53,7 +53,7 @@
 
     <!-- Visor de Imagen Principal -->
     <div
-      class="relative w-full aspect-[4/3] sm:aspect-[16/10] max-h-[60vh] rounded-2xl overflow-hidden bg-slate-950/60 border border-white/10 flex items-center justify-center group relative z-10"
+      class="relative w-full aspect-[4/3] sm:aspect-[16/10] max-h-[60vh] rounded-2xl overflow-hidden bg-slate-50 border border-indigo-50 flex items-center justify-center group relative z-10 shadow-inner"
     >
       <img
         id="gallery-main-img"
@@ -62,11 +62,11 @@
         class="w-full h-full object-contain transition-all duration-300"
       />
 
-      <!-- Botón Anteriore / Siguiente Flechas -->
+      <!-- Flechas de navegación -->
       <button
         id="gallery-prev"
         type="button"
-        class="absolute left-3 top-1/2 -translate-y-1/2 bg-slate-950/50 hover:bg-pink-500/80 text-white border border-white/20 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md opacity-80 hover:opacity-100"
+        class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-indigo-950 border border-indigo-100 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md backdrop-blur-sm"
       >
         ❮
       </button>
@@ -74,7 +74,7 @@
       <button
         id="gallery-next"
         type="button"
-        class="absolute right-3 top-1/2 -translate-y-1/2 bg-slate-950/50 hover:bg-pink-500/80 text-white border border-white/20 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md opacity-80 hover:opacity-100"
+        class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-indigo-950 border border-indigo-100 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md backdrop-blur-sm"
       >
         ❯
       </button>
@@ -85,7 +85,7 @@
       id="gallery-thumbs"
       class="flex items-center justify-center gap-3 mt-4 w-full overflow-x-auto py-2 relative z-10 scrollbar-none"
     >
-      <!-- Se inyectan dinámicamente -->
+      <!-- Miniaturas inyectadas dinámicamente -->
     </div>
   </div>
 </div>
@@ -119,7 +119,7 @@
       modalContent.classList.remove("scale-95");
       modalContent.classList.add("scale-100");
 
-      document.body.style.overflow = "hidden"; // Bloquea scroll de fondo
+      document.body.style.overflow = "hidden";
     }
 
     function cerrarModal() {
@@ -131,14 +131,13 @@
       setTimeout(() => {
         modal.classList.remove("flex");
         modal.classList.add("hidden");
-        document.body.style.overflow = ""; // Restaura scroll
+        document.body.style.overflow = "";
       }, 300);
     }
 
     function actualizarVista() {
       mainImg.src = currentImages[currentIndex];
 
-      // Generar miniaturas
       thumbsCont.innerHTML = currentImages
         .map((src, i) => {
           const esActiva = i === currentIndex;
@@ -148,8 +147,8 @@
               data-index="${i}"
               class="thumb-btn shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
                 esActiva
-                  ? "border-pink-400 scale-105 shadow-[0_0_12px_rgba(236,72,153,0.5)]"
-                  : "border-white/20 opacity-50 hover:opacity-100"
+                  ? "border-indigo-600 scale-105 shadow-sm"
+                  : "border-slate-200 opacity-60 hover:opacity-100"
               }"
             >
               <img src="${src}" class="w-full h-full object-cover" />
@@ -170,13 +169,11 @@
       actualizarVista();
     }
 
-    // Escuchar el evento global personalizado que dispara ProductCard
     window.addEventListener("open-gallery", (e) => {
       const { title, images, index } = e.detail;
       abrirModal(title, images, index);
     });
 
-    // Delegación de eventos para las miniaturas
     thumbsCont.addEventListener("click", (e) => {
       const btn = e.target.closest(".thumb-btn");
       if (btn) {
@@ -185,7 +182,6 @@
       }
     });
 
-    // Eventos de Navegación y Cierre
     nextBtn.addEventListener("click", imagenSiguiente);
     prevBtn.addEventListener("click", imagenAnterior);
     closeBtn.addEventListener("click", cerrarModal);

@@ -1,44 +1,40 @@
 ---
-// Banner de Promociones — Glam & Cosmic Style (Versión Compacta)
+// Banner de Promociones — Estilo Pastel Mágico
 ---
 
 <section
   id="seccionPromociones"
-  class="hidden max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-2"
+  class="hidden max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-2"
 >
   <div
-    class="relative rounded-2xl bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 px-5 py-5 sm:px-8 sm:py-6 border border-pink-500/30 shadow-[0_0_25px_rgba(236,72,153,0.12)] overflow-hidden"
+    class="relative rounded-3xl bg-gradient-to-br from-indigo-50/70 via-white to-pink-50/70 p-6 sm:p-8 border border-indigo-100/80 shadow-xs overflow-hidden"
   >
-    <!-- Glows sutiles de fondo -->
+    <!-- Luces pastel sutiles -->
     <div
-      class="absolute -top-16 -left-16 w-48 h-48 bg-pink-500/15 rounded-full blur-2xl pointer-events-none"
+      class="absolute -top-16 -left-16 w-52 h-52 bg-pink-100/60 rounded-full blur-2xl pointer-events-none"
     >
     </div>
     <div
-      class="absolute -bottom-16 -right-16 w-48 h-48 bg-purple-500/15 rounded-full blur-2xl pointer-events-none"
+      class="absolute -bottom-16 -right-16 w-52 h-52 bg-indigo-100/60 rounded-full blur-2xl pointer-events-none"
     >
     </div>
 
-    <!-- Encabezado Compacto -->
+    <!-- Encabezado -->
     <div
-      class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-4 pb-3 border-b border-white/10 relative z-10"
+      class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-5 pb-3 border-b border-indigo-100/60 relative z-10"
     >
       <div class="flex items-center gap-2.5">
         <span
-          class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-sm shadow-pink-500/20"
+          class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-pink-100 text-pink-700 border border-pink-200/60"
         >
           <span>✨</span> Oportunidades
         </span>
-        <h2 class="text-lg sm:text-xl font-serif text-white font-normal">
-          Promociones <span
-            class="italic text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-200"
-            >Fuera de Órbita</span
+        <h2 class="text-xl sm:text-2xl font-serif text-indigo-950 font-medium">
+          Promociones <span class="italic text-indigo-600">Fuera de Órbita</span
           >
         </h2>
       </div>
-      <p
-        class="text-indigo-200/70 text-xs font-light text-center sm:text-right"
-      >
+      <p class="text-slate-500 text-xs font-light text-center sm:text-right">
         Aprovechá estos beneficios exclusivos por tiempo limitado.
       </p>
     </div>
@@ -51,123 +47,3 @@
     </div>
   </div>
 </section>
-
-<script>
-  // @ts-nocheck
-
-  const CSV_URL_PROMOCIONES =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRVnI_RqxCSt1wAfQthb5aG1m1NVIbiyjF6rovbmM0hUk2ZoNrLSWkDIlTsRTn2B3PbUXv_NFq8l3q/pub?gid=116458534&single=true&output=csv";
-
-  function parsearCSV(texto) {
-    const filas = [];
-    let fila = [];
-    let campo = "";
-    let dentroComillas = false;
-
-    for (let i = 0; i < texto.length; i++) {
-      const c = texto[i];
-
-      if (dentroComillas) {
-        if (c === '"' && texto[i + 1] === '"') {
-          campo += '"';
-          i++;
-        } else if (c === '"') {
-          dentroComillas = false;
-        } else {
-          campo += c;
-        }
-      } else {
-        if (c === '"') {
-          dentroComillas = true;
-        } else if (c === ",") {
-          fila.push(campo);
-          campo = "";
-        } else if (c === "\n" || c === "\r") {
-          if (c === "\r" && texto[i + 1] === "\n") i++;
-          fila.push(campo);
-          filas.push(fila);
-          fila = [];
-          campo = "";
-        } else {
-          campo += c;
-        }
-      }
-    }
-    if (campo.length > 0 || fila.length > 0) {
-      fila.push(campo);
-      filas.push(fila);
-    }
-    return filas.filter((f) => f.some((c) => c.trim() !== ""));
-  }
-
-  function esActiva(promo, hoy) {
-    const activa = (promo.Activa || "").trim().toUpperCase();
-    if (activa !== "SI" && activa !== "SÍ" && activa !== "TRUE") return false;
-
-    if (promo.FechaInicio) {
-      const inicio = new Date(promo.FechaInicio);
-      if (!isNaN(inicio) && hoy < inicio) return false;
-    }
-    if (promo.FechaFin) {
-      const fin = new Date(promo.FechaFin);
-      if (!isNaN(fin) && hoy > fin) return false;
-    }
-    return true;
-  }
-
-  document.addEventListener("DOMContentLoaded", async () => {
-    try {
-      const response = await fetch(CSV_URL_PROMOCIONES);
-      const texto = await response.text();
-      const filas = parsearCSV(texto);
-
-      if (filas.length < 2) return;
-
-      const encabezados = filas[0].map((h) => h.trim());
-      const promociones = filas.slice(1).map((fila) => {
-        const obj = {};
-        encabezados.forEach((h, i) => (obj[h] = (fila[i] || "").trim()));
-        return obj;
-      });
-
-      const hoy = new Date();
-      const activas = promociones.filter((p) => esActiva(p, hoy));
-
-      if (activas.length === 0) return;
-
-      const cont = document.getElementById("listaPromociones");
-      cont.innerHTML = activas
-        .map((p) => {
-          const contenido = `
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <span class="text-[9px] font-bold tracking-wider text-pink-300 uppercase bg-pink-500/20 border border-pink-500/30 px-2 py-0.5 rounded-full">
-                🔥 Promo
-              </span>
-              ${p.Link ? '<span class="text-[11px] text-pink-300 font-medium group-hover:translate-x-0.5 transition-transform">Ver →</span>' : ""}
-            </div>
-
-            <h3 class="font-serif text-white font-medium text-base leading-tight group-hover:text-pink-200 transition-colors">
-              ${p.Titulo || ""}
-            </h3>
-
-            <p class="text-xs text-indigo-100/70 mt-1 font-light leading-snug">
-              ${p.Descripcion || ""}
-            </p>
-          `;
-
-          const claseCard =
-            "group block flex-1 min-w-[260px] max-w-sm bg-white/10 backdrop-blur-md border border-white/15 rounded-xl p-4 hover:border-pink-400/50 hover:bg-white/15 hover:shadow-[0_8px_20px_rgba(236,72,153,0.2)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden";
-
-          if (p.Link) {
-            return `<a href="${p.Link}" target="_blank" class="${claseCard}">${contenido}</a>`;
-          }
-          return `<div class="${claseCard}">${contenido}</div>`;
-        })
-        .join("");
-
-      document.getElementById("seccionPromociones").classList.remove("hidden");
-    } catch (e) {
-      // Si falla la carga de promociones, la sección simplemente se oculta.
-    }
-  });
-</script>
