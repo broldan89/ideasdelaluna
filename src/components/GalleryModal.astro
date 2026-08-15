@@ -1,66 +1,204 @@
-<!-- Ajuste visual del modal para móviles -->
+---
+// Componente Modal de Galería de Fotos - Glassmorphism & Cosmic Glam
+---
+
 <div
   id="gallery-modal"
-  class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-3 sm:p-4 transition-all duration-300 opacity-0"
+  class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none"
+  aria-hidden="true"
 >
+  <!-- Contenedor Principal Glassmorphism -->
   <div
-    class="relative w-full max-w-3xl bg-[#FAF8FC] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/20 flex flex-col max-h-[85vh] sm:max-h-[90vh]"
+    class="relative w-full max-w-4xl bg-white/10 border border-white/20 rounded-3xl p-4 sm:p-6 shadow-[0_0_50px_rgba(236,72,153,0.25)] backdrop-blur-xl flex flex-col items-center overflow-hidden transform scale-95 transition-all duration-300"
+    id="gallery-content"
   >
-    <!-- HEADER -->
+    <!-- Luces y Resplandor de fondo -->
     <div
-      class="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-slate-200/60 bg-white/50"
+      class="absolute -top-20 -left-20 w-60 h-60 bg-pink-500/20 rounded-full blur-3xl pointer-events-none"
+    >
+    </div>
+    <div
+      class="absolute -bottom-20 -right-20 w-60 h-60 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"
+    >
+    </div>
+
+    <!-- Encabezado del Modal -->
+    <div
+      class="w-full flex items-center justify-between mb-4 relative z-10 px-2"
     >
       <div>
-        <h3
-          id="modal-title"
-          class="font-serif text-base sm:text-xl font-medium text-indigo-950 truncate max-w-[200px] sm:max-w-none"
+        <span
+          class="text-[10px] font-bold tracking-widest text-pink-300 uppercase bg-pink-500/20 border border-pink-500/30 px-2.5 py-0.5 rounded-full"
         >
-          Galería
+          ✨ Vista Previa
+        </span>
+        <h3
+          id="gallery-title"
+          class="font-serif text-white text-xl sm:text-2xl font-normal mt-1"
+        >
+          Galería de fotos
         </h3>
-        <p class="text-[10px] sm:text-xs text-slate-500 font-light">
-          Desliza para ver más opciones
-        </p>
       </div>
 
+      <!-- Botón Cerrar (X) -->
       <button
-        id="close-modal"
+        id="gallery-close"
         type="button"
-        class="w-8 h-8 rounded-full bg-slate-200/60 text-slate-700 flex items-center justify-center text-sm font-bold"
+        class="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 border border-white/15 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md"
+        aria-label="Cerrar Galería"
       >
         ✕
       </button>
     </div>
 
-    <!-- IMAGEN Y CONTROLES -->
+    <!-- Visor de Imagen Principal -->
     <div
-      class="relative flex-grow flex items-center justify-center bg-slate-900/5 min-h-[220px] sm:min-h-[420px] overflow-hidden p-2 sm:p-4"
+      class="relative w-full aspect-[4/3] sm:aspect-[16/10] max-h-[60vh] rounded-2xl overflow-hidden bg-slate-950/60 border border-white/10 flex items-center justify-center group relative z-10"
     >
       <img
-        id="modal-img"
+        id="gallery-main-img"
         src=""
-        alt="Trabajo realizado"
-        class="max-h-[50vh] sm:max-h-[65vh] w-auto max-w-full object-contain rounded-lg shadow-md"
+        alt="Foto ampliada"
+        class="w-full h-full object-contain transition-all duration-300"
       />
 
+      <!-- Botón Anteriore / Siguiente Flechas -->
       <button
-        id="prev-slide"
+        id="gallery-prev"
         type="button"
-        class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 text-indigo-950 shadow-md flex items-center justify-center text-lg z-10"
-        >❮</button
+        class="absolute left-3 top-1/2 -translate-y-1/2 bg-slate-950/50 hover:bg-pink-500/80 text-white border border-white/20 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md opacity-80 hover:opacity-100"
       >
+        ❮
+      </button>
+
       <button
-        id="next-slide"
+        id="gallery-next"
         type="button"
-        class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 text-indigo-950 shadow-md flex items-center justify-center text-lg z-10"
-        >❯</button
+        class="absolute right-3 top-1/2 -translate-y-1/2 bg-slate-950/50 hover:bg-pink-500/80 text-white border border-white/20 w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md opacity-80 hover:opacity-100"
       >
+        ❯
+      </button>
     </div>
 
-    <!-- DOTS -->
+    <!-- Carrusel de Miniaturas -->
     <div
-      id="modal-dots"
-      class="flex items-center justify-center gap-2 py-3 bg-white/60"
+      id="gallery-thumbs"
+      class="flex items-center justify-center gap-3 mt-4 w-full overflow-x-auto py-2 relative z-10 scrollbar-none"
     >
+      <!-- Se inyectan dinámicamente -->
     </div>
   </div>
 </div>
+
+<script>
+  // @ts-nocheck
+  document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("gallery-modal");
+    const modalContent = document.getElementById("gallery-content");
+    const closeBtn = document.getElementById("gallery-close");
+    const mainImg = document.getElementById("gallery-main-img");
+    const titleEl = document.getElementById("gallery-title");
+    const thumbsCont = document.getElementById("gallery-thumbs");
+    const prevBtn = document.getElementById("gallery-prev");
+    const nextBtn = document.getElementById("gallery-next");
+
+    let currentImages = [];
+    let currentIndex = 0;
+
+    function abrirModal(titulo, imagenes, indexInicial = 0) {
+      if (!imagenes || imagenes.length === 0) return;
+
+      currentImages = imagenes;
+      currentIndex = indexInicial;
+      titleEl.textContent = titulo || "Galería de imágenes";
+
+      actualizarVista();
+
+      modal.classList.remove("hidden", "opacity-0", "pointer-events-none");
+      modal.classList.add("flex", "opacity-100", "pointer-events-auto");
+      modalContent.classList.remove("scale-95");
+      modalContent.classList.add("scale-100");
+
+      document.body.style.overflow = "hidden"; // Bloquea scroll de fondo
+    }
+
+    function cerrarModal() {
+      modal.classList.remove("opacity-100", "pointer-events-auto");
+      modal.classList.add("opacity-0", "pointer-events-none");
+      modalContent.classList.remove("scale-100");
+      modalContent.classList.add("scale-95");
+
+      setTimeout(() => {
+        modal.classList.remove("flex");
+        modal.classList.add("hidden");
+        document.body.style.overflow = ""; // Restaura scroll
+      }, 300);
+    }
+
+    function actualizarVista() {
+      mainImg.src = currentImages[currentIndex];
+
+      // Generar miniaturas
+      thumbsCont.innerHTML = currentImages
+        .map((src, i) => {
+          const esActiva = i === currentIndex;
+          return `
+            <button
+              type="button"
+              data-index="${i}"
+              class="thumb-btn shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                esActiva
+                  ? "border-pink-400 scale-105 shadow-[0_0_12px_rgba(236,72,153,0.5)]"
+                  : "border-white/20 opacity-50 hover:opacity-100"
+              }"
+            >
+              <img src="${src}" class="w-full h-full object-cover" />
+            </button>
+          `;
+        })
+        .join("");
+    }
+
+    function imagenSiguiente() {
+      currentIndex = (currentIndex + 1) % currentImages.length;
+      actualizarVista();
+    }
+
+    function imagenAnterior() {
+      currentIndex =
+        (currentIndex - 1 + currentImages.length) % currentImages.length;
+      actualizarVista();
+    }
+
+    // Escuchar el evento global personalizado que dispara ProductCard
+    window.addEventListener("open-gallery", (e) => {
+      const { title, images, index } = e.detail;
+      abrirModal(title, images, index);
+    });
+
+    // Delegación de eventos para las miniaturas
+    thumbsCont.addEventListener("click", (e) => {
+      const btn = e.target.closest(".thumb-btn");
+      if (btn) {
+        currentIndex = parseInt(btn.dataset.index, 10);
+        actualizarVista();
+      }
+    });
+
+    // Eventos de Navegación y Cierre
+    nextBtn.addEventListener("click", imagenSiguiente);
+    prevBtn.addEventListener("click", imagenAnterior);
+    closeBtn.addEventListener("click", cerrarModal);
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) cerrarModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (modal.classList.contains("hidden")) return;
+      if (e.key === "Escape") cerrarModal();
+      if (e.key === "ArrowRight") imagenSiguiente();
+      if (e.key === "ArrowLeft") imagenAnterior();
+    });
+  });
+</script>
