@@ -1,29 +1,57 @@
 ---
-// Banner de Promociones — se alimenta de una pestaña dedicada en la misma
-// planilla de Sheets que usa el Cotizador. Se lee directo desde el navegador
-// (no pasa por un endpoint del sitio) para que actualizar la planilla alcance,
-// sin necesidad de un nuevo deploy.
+// Banner de Promociones — Glam & Cosmic Style
 ---
 
 <section
   id="seccionPromociones"
-  class="hidden max-w-7xl mx-auto px-6 pt-10 pb-4 sm:pt-14"
+  class="hidden max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-2"
 >
-  <div id="listaPromociones" class="flex flex-wrap justify-center gap-4"></div>
+  <div
+    class="relative rounded-3xl bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 p-6 sm:p-10 border border-pink-500/30 shadow-[0_0_35px_rgba(236,72,153,0.15)] overflow-hidden"
+  >
+    <!-- Glows y luces de fondo -->
+    <div
+      class="absolute -top-24 -left-24 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl pointer-events-none"
+    >
+    </div>
+    <div
+      class="absolute -bottom-24 -right-24 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"
+    >
+    </div>
+
+    <!-- Encabezado Glam -->
+    <div class="text-center max-w-lg mx-auto mb-8 relative z-10">
+      <span
+        class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-bold tracking-widest uppercase bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md shadow-pink-500/20 animate-pulse"
+      >
+        <span>✨</span> Oportunidades Especiales
+      </span>
+      <h2 class="text-2xl sm:text-3xl font-serif text-white font-normal mt-2.5">
+        Promociones <span
+          class="italic text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-200"
+          >Fuera de Órbita</span
+        >
+      </h2>
+      <p class="text-indigo-200/70 text-xs sm:text-sm font-light mt-1">
+        Aprovechá nuestros beneficios exclusivos por tiempo limitado.
+      </p>
+    </div>
+
+    <!-- Contenedor dinámico de Promociones -->
+    <div
+      id="listaPromociones"
+      class="flex flex-wrap justify-center gap-6 relative z-10"
+    >
+    </div>
+  </div>
 </section>
 
 <script>
   // @ts-nocheck
 
-  // TODO: reemplazar por el link publicado de la pestaña "Promociones".
-  // Cómo obtenerlo: en la planilla → Archivo → Compartir → Publicar en la web
-  // → elegís la hoja "Promociones" (no "Toda la planilla") → formato CSV →
-  // Publicar → copiás el link que te da y lo pegás acá abajo.
   const CSV_URL_PROMOCIONES =
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRVnI_RqxCSt1wAfQthb5aG1m1NVIbiyjF6rovbmM0hUk2ZoNrLSWkDIlTsRTn2B3PbUXv_NFq8l3q/pub?gid=116458534&single=true&output=csv";
 
-  // Parser de CSV simple que respeta comillas (para que las descripciones
-  // puedan tener comas sin romper las columnas).
   function parsearCSV(texto) {
     const filas = [];
     let fila = [];
@@ -105,15 +133,24 @@
       cont.innerHTML = activas
         .map((p) => {
           const contenido = `
-            <span class="text-[10px] font-semibold tracking-widest text-pink-600 uppercase bg-pink-50 px-2.5 py-1 rounded-full">
-              Promo
-            </span>
-            <p class="font-serif text-indigo-950 font-medium text-lg mt-3">${p.Titulo || ""}</p>
-            <p class="text-sm text-slate-600 mt-1.5">${p.Descripcion || ""}</p>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[10px] font-bold tracking-widest text-pink-300 uppercase bg-pink-500/20 border border-pink-500/30 px-3 py-1 rounded-full shadow-inner">
+                🔥 Imperdible
+              </span>
+              ${p.Link ? '<span class="text-xs text-pink-300 font-medium group-hover:translate-x-1 transition-transform">Ver promo →</span>' : ""}
+            </div>
+
+            <h3 class="font-serif text-white font-medium text-xl leading-snug group-hover:text-pink-200 transition-colors">
+              ${p.Titulo || ""}
+            </h3>
+
+            <p class="text-xs text-indigo-100/80 mt-2 font-light leading-relaxed">
+              ${p.Descripcion || ""}
+            </p>
           `;
 
           const claseCard =
-            "block w-full sm:w-72 bg-gradient-to-br from-indigo-50 via-white to-pink-50 border border-indigo-100 rounded-2xl p-6 hover:shadow-md hover:-translate-y-0.5 transition-all";
+            "group block w-full sm:w-80 bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-6 hover:border-pink-400/50 hover:bg-white/15 hover:shadow-[0_10px_25px_rgba(236,72,153,0.25)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden";
 
           if (p.Link) {
             return `<a href="${p.Link}" target="_blank" class="${claseCard}">${contenido}</a>`;
@@ -124,8 +161,7 @@
 
       document.getElementById("seccionPromociones").classList.remove("hidden");
     } catch (e) {
-      // Si falla la carga de promociones, el sitio sigue funcionando normal
-      // y la sección simplemente no aparece.
+      // Si falla la carga de promociones, la sección simplemente se oculta.
     }
   });
 </script>
