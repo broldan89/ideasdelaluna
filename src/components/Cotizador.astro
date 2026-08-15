@@ -325,15 +325,8 @@
   }
 
   function calcularTotal() {
-    const {
-      paginas,
-      modalidad,
-      color,
-      encuadernacion,
-      copias,
-      idPapel,
-      archivoUrl,
-    } = estadoCotizador;
+    const { paginas, modalidad, color, encuadernacion, copias, archivoUrl } =
+      estadoCotizador;
 
     if (paginas <= 0 || !archivoUrl) {
       document.getElementById("resPaginas").textContent = "0 págs";
@@ -349,9 +342,10 @@
       return;
     }
 
-    /// 1. Cálculo de hojas físicas necesarias
+    // 1. Cálculo de hojas físicas necesarias
     const hojas = modalidad === "doble" ? Math.ceil(paginas / 2) : paginas;
 
+    // 2. Costo del servicio de impresión por hoja
     let costoServicioImpresion = 0;
     if (modalidad === "doble") {
       costoServicioImpresion =
@@ -361,29 +355,17 @@
         color === "color" ? tablaPrecios.S02 || 220 : tablaPrecios.S01 || 150;
     }
 
-    // 3. Costo del servicio de impresión
-    let costoServicioImpresion = 0;
-    if (modalidad === "doble") {
-      costoServicioImpresion =
-        color === "color" ? tablaPrecios.S04 || 64 : tablaPrecios.S03 || 64;
-    } else {
-      costoServicioImpresion =
-        color === "color" ? tablaPrecios.S02 || 32 : tablaPrecios.S01 || 32;
-    }
-    const costoTotalServicioUnidad = hojas * costoServicioImpresion;
-
-    // Total de Impresión (Papel + Servicio) por cada juego/copia
+    // Subtotal de impresión por copia
     const subtotalImpresionPorCopia = hojas * costoServicioImpresion;
 
-    // 4. Costo de Anillado / Encuadernación por copia
-    // Si la cantidad de copias es >= 10 toma S14 ($2.500), de lo contrario S13 ($3.000)
+    // 3. Costo de Anillado / Encuadernación por copia
     let costoAnilladoUnitario = 0;
     if (encuadernacion === "anillado") {
       costoAnilladoUnitario =
         copias >= 10 ? tablaPrecios.S14 || 2500 : tablaPrecios.S13 || 3000;
     }
 
-    // 5. Totales generales del pedido
+    // 4. Totales generales del pedido
     const costoImpresionTotal = subtotalImpresionPorCopia * copias;
     const costoAnilladoTotal = costoAnilladoUnitario * copias;
     const totalFinal = costoImpresionTotal + costoAnilladoTotal;
