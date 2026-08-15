@@ -352,7 +352,6 @@
     /// 1. Cálculo de hojas físicas necesarias
     const hojas = modalidad === "doble" ? Math.ceil(paginas / 2) : paginas;
 
-    // 2. Costo del servicio de impresión por hoja
     let costoServicioImpresion = 0;
     if (modalidad === "doble") {
       costoServicioImpresion =
