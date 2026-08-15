@@ -434,6 +434,7 @@ import Greeting from "../../components/Greeting.astro";
         if (pedido) Object.assign(pedido, cambios);
 
         calcularMetricas();
+        renderPedidos();
         guardadoOk.classList.remove("hidden");
         setTimeout(() => guardadoOk.classList.add("hidden"), 1500);
       };
