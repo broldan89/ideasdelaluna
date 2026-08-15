@@ -394,6 +394,8 @@ import Greeting from "../../components/Greeting.astro";
 
               ${p.customer_phone ? `<button class="btn-notificar text-xs font-medium bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg px-3 py-2 transition-colors">📲 Notificar por WhatsApp</button>` : ""}
 
+              <button class="btn-borrar text-xs font-medium bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg px-3 py-2 transition-colors ml-auto">🗑️ Borrar</button>
+
               <span class="guardado-ok hidden text-xs text-emerald-600 font-medium">✅ Guardado</span>
             </div>
           </div>
@@ -409,6 +411,7 @@ import Greeting from "../../components/Greeting.astro";
       const inputMotivo = card.querySelector(".input-motivo");
       const guardadoOk = card.querySelector(".guardado-ok");
       const btnNotificar = card.querySelector(".btn-notificar");
+      const btnBorrar = card.querySelector(".btn-borrar");
 
       const guardarCambios = async () => {
         const cambios = {
@@ -461,6 +464,39 @@ import Greeting from "../../components/Greeting.astro";
             `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`,
             "_blank",
           );
+        });
+      }
+
+      if (btnBorrar) {
+        btnBorrar.addEventListener("click", async () => {
+          const pedido = pedidos.find((p) => String(p.id) === String(id));
+          if (!pedido) return;
+
+          const confirmar = confirm(
+            `¿Estás seguro de borrar el pedido #${pedido.order_code || id}? Esta acción eliminará el pedido y su archivo permanentemente.`,
+          );
+          if (!confirmar) return;
+
+          // Borrar archivo PDF si existe
+          if (pedido.pdf_url) {
+            const path = extraerPathStorage(pedido.pdf_url);
+            if (path) {
+              await supabase.storage.from("pdfs-cotizador").remove([path]);
+            }
+          }
+
+          // Borrar registro de la base de datos
+          const { error } = await supabase.from("orders").delete().eq("id", id);
+
+          if (error) {
+            alert(`No se pudo borrar el pedido: ${error.message}`);
+            return;
+          }
+
+          pedidos = pedidos.filter((p) => String(p.id) !== String(id));
+          calcularMetricas();
+          actualizarBadgeLimpieza();
+          renderPedidos();
         });
       }
     });
