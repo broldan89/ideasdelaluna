@@ -1,9 +1,10 @@
 ---
 interface Props {
   title: string;
+  pwa?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, pwa = false } = Astro.props;
 import "../styles/global.css";
 import GalleryModal from "../components/GalleryModal.astro";
 ---
@@ -25,6 +26,20 @@ import GalleryModal from "../components/GalleryModal.astro";
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
       rel="stylesheet"
     />
+    {
+      pwa && (
+        <>
+          <link rel="manifest" href="/manifest.webmanifest" />
+          <meta name="theme-color" content="#4f46e5" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+          />
+          <meta name="apple-mobile-web-app-title" content="Luna Admin" />
+        </>
+      )
+    }
   </head>
 
   <body
