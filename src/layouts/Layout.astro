@@ -17,7 +17,10 @@ import GalleryModal from "../components/GalleryModal.astro";
       name="description"
       content="Ideas de la Luna - Papelería y soluciones de impresión con alma."
     />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <link rel="icon" type="image/png" href="/logo.png" />
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -37,6 +40,13 @@ import GalleryModal from "../components/GalleryModal.astro";
             content="black-translucent"
           />
           <meta name="apple-mobile-web-app-title" content="Luna Admin" />
+          <link rel="apple-touch-icon" href="/icon-192.png" />
+          <style>
+            html,
+            body {
+              overscroll-behavior-y: contain;
+            }
+          </style>
           <script is:inline>
             if ("serviceWorker" in navigator) {
               window.addEventListener("load", () => {
