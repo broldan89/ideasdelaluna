@@ -85,13 +85,14 @@
     </main>
 
     <script>
-      // @ts-nocheck
       import { supabase } from "../../lib/supabase.js";
 
       let todosLosPedidos = [];
 
       async function cargarPedidos() {
         const contenedor = document.getElementById("listaPedidos");
+        if (!contenedor) return;
+
         contenedor.innerHTML =
           '<div class="bg-white p-8 rounded-2xl text-center text-slate-400 text-xs shadow-sm">Actualizando...</div>';
 
@@ -117,6 +118,8 @@
 
       function renderizarPedidos(pedidos) {
         const contenedor = document.getElementById("listaPedidos");
+        if (!contenedor) return;
+
         if (pedidos.length === 0) {
           contenedor.innerHTML =
             '<div class="bg-white p-8 rounded-2xl text-center text-slate-400 text-xs shadow-sm">No se encontraron pedidos.</div>';
@@ -145,7 +148,6 @@
                 <span class="text-base font-extrabold text-slate-900 whitespace-nowrap">$${(p.total_price || 0).toLocaleString("es-AR")}</span>
               </div>
 
-              <!-- Selector de Estado Interactivo -->
               <div class="flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-100">
                 <span class="text-[11px] font-medium text-slate-500">Estado:</span>
                 <select data-id="${p.id}" class="select-estado bg-white text-xs font-semibold rounded-lg px-2 py-1 border border-slate-200 text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500">
@@ -155,24 +157,15 @@
                 </select>
               </div>
 
-              <!-- Acciones Rápidas -->
               <div class="flex gap-2 pt-1">
                 ${
                   p.pdf_url
-                    ? `
-                  <a href="${p.pdf_url}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 text-[11px] font-medium py-2 rounded-xl text-center transition-all flex items-center justify-center gap-1">
-                    📄 Ver PDF
-                  </a>
-                `
+                    ? `<a href="${p.pdf_url}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 text-[11px] font-medium py-2 rounded-xl text-center transition-all flex items-center justify-center gap-1">📄 Ver PDF</a>`
                     : ""
                 }
                 ${
                   p.customer_phone
-                    ? `
-                  <a href="https://wa.me/${p.customer_phone}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-[11px] font-semibold py-2 rounded-xl text-center transition-all flex items-center justify-center gap-1 shadow-sm">
-                    💬 WhatsApp
-                  </a>
-                `
+                    ? `<a href="https://wa.me/${p.customer_phone}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-[11px] font-semibold py-2 rounded-xl text-center transition-all flex items-center justify-center gap-1 shadow-sm">💬 WhatsApp</a>`
                     : ""
                 }
               </div>
@@ -181,7 +174,6 @@
           })
           .join("");
 
-        // Listener para persistir cambios de estado en Supabase sin recargar la página
         document.querySelectorAll(".select-estado").forEach((sel) => {
           sel.addEventListener("change", async (e) => {
             const id = e.target.dataset.id;
@@ -198,31 +190,38 @@
         });
       }
 
-      // Manejo de Filtros
-      document.querySelectorAll(".btn-filtro").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          document.querySelectorAll(".btn-filtro").forEach((b) => {
-            b.classList.remove("active", "bg-indigo-600", "text-white");
-            b.classList.add("bg-white", "text-slate-600");
+      function inicializarEventos() {
+        document.querySelectorAll(".btn-filtro").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            document.querySelectorAll(".btn-filtro").forEach((b) => {
+              b.classList.remove("active", "bg-indigo-600", "text-white");
+              b.classList.add("bg-white", "text-slate-600");
+            });
+            btn.classList.add("active", "bg-indigo-600", "text-white");
+            btn.classList.remove("bg-white", "text-slate-600");
+
+            const filtro = btn.dataset.filter;
+            if (filtro === "todos") {
+              renderizarPedidos(todosLosPedidos);
+            } else {
+              renderizarPedidos(
+                todosLosPedidos.filter((p) => p.status === filtro),
+              );
+            }
           });
-          btn.classList.add("active", "bg-indigo-600", "text-white");
-          btn.classList.remove("bg-white", "text-slate-600");
-
-          const filtro = btn.dataset.filter;
-          if (filtro === "todos") {
-            renderizarPedidos(todosLosPedidos);
-          } else {
-            renderizarPedidos(
-              todosLosPedidos.filter((p) => p.status === filtro),
-            );
-          }
         });
-      });
 
-      document
-        .getElementById("btnActualizar")
-        .addEventListener("click", cargarPedidos);
-      document.addEventListener("DOMContentLoaded", cargarPedidos);
+        const btnActualizar = document.getElementById("btnActualizar");
+        if (btnActualizar) {
+          btnActualizar.addEventListener("click", cargarPedidos);
+        }
+
+        cargarPedidos();
+      }
+
+      // Inicializa tanto en carga normal como con transiciones de vista de Astro
+      document.addEventListener("DOMContentLoaded", inicializarEventos);
+      document.addEventListener("astro:page-load", inicializarEventos);
     </script>
   </body>
 </html>
