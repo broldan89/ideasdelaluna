@@ -1,580 +1,228 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Greeting from "../../components/Greeting.astro";
-import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.astro";
+/* src/pages/admin/index.astro - Panel Admin PWA Adaptativo */
 ---
 
-<Layout title="Panel de Pedidos | Ideas de la Luna">
-  <section class="max-w-7xl mx-auto px-4 py-10 sm:py-16">
-    <div class="flex items-center justify-between mb-8">
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Luna Admin — Panel de Gestión</title>
+
+    <!-- Configuración PWA / Modo App Móvil -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#4f46e5" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Luna Admin" />
+  </head>
+
+  <body
+    class="bg-slate-100 text-slate-800 antialiased min-h-screen pb-12 select-none"
+  >
+    <!-- Navbar / Header Superior -->
+    <header
+      class="bg-indigo-950 text-white p-4 sticky top-0 z-50 shadow-md flex justify-between items-center"
+    >
       <div>
-        <span
-          class="text-[10px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-2.5 py-1 rounded-full"
-        >
-          Panel privado
-        </span>
-        <h1
-          class="text-2xl sm:text-3xl font-serif text-indigo-950 font-medium mt-3"
-        >
-          Gestión de Pedidos
+        <h1 class="font-serif font-bold text-lg leading-tight">
+          Ideas de la Luna
         </h1>
-        <Greeting />
+        <p class="text-[10px] text-indigo-300 font-light">
+          Panel de Control PWA
+        </p>
       </div>
-      <div class="flex items-center gap-2">
+      <button
+        id="btnActualizar"
+        class="bg-indigo-800 hover:bg-indigo-700 active:scale-95 text-white text-xs px-3 py-1.5 rounded-xl border border-indigo-700 transition-all"
+      >
+        🔄 Refrescar
+      </button>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-4 space-y-4">
+      <!-- Filtros Rápidos de Estado -->
+      <div class="flex gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
         <button
-          id="btnLimpiar"
-          class="relative text-xs font-medium text-slate-500 hover:text-amber-600 border border-slate-200 hover:border-amber-300 rounded-full px-4 py-2 transition-all"
+          data-filter="todos"
+          class="btn-filtro active bg-indigo-600 text-white px-3.5 py-1.5 rounded-full font-medium whitespace-nowrap shadow-sm"
         >
-          🧹 Limpiar archivos viejos
-          <span
-            id="badgeLimpiar"
-            class="hidden absolute -top-2 -right-2 bg-amber-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center"
-          ></span>
+          Todos
         </button>
         <button
-          id="btnLogout"
-          class="text-xs font-medium text-slate-500 hover:text-indigo-600 border border-slate-200 hover:border-indigo-300 rounded-full px-4 py-2 transition-all"
+          data-filter="Pendiente de Pago"
+          class="btn-filtro bg-white text-slate-600 px-3.5 py-1.5 rounded-full font-medium border border-slate-200 whitespace-nowrap"
         >
-          Cerrar sesión
+          ⏳ Pendientes
+        </button>
+        <button
+          data-filter="En Producción"
+          class="btn-filtro bg-white text-slate-600 px-3.5 py-1.5 rounded-full font-medium border border-slate-200 whitespace-nowrap"
+        >
+          🖨️ En Producción
+        </button>
+        <button
+          data-filter="Entregado"
+          class="btn-filtro bg-white text-slate-600 px-3.5 py-1.5 rounded-full font-medium border border-slate-200 whitespace-nowrap"
+        >
+          ✅ Entregados
         </button>
       </div>
-    </div>
 
-    <div id="metricas" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-      <div class="bg-white border border-indigo-50 rounded-xl p-3 text-center">
-        <p
-          id="metricaPendientes"
-          class="text-xl font-serif font-bold text-amber-600"
+      <!-- Lista / Grilla de Pedidos -->
+      <div id="listaPedidos" class="space-y-3">
+        <div
+          class="bg-white p-8 rounded-2xl text-center text-slate-400 text-xs shadow-sm"
         >
-          0
-        </p>
-        <p class="text-[10px] uppercase tracking-wider text-slate-500 mt-1">
-          Pendientes de pago
-        </p>
-      </div>
-      <div class="bg-white border border-indigo-50 rounded-xl p-3 text-center">
-        <p
-          id="metricaPreparacion"
-          class="text-xl font-serif font-bold text-indigo-600"
-        >
-          0
-        </p>
-        <p class="text-[10px] uppercase tracking-wider text-slate-500 mt-1">
-          En preparación
-        </p>
-      </div>
-      <div class="bg-white border border-indigo-50 rounded-xl p-3 text-center">
-        <p
-          id="metricaListos"
-          class="text-xl font-serif font-bold text-emerald-600"
-        >
-          0
-        </p>
-        <p class="text-[10px] uppercase tracking-wider text-slate-500 mt-1">
-          Listos para retirar
-        </p>
-      </div>
-      <div class="bg-white border border-indigo-50 rounded-xl p-3 text-center">
-        <p
-          id="metricaFacturado"
-          class="text-xl font-serif font-bold text-indigo-950"
-        >
-          $0
-        </p>
-        <p class="text-[10px] uppercase tracking-wider text-slate-500 mt-1">
-          Facturado este mes
-        </p>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-      <div class="lg:col-span-1">
-        <NuevoPedidoPersonalizado />
-      </div>
-
-      <div class="lg:col-span-2">
-        <input
-          type="text"
-          id="inputBuscar"
-          placeholder="Buscar por código de pedido o archivo..."
-          class="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-xl p-3 mb-4 focus:outline-none focus:border-indigo-500"
-        />
-
-        <div class="flex flex-wrap gap-2 mb-6" id="filtros">
-          <button
-            data-filtro="todos"
-            class="filtro-estado active border border-indigo-600 bg-indigo-50/80 text-indigo-950 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-            >Todos</button
-          >
-          <button
-            data-filtro="Pendiente de Pago"
-            class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-            >Pendiente de Pago</button
-          >
-          <button
-            data-filtro="Pago Confirmado"
-            class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-            >Pago Confirmado</button
-          >
-          <button
-            data-filtro="En Preparación"
-            class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-            >En Preparación</button
-          >
-          <button
-            data-filtro="Listo para Retirar"
-            class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-            >Listo para Retirar</button
-          >
-          <button
-            data-filtro="Entregado"
-            class="filtro-estado border border-slate-200 bg-white text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-all"
-            >Entregado</button
-          >
+          Cargando pedidos...
         </div>
-
-        <p id="cargando" class="text-sm text-slate-500">Cargando pedidos...</p>
-        <p id="vacio" class="text-sm text-slate-500 hidden">
-          No hay pedidos en este estado.
-        </p>
-
-        <div id="listaPedidos" class="space-y-4"></div>
       </div>
-    </div>
-  </section>
-</Layout>
+    </main>
 
-<style>
-  .pedido-card {
-    background: white;
-    border: 1px solid rgba(99, 102, 241, 0.08);
-    border-radius: 1rem;
-    padding: 1.25rem;
-  }
-</style>
+    <script>
+      // @ts-nocheck
+      import { supabase } from "../../lib/supabase.js";
 
-<script>
-  // @ts-nocheck
-  import { supabase } from "../../lib/supabase.js";
+      let todosLosPedidos = [];
 
-  const ESTADOS = [
-    "Pendiente de Pago",
-    "Pago Confirmado",
-    "En Preparación",
-    "Listo para Retirar",
-    "Entregado",
-    "Cancelado",
-  ];
+      async function cargarPedidos() {
+        const contenedor = document.getElementById("listaPedidos");
+        contenedor.innerHTML =
+          '<div class="bg-white p-8 rounded-2xl text-center text-slate-400 text-xs shadow-sm">Actualizando...</div>';
 
-  const MENSAJES_POR_ESTADO = {
-    "Pendiente de Pago": (p) =>
-      `¡Hola! Te escribimos de Ideas de la Luna sobre tu pedido #${p.order_code}. Todavía figura pendiente de pago, ¿nos podés enviar el comprobante de transferencia? Alias: ideas.de.la.luna`,
-    "Pago Confirmado": (p) =>
-      `¡Hola! Te confirmamos que recibimos el pago de tu pedido #${p.order_code}. Ya lo pasamos a preparación 🙌`,
-    "En Preparación": (p) =>
-      `¡Hola! Tu pedido #${p.order_code} está en preparación. Te avisamos apenas esté listo.`,
-    "Listo para Retirar": (p) =>
-      `¡Hola! Tu pedido #${p.order_code} ya está listo para retirar. Te esperamos 😊`,
-    Entregado: (p) =>
-      `¡Hola! Gracias por retirar tu pedido #${p.order_code}. ¡Cualquier cosa estamos a un mensaje de distancia!`,
-    Cancelado: (p) =>
-      `¡Hola! Te escribimos porque tu pedido #${p.order_code} quedó cancelado. Si fue un error o querés reactivarlo, avisanos.`,
-  };
-
-  let pedidos = [];
-  let filtroActual = "todos";
-  let busquedaActual = "";
-
-  function badgeColor(status) {
-    switch (status) {
-      case "Pendiente de Pago":
-        return "bg-amber-50 text-amber-700 border-amber-200";
-      case "Pago Confirmado":
-        return "bg-sky-50 text-sky-700 border-sky-200";
-      case "En Preparación":
-        return "bg-indigo-50 text-indigo-700 border-indigo-200";
-      case "Listo para Retirar":
-        return "bg-emerald-50 text-emerald-700 border-emerald-200";
-      case "Entregado":
-        return "bg-slate-100 text-slate-500 border-slate-200";
-      case "Cancelado":
-        return "bg-red-50 text-red-600 border-red-200";
-      default:
-        return "bg-slate-50 text-slate-600 border-slate-200";
-    }
-  }
-
-  function calcularMetricas() {
-    const ahora = new Date();
-    const mesActual = ahora.getMonth();
-    const anioActual = ahora.getFullYear();
-
-    const pendientes = pedidos.filter(
-      (p) => p.status === "Pendiente de Pago",
-    ).length;
-    const preparacion = pedidos.filter(
-      (p) => p.status === "En Preparación",
-    ).length;
-    const listos = pedidos.filter(
-      (p) => p.status === "Listo para Retirar",
-    ).length;
-
-    const facturado = pedidos
-      .filter((p) => {
-        if (p.status === "Cancelado" || !p.created_at) return false;
-        const fecha = new Date(p.created_at);
-        return (
-          fecha.getMonth() === mesActual && fecha.getFullYear() === anioActual
-        );
-      })
-      .reduce((acc, p) => acc + Number(p.total_price || 0), 0);
-
-    document.getElementById("metricaPendientes").textContent = pendientes;
-    document.getElementById("metricaPreparacion").textContent = preparacion;
-    document.getElementById("metricaListos").textContent = listos;
-    document.getElementById("metricaFacturado").textContent =
-      `$${facturado.toLocaleString("es-AR")}`;
-  }
-
-  const DIAS_LIMITE_LIMPIEZA = 30;
-
-  function extraerPathStorage(pdfUrl) {
-    const marcador = "/pdfs-cotizador/";
-    const idx = pdfUrl.indexOf(marcador);
-    if (idx === -1) return null;
-    return pdfUrl.slice(idx + marcador.length);
-  }
-
-  function pedidosParaLimpiar() {
-    const limite = new Date();
-    limite.setDate(limite.getDate() - DIAS_LIMITE_LIMPIEZA);
-
-    return pedidos.filter((p) => {
-      if (!p.pdf_url) return false;
-      if (p.status !== "Entregado" && p.status !== "Cancelado") return false;
-      if (!p.created_at) return false;
-      return new Date(p.created_at) < limite;
-    });
-  }
-
-  function actualizarBadgeLimpieza() {
-    const badge = document.getElementById("badgeLimpiar");
-    const cantidad = pedidosParaLimpiar().length;
-
-    if (cantidad > 0) {
-      badge.textContent = cantidad > 99 ? "99+" : cantidad;
-      badge.classList.remove("hidden");
-    } else {
-      badge.classList.add("hidden");
-    }
-  }
-
-  async function limpiarArchivosViejos() {
-    const candidatos = pedidosParaLimpiar();
-
-    if (candidatos.length === 0) {
-      alert("No hay archivos para limpiar por ahora.");
-      return;
-    }
-
-    const confirmar = confirm(
-      `Se van a borrar ${candidatos.length} archivo(s) de pedidos Entregados/Cancelados con más de ${DIAS_LIMITE_LIMPIEZA} días. El registro del pedido se mantiene, solo se libera el archivo. ¿Confirmás?`,
-    );
-    if (!confirmar) return;
-
-    const btnLimpiar = document.getElementById("btnLimpiar");
-    btnLimpiar.disabled = true;
-
-    let borrados = 0;
-    let fallidos = 0;
-
-    for (const pedido of candidatos) {
-      const path = extraerPathStorage(pedido.pdf_url);
-      if (!path) {
-        fallidos++;
-        continue;
-      }
-
-      const { error: errorStorage } = await supabase.storage
-        .from("pdfs-cotizador")
-        .remove([path]);
-
-      if (errorStorage) {
-        fallidos++;
-        continue;
-      }
-
-      const { error: errorUpdate } = await supabase
-        .from("orders")
-        .update({ pdf_url: null })
-        .eq("id", pedido.id);
-
-      if (errorUpdate) {
-        fallidos++;
-        continue;
-      }
-
-      pedido.pdf_url = null;
-      borrados++;
-    }
-
-    btnLimpiar.disabled = false;
-    renderPedidos();
-    actualizarBadgeLimpieza();
-
-    alert(
-      fallidos > 0
-        ? `Se borraron ${borrados} archivo(s). ${fallidos} no se pudieron borrar.`
-        : `Se borraron ${borrados} archivo(s) correctamente.`,
-    );
-  }
-
-  function renderPedidos() {
-    const cont = document.getElementById("listaPedidos");
-    const vacio = document.getElementById("vacio");
-
-    const busqueda = busquedaActual.trim().toLowerCase();
-
-    const visibles = pedidos.filter((p) => {
-      const coincideEstado =
-        filtroActual === "todos" || p.status === filtroActual;
-      const coincideBusqueda =
-        !busqueda ||
-        (p.order_code || "").toLowerCase().includes(busqueda) ||
-        (p.product_title || "").toLowerCase().includes(busqueda);
-      return coincideEstado && coincideBusqueda;
-    });
-
-    if (visibles.length === 0) {
-      cont.innerHTML = "";
-      vacio.classList.remove("hidden");
-      return;
-    }
-    vacio.classList.add("hidden");
-
-    cont.innerHTML = visibles
-      .map((p) => {
-        const detalle = (p.subproducts || [])
-          .map(
-            (d) =>
-              `<span class="text-slate-500">${d.label}:</span> <span class="font-medium text-indigo-950">${d.value}</span>`,
-          )
-          .join(" &nbsp;•&nbsp; ");
-
-        const opciones = ESTADOS.map(
-          (e) =>
-            `<option value="${e}" ${e === p.status ? "selected" : ""}>${e}</option>`,
-        ).join("");
-
-        return `
-          <div class="pedido-card" data-id="${p.id}">
-            <div class="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p class="font-serif text-indigo-950 font-medium text-base">
-                  ${p.product_title || "Pedido"}
-                  ${p.order_code ? `<span class="text-xs text-indigo-400 font-sans font-normal ml-1">#${p.order_code}</span>` : ""}
-                </p>
-                <p class="text-xs text-slate-500 mt-1">${detalle}</p>
-                <p class="text-sm font-semibold text-indigo-950 mt-2">$${Number(p.total_price || 0).toLocaleString("es-AR")}</p>
-              </div>
-              <span class="text-[10px] font-semibold uppercase tracking-wider border rounded-full px-2.5 py-1 ${badgeColor(p.status)}">
-                ${p.status || "Sin estado"}
-              </span>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-indigo-50">
-              <select class="select-estado bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg p-2 focus:outline-none">
-                ${opciones}
-              </select>
-
-              <label class="flex items-center gap-1.5 text-xs text-slate-500 cursor-pointer ml-2">
-                <input type="checkbox" class="check-demora" ${p.delayed ? "checked" : ""} />
-                Con demora
-              </label>
-
-              <input
-                type="text"
-                placeholder="Motivo de la demora (opcional)"
-                class="input-motivo bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg p-2 focus:outline-none flex-1 min-w-[160px] ${p.delayed ? "" : "hidden"}"
-                value="${p.delay_reason ? p.delay_reason.replace(/"/g, "&quot;") : ""}"
-              />
-
-              ${p.pdf_url ? `<a href="${p.pdf_url}" target="_blank" class="text-xs font-medium bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg px-3 py-2 transition-colors">⬇️ Descargar archivo</a>` : ""}
-
-              ${p.customer_phone ? `<button class="btn-notificar text-xs font-medium bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg px-3 py-2 transition-colors">📲 Notificar por WhatsApp</button>` : ""}
-
-              <button class="btn-borrar text-xs font-medium bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg px-3 py-2 transition-colors ml-auto">🗑️ Borrar</button>
-
-              <span class="guardado-ok hidden text-xs text-emerald-600 font-medium">✅ Guardado</span>
-            </div>
-          </div>
-        `;
-      })
-      .join("");
-
-    cont.querySelectorAll(".pedido-card").forEach((card) => {
-      const id = card.getAttribute("data-id");
-      const selectEstado = card.querySelector(".select-estado");
-      const checkDemora = card.querySelector(".check-demora");
-      const inputMotivo = card.querySelector(".input-motivo");
-      const guardadoOk = card.querySelector(".guardado-ok");
-      const btnNotificar = card.querySelector(".btn-notificar");
-      const btnBorrar = card.querySelector(".btn-borrar");
-
-      const guardarCambios = async () => {
-        const cambios = {
-          status: selectEstado.value,
-          delayed: checkDemora.checked,
-          delay_reason: checkDemora.checked ? inputMotivo.value.trim() : null,
-        };
-
-        const { error } = await supabase
-          .from("orders")
-          .update(cambios)
-          .eq("id", id);
-
-        if (error) {
-          alert(`No se pudo guardar el cambio: ${error.message}`);
+        if (!supabase) {
+          contenedor.innerHTML =
+            '<div class="bg-white p-8 rounded-2xl text-center text-red-500 text-xs shadow-sm">Error: No se pudo conectar con Supabase.</div>';
           return;
         }
 
-        const pedido = pedidos.find((p) => String(p.id) === String(id));
-        if (pedido) Object.assign(pedido, cambios);
+        const { data, error } = await supabase
+          .from("orders")
+          .select("*")
+          .order("created_at", { ascending: false });
 
-        calcularMetricas();
-        renderPedidos();
-        guardadoOk.classList.remove("hidden");
-        setTimeout(() => guardadoOk.classList.add("hidden"), 1500);
-      };
+        if (error) {
+          contenedor.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-red-500 text-xs shadow-sm">Error al cargar datos: ${error.message}</div>`;
+          return;
+        }
 
-      selectEstado.addEventListener("change", guardarCambios);
-
-      checkDemora.addEventListener("change", () => {
-        inputMotivo.classList.toggle("hidden", !checkDemora.checked);
-        guardarCambios();
-      });
-
-      inputMotivo.addEventListener("blur", () => {
-        if (checkDemora.checked) guardarCambios();
-      });
-
-      if (btnNotificar) {
-        btnNotificar.addEventListener("click", () => {
-          const pedido = pedidos.find((p) => String(p.id) === String(id));
-          if (!pedido) return;
-
-          const armarMensaje =
-            MENSAJES_POR_ESTADO[pedido.status] ||
-            MENSAJES_POR_ESTADO["Pendiente de Pago"];
-          const mensaje = armarMensaje(pedido);
-          const telefono = pedido.customer_phone.replace(/[^0-9]/g, "");
-
-          window.open(
-            `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`,
-            "_blank",
-          );
-        });
+        todosLosPedidos = data || [];
+        renderizarPedidos(todosLosPedidos);
       }
 
-      if (btnBorrar) {
-        btnBorrar.addEventListener("click", async () => {
-          const pedido = pedidos.find((p) => String(p.id) === String(id));
-          if (!pedido) return;
+      function renderizarPedidos(pedidos) {
+        const contenedor = document.getElementById("listaPedidos");
+        if (pedidos.length === 0) {
+          contenedor.innerHTML =
+            '<div class="bg-white p-8 rounded-2xl text-center text-slate-400 text-xs shadow-sm">No se encontraron pedidos.</div>';
+          return;
+        }
 
-          const confirmar = confirm(
-            `¿Estás seguro de borrar el pedido #${pedido.order_code || id}? Esta acción eliminará el pedido y su archivo permanentemente.`,
-          );
-          if (!confirmar) return;
+        contenedor.innerHTML = pedidos
+          .map((p) => {
+            const fecha = new Date(p.created_at).toLocaleDateString("es-AR", {
+              day: "2-digit",
+              month: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
 
-          if (pedido.pdf_url) {
-            const path = extraerPathStorage(pedido.pdf_url);
-            if (path) {
-              await supabase.storage.from("pdfs-cotizador").remove([path]);
+            return `
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 space-y-3 hover:border-indigo-200 transition-all">
+              <div class="flex justify-between items-start gap-2">
+                <div>
+                  <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">
+                    #${p.order_code || "SIN-CODIGO"}
+                  </span>
+                  <h3 class="font-bold text-slate-800 text-sm mt-1.5 line-clamp-1">${p.product_title || "Pedido de Impresión"}</h3>
+                  <p class="text-[10px] text-slate-400">${fecha}</p>
+                </div>
+                <span class="text-base font-extrabold text-slate-900 whitespace-nowrap">$${(p.total_price || 0).toLocaleString("es-AR")}</span>
+              </div>
+
+              <!-- Selector de Estado Interactivo -->
+              <div class="flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-100">
+                <span class="text-[11px] font-medium text-slate-500">Estado:</span>
+                <select data-id="${p.id}" class="select-estado bg-white text-xs font-semibold rounded-lg px-2 py-1 border border-slate-200 text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500">
+                  <option value="Pendiente de Pago" ${p.status === "Pendiente de Pago" ? "selected" : ""}>⏳ Pendiente</option>
+                  <option value="En Producción" ${p.status === "En Producción" ? "selected" : ""}>🖨️ En Producción</option>
+                  <option value="Entregado" ${p.status === "Entregado" ? "selected" : ""}>✅ Entregado</option>
+                </select>
+              </div>
+
+              <!-- Acciones Rápidas -->
+              <div class="flex gap-2 pt-1">
+                ${
+                  p.pdf_url
+                    ? `
+                  <a href="${p.pdf_url}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 text-[11px] font-medium py-2 rounded-xl text-center transition-all flex items-center justify-center gap-1">
+                    📄 Ver PDF
+                  </a>
+                `
+                    : ""
+                }
+                ${
+                  p.customer_phone
+                    ? `
+                  <a href="https://wa.me/${p.customer_phone}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-[11px] font-semibold py-2 rounded-xl text-center transition-all flex items-center justify-center gap-1 shadow-sm">
+                    💬 WhatsApp
+                  </a>
+                `
+                    : ""
+                }
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+
+        // Listener para persistir cambios de estado en Supabase sin recargar la página
+        document.querySelectorAll(".select-estado").forEach((sel) => {
+          sel.addEventListener("change", async (e) => {
+            const id = e.target.dataset.id;
+            const nuevoEstado = e.target.value;
+            const { error } = await supabase
+              .from("orders")
+              .update({ status: nuevoEstado })
+              .eq("id", id);
+
+            if (error) {
+              alert("Error al actualizar el estado: " + error.message);
             }
-          }
-
-          const { error } = await supabase.from("orders").delete().eq("id", id);
-
-          if (error) {
-            alert(`No se pudo borrar el pedido: ${error.message}`);
-            return;
-          }
-
-          pedidos = pedidos.filter((p) => String(p.id) !== String(id));
-          calcularMetricas();
-          actualizarBadgeLimpieza();
-          renderPedidos();
+          });
         });
       }
-    });
-  }
 
-  async function cargarPedidos() {
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .order("id", { ascending: false });
+      // Manejo de Filtros
+      document.querySelectorAll(".btn-filtro").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".btn-filtro").forEach((b) => {
+            b.classList.remove("active", "bg-indigo-600", "text-white");
+            b.classList.add("bg-white", "text-slate-600");
+          });
+          btn.classList.add("active", "bg-indigo-600", "text-white");
+          btn.classList.remove("bg-white", "text-slate-600");
 
-    document.getElementById("cargando").classList.add("hidden");
-
-    if (error) {
-      alert(`No se pudieron cargar los pedidos: ${error.message}`);
-      return;
-    }
-
-    pedidos = data || [];
-    calcularMetricas();
-    actualizarBadgeLimpieza();
-    renderPedidos();
-  }
-
-  document.addEventListener("DOMContentLoaded", async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) {
-      window.location.href = "/admin/login";
-      return;
-    }
-
-    document
-      .getElementById("btnLimpiar")
-      .addEventListener("click", limpiarArchivosViejos);
-
-    document.getElementById("btnLogout").addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      window.location.href = "/admin/login";
-    });
-
-    document.getElementById("inputBuscar").addEventListener("input", (e) => {
-      busquedaActual = e.target.value;
-      renderPedidos();
-    });
-
-    document.querySelectorAll(".filtro-estado").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".filtro-estado").forEach((b) => {
-          b.classList.remove(
-            "active",
-            "border-indigo-600",
-            "bg-indigo-50/80",
-            "text-indigo-950",
-          );
-          b.classList.add("border-slate-200", "bg-white", "text-slate-600");
+          const filtro = btn.dataset.filter;
+          if (filtro === "todos") {
+            renderizarPedidos(todosLosPedidos);
+          } else {
+            renderizarPedidos(
+              todosLosPedidos.filter((p) => p.status === filtro),
+            );
+          }
         });
-        btn.classList.add(
-          "active",
-          "border-indigo-600",
-          "bg-indigo-50/80",
-          "text-indigo-950",
-        );
-        btn.classList.remove("border-slate-200", "bg-white", "text-slate-600");
-
-        filtroActual = btn.getAttribute("data-filtro");
-        renderPedidos();
       });
-    });
 
-    await cargarPedidos();
-  });
-</script>
+      document
+        .getElementById("btnActualizar")
+        .addEventListener("click", cargarPedidos);
+      document.addEventListener("DOMContentLoaded", cargarPedidos);
+    </script>
+  </body>
+</html>
