@@ -37,6 +37,17 @@ import GalleryModal from "../components/GalleryModal.astro";
             content="black-translucent"
           />
           <meta name="apple-mobile-web-app-title" content="Luna Admin" />
+          <script is:inline>
+            if ("serviceWorker" in navigator) {
+              window.addEventListener("load", () => {
+                navigator.serviceWorker
+                  .register("/sw.js", { scope: "/admin/" })
+                  .catch(() => {
+                    // Si falla el registro, la app sigue funcionando normal, solo sin las mejoras offline
+                  });
+              });
+            }
+          </script>
         </>
       )
     }
