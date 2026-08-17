@@ -444,13 +444,20 @@
     const hojas = modalidad === "doble" ? Math.ceil(paginas / 2) : paginas;
     const hojasTotales = hojas * copias;
 
-    // 2. Costo por hoja: el papel estándar usa los tramos por volumen;
-    //    cualquier otro papel especial tiene su propio precio fijo, que
-    //    reemplaza directamente al precio de impresión por tramo.
+    // 2. Costo por hoja: el precio del servicio de impresión (según tramo
+    //    de volumen) SIEMPRE se cobra, y el papel elegido se suma arriba.
+    //    El papel estándar (Obra) no agrega nada extra, ya está incluido;
+    //    cualquier otro papel especial suma la diferencia contra el estándar.
     const papelSeleccionado = obtenerPapelPorCodigo(idPapel);
-    const costoServicioImpresion = papelSeleccionado.es_estandar
-      ? obtenerPrecioImpresion(modalidad, color, hojasTotales)
-      : Number(papelSeleccionado.precio_hoja);
+    const papelEstandar =
+      listaPapeles.find((p) => p.es_estandar) || papelSeleccionado;
+    const extraPorPapel = papelSeleccionado.es_estandar
+      ? 0
+      : Number(papelSeleccionado.precio_hoja) -
+        Number(papelEstandar.precio_hoja);
+
+    const costoServicioImpresion =
+      obtenerPrecioImpresion(modalidad, color, hojasTotales) + extraPorPapel;
 
     // Costo total de impresión (ya contempla todas las copias)
     const costoImpresionTotal = hojasTotales * costoServicioImpresion;

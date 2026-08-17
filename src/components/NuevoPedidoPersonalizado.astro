@@ -75,12 +75,11 @@
         id="selectEstadoAdmin"
         class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
       >
-        <option value="En Proceso de Diseño">En Proceso de Diseño</option>
-        <option value="Esperando Aprobación de Boceto"
-          >Esperando Aprobación de Boceto</option
-        >
         <option value="Pendiente de Pago">Pendiente de Pago</option>
-        <option value="En Producción">En Imprenta / Producción</option>
+        <option value="Pago Confirmado">Pago Confirmado</option>
+        <option value="En Preparación">En Preparación</option>
+        <option value="Listo para Retirar">Listo para Retirar</option>
+        <option value="Entregado">Entregado</option>
       </select>
     </div>
 
@@ -179,7 +178,7 @@
       const codigo = data.order_code;
       const linkSeguimiento = `https://ideasdelaluna.netlify.app/seguimiento/${codigo}`;
 
-      const mensajeWA = `¡Hola! Ya registramos tu pedido personalized (*#${codigo}*).
+      const mensajeWA = `¡Hola! Ya registramos tu pedido personalizado (*#${codigo}*).
 
 • *Trabajo:* ${titulo}
 • *Estado:* ${estado}
