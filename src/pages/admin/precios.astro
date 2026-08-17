@@ -49,6 +49,20 @@ import Layout from "../../layouts/Layout.astro";
       </p>
       <div id="listaPapeles" class="space-y-2"></div>
     </div>
+
+    <div id="seccionMaterial" class="mt-10 hidden">
+      <h2 class="font-serif text-lg text-indigo-950 font-medium mb-1">
+        Material
+      </h2>
+      <p class="text-xs text-slate-400 mb-3">
+        Selecciona el tipo de material para el precio de la impresión.
+      </p>
+      <select id="material" class="input-precio w-24 bg-slate-50 border border-slate-200 text-indigo-950 text-sm rounded-lg p-2 text-right focus:outline-none focus:border-indigo-500">
+        <option value="material1">Material 1</option>
+        <option value="material2">Material 2</option>
+        <option value="material3">Material 3</option>
+      </select>
+    </div>
   </section>
 </Layout>
 
@@ -90,6 +104,7 @@ import Layout from "../../layouts/Layout.astro";
 
   let precios = [];
   let papeles = [];
+  let material = "material1"; // Valor por defecto
 
   function renderGrupos() {
     const cont = document.getElementById("grupos");
@@ -295,5 +310,11 @@ import Layout from "../../layouts/Layout.astro";
     }
 
     await Promise.all([cargarPrecios(), cargarPapeles()]);
+  });
+
+  // Event listener para el selector de material
+  document.getElementById("material").addEventListener("change", (e) => {
+    material = e.target.value;
+    renderGrupos();
   });
 </script>
