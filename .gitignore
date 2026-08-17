@@ -30,3 +30,5 @@ pnpm-debug.log*
 # Archivos de sistema macOS
 ._*
 .DS_Store
+
+.aider*
