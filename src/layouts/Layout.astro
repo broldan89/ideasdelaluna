@@ -7,27 +7,23 @@ interface Props {
 const { title, pwa = false } = Astro.props;
 import "../styles/global.css";
 import GalleryModal from "../components/GalleryModal.astro";
+const GTM_ID = 'GTM-MJJ9ZRNT';
+const GA_ID = 'G-N7RNFFF620';
 ---
 
 <!doctype html>
 <html lang="es" class="scroll-smooth overflow-x-hidden">
   <head>
     <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-MJJ9ZRNT');</script>
-<!-- End Google Tag Manager -->
-    <!-- Google Tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-N7RNFFF620"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','{GTM_ID}');
+    </script>
+    <!-- End Google Tag Manager -->
 
-  gtag('config', 'G-N7RNFFF620');
-</script>
     <meta charset="UTF-8" />
     <meta
       name="description"
@@ -69,9 +65,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               window.addEventListener("load", () => {
                 navigator.serviceWorker
                   .register("/sw.js", { scope: "/admin/" })
-                  .catch(() => {
-                    // Si falla el registro, la app sigue funcionando normal, solo sin las mejoras offline
-                  });
+                  .catch(() => {});
               });
             }
           </script>
@@ -83,10 +77,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <body
     class="fondo-pastel-animado min-h-screen relative w-full overflow-x-hidden text-slate-800 antialiased"
   >
-  <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MJJ9ZRNT"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id={GTM_ID}"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      ></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <slot />
     <GalleryModal />
   </body>
@@ -105,19 +106,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     font-family: "Playfair Display", serif;
   }
 
-  /* ANIMACIÓN DE FONDOS PASTELES */
   @keyframes cambioPastel {
     0% {
-      background-color: #fdf2f8; /* Rosa pastel */
+      background-color: #fdf2f8;
     }
     33% {
-      background-color: #f3e8ff; /* Lavanda pastel */
+      background-color: #f3e8ff;
     }
     66% {
-      background-color: #e0f2fe; /* Celeste pastel */
+      background-color: #e0f2fe;
     }
     100% {
-      background-color: #fdf2f8; /* Vuelve al Rosa pastel */
+      background-color: #fdf2f8;
     }
   }
 
@@ -130,7 +130,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     transition: background-color 1s ease-in-out;
   }
 
-  /* TRAMA PUNTEADA UBICADA DETRÁS DEL CONTENIDO */
   body::before {
     content: "";
     position: fixed;

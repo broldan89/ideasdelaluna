@@ -32,3 +32,5 @@ pnpm-debug.log*
 .DS_Store
 
 .aider*
+# Local Netlify folder
+.netlify
