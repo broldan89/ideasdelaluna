@@ -20,7 +20,7 @@ import Layout from "../../layouts/Layout.astro";
         </h1>
       </div>
       <a
-        href=".../.../admin/index.astro/"
+        href="/admin"
         class="text-xs font-medium text-slate-500 hover:text-indigo-600 active:scale-95 border border-slate-200 hover:border-indigo-300 rounded-full px-3 sm:px-4 py-2 transition-all"
       >
         ← Volver
@@ -38,6 +38,17 @@ import Layout from "../../layouts/Layout.astro";
     <p id="cargando" class="text-sm text-slate-500">Cargando precios...</p>
 
     <div id="grupos" class="space-y-8 hidden"></div>
+
+    <div id="seccionPapeles" class="mt-10 hidden">
+      <h2 class="font-serif text-lg text-indigo-950 font-medium mb-1">
+        Papeles
+      </h2>
+      <p class="text-xs text-slate-400 mb-3">
+        "Obra" es el papel estándar y usa los tramos por cantidad de hojas. Los
+        demás tienen un precio fijo propio por hoja.
+      </p>
+      <div id="listaPapeles" class="space-y-2"></div>
+    </div>
   </section>
 </Layout>
 
@@ -78,6 +89,7 @@ import Layout from "../../layouts/Layout.astro";
   ];
 
   let precios = [];
+  let papeles = [];
 
   function renderGrupos() {
     const cont = document.getElementById("grupos");
@@ -154,6 +166,75 @@ import Layout from "../../layouts/Layout.astro";
     });
   }
 
+  function renderPapeles() {
+    const cont = document.getElementById("listaPapeles");
+
+    cont.innerHTML = papeles
+      .map((p) => {
+        const etiquetaTipo = p.es_estandar
+          ? '<span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 rounded-full px-2 py-0.5">Estándar</span>'
+          : '<span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Precio fijo</span>';
+
+        return `
+          <div class="precio-card flex items-center justify-between gap-3" data-codigo="${p.codigo}">
+            <div class="min-w-0">
+              <p class="text-sm text-indigo-950 font-medium truncate">
+                ${p.nombre}${p.gramaje ? ` <span class="text-slate-400 font-normal">(${p.gramaje})</span>` : ""}
+              </p>
+              ${etiquetaTipo}
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-slate-400 text-sm">$</span>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                class="input-papel w-24 bg-slate-50 border border-slate-200 text-indigo-950 text-sm rounded-lg p-2 text-right focus:outline-none focus:border-indigo-500"
+                value="${p.precio_hoja}"
+              />
+              <span class="guardado-ok hidden text-xs text-emerald-600 font-medium">✅</span>
+            </div>
+          </div>
+        `;
+      })
+      .join("");
+
+    cont.querySelectorAll("[data-codigo]").forEach((card) => {
+      const codigo = card.getAttribute("data-codigo");
+      const input = card.querySelector(".input-papel");
+      const guardadoOk = card.querySelector(".guardado-ok");
+
+      const guardar = async () => {
+        const nuevoPrecio = parseFloat(input.value);
+        if (isNaN(nuevoPrecio) || nuevoPrecio < 0) return;
+
+        const { error } = await supabase
+          .from("papeles_cotizador")
+          .update({
+            precio_hoja: nuevoPrecio,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("codigo", codigo);
+
+        if (error) {
+          alert(`No se pudo guardar el precio del papel: ${error.message}`);
+          return;
+        }
+
+        const papelLocal = papeles.find((p) => p.codigo === codigo);
+        if (papelLocal) papelLocal.precio_hoja = nuevoPrecio;
+
+        guardadoOk.classList.remove("hidden");
+        setTimeout(() => guardadoOk.classList.add("hidden"), 1500);
+      };
+
+      input.addEventListener("blur", guardar);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") input.blur();
+      });
+    });
+  }
+
   async function cargarPrecios() {
     const { data, error } = await supabase
       .from("precios_cotizador")
@@ -172,16 +253,47 @@ import Layout from "../../layouts/Layout.astro";
     renderGrupos();
   }
 
+  async function cargarPapeles() {
+    const { data, error } = await supabase
+      .from("papeles_cotizador")
+      .select("*")
+      .eq("formato", "A4")
+      .order("es_estandar", { ascending: false })
+      .order("precio_hoja", { ascending: true });
+
+    if (error) {
+      alert(`No se pudieron cargar los papeles: ${error.message}`);
+      return;
+    }
+
+    papeles = data || [];
+    document.getElementById("seccionPapeles").classList.remove("hidden");
+    renderPapeles();
+  }
+
+  function conTimeout(promesa, ms) {
+    return Promise.race([
+      promesa,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("timeout")), ms),
+      ),
+    ]);
+  }
+
   document.addEventListener("DOMContentLoaded", async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    let session = null;
+    try {
+      const resultado = await conTimeout(supabase.auth.getSession(), 8000);
+      session = resultado.data.session;
+    } catch (e) {
+      // Si tarda demasiado, mandamos al login en vez de quedarnos colgados
+    }
 
     if (!session) {
       window.location.href = "/admin/login";
       return;
     }
 
-    await cargarPrecios();
+    await Promise.all([cargarPrecios(), cargarPapeles()]);
   });
 </script>

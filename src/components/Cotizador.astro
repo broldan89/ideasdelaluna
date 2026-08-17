@@ -119,12 +119,31 @@
             </div>
           </div>
 
-          <!-- 4. ACABADO -->
+          <!-- 4. TIPO DE PAPEL -->
           <div>
             <label
               class="block text-[11px] sm:text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
             >
-              4. Terminación / Acabado
+              4. Tipo de Papel
+            </label>
+            <select
+              id="selectPapel"
+              class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl p-2.5 focus:outline-none font-medium cursor-pointer"
+            >
+              <option value="estandar">Estándar (Obra 70g — incluido)</option>
+            </select>
+            <p class="text-[10px] text-slate-400 mt-1">
+              Al elegir un papel especial, ese precio reemplaza el costo de
+              impresión estándar.
+            </p>
+          </div>
+
+          <!-- 5. ACABADO -->
+          <div>
+            <label
+              class="block text-[11px] sm:text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
+            >
+              5. Terminación / Acabado
             </label>
             <select
               id="selectEncuadernacion"
@@ -135,7 +154,7 @@
             </select>
           </div>
 
-          <!-- 5. COPIAS -->
+          <!-- 6. COPIAS -->
           <div>
             <label
               for="inputCopias"
@@ -261,9 +280,17 @@
     anillado_bulk: 2500, // 10+ copias
   };
 
-  let tablaPapeles = {
-    P01: 12.8, // Hoja Obra 70g (por defecto)
-  };
+  // Lista de papeles disponibles, cargada en vivo desde Supabase.
+  // P01 (Obra 70g A4) es el estándar por defecto en caso de fallo de red.
+  let listaPapeles = [
+    {
+      codigo: "P01",
+      nombre: "Obra",
+      gramaje: "70g",
+      precio_hoja: 12.8,
+      es_estandar: true,
+    },
+  ];
 
   let estadoCotizador = {
     paginas: 0,
@@ -298,6 +325,50 @@
     } catch (e) {
       // Sin conexión: seguimos con los valores locales por defecto
     }
+  }
+
+  // Carga la lista de papeles en vivo desde Supabase (tabla papeles_cotizador).
+  async function sincronizarPapeles() {
+    if (!supabase) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("papeles_cotizador")
+        .select("codigo, nombre, gramaje, formato, precio_hoja, es_estandar")
+        .eq("formato", "A4")
+        .order("es_estandar", { ascending: false })
+        .order("precio_hoja", { ascending: true });
+
+      if (!error && data && data.length > 0) {
+        listaPapeles = data;
+      }
+    } catch (e) {
+      // Sin conexión: seguimos con el papel estándar por defecto
+    }
+  }
+
+  function obtenerPapelPorCodigo(codigo) {
+    return (
+      listaPapeles.find((p) => p.codigo === codigo) ||
+      listaPapeles.find((p) => p.es_estandar) ||
+      listaPapeles[0]
+    );
+  }
+
+  function poblarSelectorPapel() {
+    const select = document.getElementById("selectPapel");
+    if (!select) return;
+
+    select.innerHTML = listaPapeles
+      .map((p) => {
+        const etiqueta = p.es_estandar
+          ? `${p.nombre}${p.gramaje ? " " + p.gramaje : ""} (incluido)`
+          : `${p.nombre}${p.gramaje ? " " + p.gramaje : ""} — $${Number(p.precio_hoja).toLocaleString("es-AR")}/hoja`;
+        return `<option value="${p.codigo}">${etiqueta}</option>`;
+      })
+      .join("");
+
+    select.value = estadoCotizador.idPapel;
   }
 
   // Determina el precio por hoja según modalidad, color y el tramo de
@@ -345,8 +416,15 @@
   }
 
   function calcularTotal() {
-    const { paginas, modalidad, color, encuadernacion, copias, archivoUrl } =
-      estadoCotizador;
+    const {
+      paginas,
+      modalidad,
+      color,
+      encuadernacion,
+      copias,
+      archivoUrl,
+      idPapel,
+    } = estadoCotizador;
 
     if (paginas <= 0 || !archivoUrl) {
       document.getElementById("resPaginas").textContent = "0 págs";
@@ -366,13 +444,13 @@
     const hojas = modalidad === "doble" ? Math.ceil(paginas / 2) : paginas;
     const hojasTotales = hojas * copias;
 
-    // 2. Costo del servicio de impresión por hoja, según el tramo de volumen
-    //    del pedido completo (páginas × copias)
-    const costoServicioImpresion = obtenerPrecioImpresion(
-      modalidad,
-      color,
-      hojasTotales,
-    );
+    // 2. Costo por hoja: el papel estándar usa los tramos por volumen;
+    //    cualquier otro papel especial tiene su propio precio fijo, que
+    //    reemplaza directamente al precio de impresión por tramo.
+    const papelSeleccionado = obtenerPapelPorCodigo(idPapel);
+    const costoServicioImpresion = papelSeleccionado.es_estandar
+      ? obtenerPrecioImpresion(modalidad, color, hojasTotales)
+      : Number(papelSeleccionado.precio_hoja);
 
     // Costo total de impresión (ya contempla todas las copias)
     const costoImpresionTotal = hojasTotales * costoServicioImpresion;
@@ -409,6 +487,7 @@
 
   function inicializarEventos() {
     const inputPdf = document.getElementById("pdfInput");
+    const selectPapel = document.getElementById("selectPapel");
     const selectEncuadernacion = document.getElementById(
       "selectEncuadernacion",
     );
@@ -518,6 +597,12 @@
       });
     });
 
+    // Papel
+    selectPapel.addEventListener("change", (e) => {
+      estadoCotizador.idPapel = e.target.value;
+      calcularTotal();
+    });
+
     // Encuadernación
     selectEncuadernacion.addEventListener("change", (e) => {
       estadoCotizador.encuadernacion = e.target.value;
@@ -555,8 +640,13 @@
 
       if (supabase) {
         try {
+          const papelElegido = obtenerPapelPorCodigo(estadoCotizador.idPapel);
           const detalle = [
             { label: "Páginas", value: estadoCotizador.paginas },
+            {
+              label: "Papel",
+              value: `${papelElegido.nombre}${papelElegido.gramaje ? " " + papelElegido.gramaje : ""}`,
+            },
             {
               label: "Modalidad",
               value:
@@ -619,6 +709,7 @@
       const mensaje = `¡Hola! Quisiera encargar la impresión de un documento con el siguiente detalle${encabezadoCodigo}:
 • *Archivo:* ${estadoCotizador.nombreArchivo || "Documento"}
 • *Páginas:* ${estadoCotizador.paginas}
+• *Papel:* ${papelElegido.nombre}${papelElegido.gramaje ? " " + papelElegido.gramaje : ""}
 • *Modalidad:* ${estadoCotizador.modalidad === "simple" ? "Simple Faz" : "Doble Faz"}
 • *Tipo:* ${estadoCotizador.color === "color" ? "Color" : "Blanco y Negro"}
 • *Terminación:* ${estadoCotizador.encuadernacion === "anillado" ? "Anillado / Espiralado" : "Sin encuadernar"}
@@ -631,7 +722,8 @@
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
-    await sincronizarPrecios();
+    await Promise.all([sincronizarPrecios(), sincronizarPapeles()]);
+    poblarSelectorPapel();
     inicializarEventos();
   });
 </script>

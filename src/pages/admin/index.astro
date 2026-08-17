@@ -588,10 +588,27 @@ import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.
     renderPedidos();
   }
 
+  // Evita que la verificación de sesión se quede esperando para siempre si
+  // la red anda lenta (mismo criterio que en login.astro).
+  function conTimeout(promesa, ms) {
+    return Promise.race([
+      promesa,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("timeout")), ms),
+      ),
+    ]);
+  }
+
   document.addEventListener("DOMContentLoaded", async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    let session = null;
+    try {
+      const resultado = await conTimeout(supabase.auth.getSession(), 8000);
+      session = resultado.data.session;
+    } catch (e) {
+      // Si la verificación tarda demasiado, mandamos igual al login
+      // en vez de dejar la página colgada sin avisar nada
+    }
+
     if (!session) {
       window.location.href = "/admin/login";
       return;
