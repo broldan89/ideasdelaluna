@@ -242,14 +242,23 @@
   // @ts-nocheck
   import { supabase } from "../lib/supabase.js";
 
-  // Tablas de precios por defecto en caso de fallo de red
+  // Tabla de precios por defecto en caso de fallo de red (mismos valores que
+  // están sembrados en la tabla precios_cotizador de Supabase)
   let tablaPrecios = {
-    S01: 150, // Impresión Simple Faz B/N
-    S02: 220, // Impresión Simple Faz Color
-    S03: 180, // Impresión Doble Faz B/N
-    S04: 270, // Impresión Doble Faz Color
-    S13: 3000, // Anillado 1 a 9 copias
-    S14: 2500, // Anillado 10+ copias
+    simple_bn_base: 150,
+    simple_bn_medio: 120,
+    simple_bn_alto: 100,
+    simple_color_base: 220,
+    simple_color_medio: 200,
+    simple_color_alto: 180,
+    doble_bn_base: 180,
+    doble_bn_medio: 160,
+    doble_bn_alto: 130,
+    doble_color_base: 270,
+    doble_color_medio: 250,
+    doble_color_alto: 200,
+    anillado_base: 3000, // 1 a 9 copias
+    anillado_bulk: 2500, // 10+ copias
   };
 
   let tablaPapeles = {
@@ -269,26 +278,37 @@
     totalCalculado: 0,
   };
 
-  // Cargar lista actualizada desde ambos endpoints
+  // Carga los precios en vivo desde Supabase (tabla precios_cotizador).
+  // Si falla la conexión, se sigue usando la tabla local de arriba.
   async function sincronizarPrecios() {
+    if (!supabase) return;
+
     try {
-      const [resServicios, resPapeles] = await Promise.all([
-        fetch("/api/precios.json"),
-        fetch("/api/precios-papel.json"),
-      ]);
+      const { data, error } = await supabase
+        .from("precios_cotizador")
+        .select("clave, precio");
 
-      if (resServicios.ok) {
-        const dataServicios = await resServicios.json();
-        tablaPrecios = { ...tablaPrecios, ...dataServicios };
-      }
-
-      if (resPapeles.ok) {
-        const dataPapeles = await resPapeles.json();
-        tablaPapeles = { ...tablaPapeles, ...dataPapeles };
+      if (!error && data) {
+        const nuevaTabla = {};
+        data.forEach((fila) => {
+          nuevaTabla[fila.clave] = Number(fila.precio);
+        });
+        tablaPrecios = { ...tablaPrecios, ...nuevaTabla };
       }
     } catch (e) {
-      console.warn("Utilizando valores locales por omisión.", e);
+      // Sin conexión: seguimos con los valores locales por defecto
     }
+  }
+
+  // Determina el precio por hoja según modalidad, color y el tramo de
+  // volumen (hojas totales del pedido completo: páginas × copias).
+  function obtenerPrecioImpresion(modalidad, color, hojasTotales) {
+    let tramo = "base";
+    if (hojasTotales > 500) tramo = "alto";
+    else if (hojasTotales >= 100) tramo = "medio";
+
+    const clave = `${modalidad}_${color}_${tramo}`;
+    return tablaPrecios[clave] ?? tablaPrecios[`${modalidad}_${color}_base`];
   }
 
   // Sube el archivo a Supabase Storage y devuelve la URL pública, o null si falla
@@ -344,29 +364,27 @@
 
     // 1. Cálculo de hojas físicas necesarias
     const hojas = modalidad === "doble" ? Math.ceil(paginas / 2) : paginas;
+    const hojasTotales = hojas * copias;
 
-    // 2. Costo del servicio de impresión por hoja
-    let costoServicioImpresion = 0;
-    if (modalidad === "doble") {
-      costoServicioImpresion =
-        color === "color" ? tablaPrecios.S04 || 270 : tablaPrecios.S03 || 180;
-    } else {
-      costoServicioImpresion =
-        color === "color" ? tablaPrecios.S02 || 220 : tablaPrecios.S01 || 150;
-    }
+    // 2. Costo del servicio de impresión por hoja, según el tramo de volumen
+    //    del pedido completo (páginas × copias)
+    const costoServicioImpresion = obtenerPrecioImpresion(
+      modalidad,
+      color,
+      hojasTotales,
+    );
 
-    // Subtotal de impresión por copia
-    const subtotalImpresionPorCopia = hojas * costoServicioImpresion;
+    // Costo total de impresión (ya contempla todas las copias)
+    const costoImpresionTotal = hojasTotales * costoServicioImpresion;
 
-    // 3. Costo de Anillado / Encuadernación por copia
+    // 3. Costo de Anillado / Encuadernación (tramo por cantidad de copias)
     let costoAnilladoUnitario = 0;
     if (encuadernacion === "anillado") {
       costoAnilladoUnitario =
-        copias >= 10 ? tablaPrecios.S14 || 2500 : tablaPrecios.S13 || 3000;
+        copias >= 10 ? tablaPrecios.anillado_bulk : tablaPrecios.anillado_base;
     }
 
     // 4. Totales generales del pedido
-    const costoImpresionTotal = subtotalImpresionPorCopia * copias;
     const costoAnilladoTotal = costoAnilladoUnitario * copias;
     const totalFinal = costoImpresionTotal + costoAnilladoTotal;
 

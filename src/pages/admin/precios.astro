@@ -1,0 +1,187 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Precios del Cotizador | Ideas de la Luna" pwa={true}>
+  <div
+    class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-indigo-50 pt-[env(safe-area-inset-top)]"
+  >
+    <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div>
+        <span
+          class="text-[10px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-2.5 py-1 rounded-full"
+        >
+          Panel privado
+        </span>
+        <h1
+          class="text-xl sm:text-3xl font-serif text-indigo-950 font-medium mt-2 sm:mt-3"
+        >
+          Precios del Cotizador
+        </h1>
+      </div>
+      <a
+        href="/admin"
+        class="text-xs font-medium text-slate-500 hover:text-indigo-600 active:scale-95 border border-slate-200 hover:border-indigo-300 rounded-full px-3 sm:px-4 py-2 transition-all"
+      >
+        ← Volver
+      </a>
+    </div>
+  </div>
+
+  <section class="max-w-3xl mx-auto px-4 py-6 sm:py-10 pb-28 sm:pb-16">
+    <p class="text-sm text-slate-500 mb-6">
+      Cambiá cualquier precio y guardalo — el cotizador de la página principal
+      lo va a usar al instante, sin necesidad de tocar código ni de esperar un
+      redeploy.
+    </p>
+
+    <p id="cargando" class="text-sm text-slate-500">Cargando precios...</p>
+
+    <div id="grupos" class="space-y-8 hidden"></div>
+  </section>
+</Layout>
+
+<style>
+  .precio-card {
+    background: white;
+    border: 1px solid rgba(99, 102, 241, 0.08);
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+</style>
+
+<script>
+  // @ts-nocheck
+  import { supabase } from "../../lib/supabase.js";
+
+  const GRUPOS = [
+    {
+      titulo: "Simple Faz — Blanco y Negro",
+      claves: ["simple_bn_base", "simple_bn_medio", "simple_bn_alto"],
+    },
+    {
+      titulo: "Simple Faz — Color",
+      claves: ["simple_color_base", "simple_color_medio", "simple_color_alto"],
+    },
+    {
+      titulo: "Doble Faz — Blanco y Negro",
+      claves: ["doble_bn_base", "doble_bn_medio", "doble_bn_alto"],
+    },
+    {
+      titulo: "Doble Faz — Color",
+      claves: ["doble_color_base", "doble_color_medio", "doble_color_alto"],
+    },
+    {
+      titulo: "Anillado",
+      claves: ["anillado_base", "anillado_bulk"],
+    },
+  ];
+
+  let precios = [];
+
+  function renderGrupos() {
+    const cont = document.getElementById("grupos");
+
+    cont.innerHTML = GRUPOS.map((grupo) => {
+      const filas = grupo.claves
+        .map((clave) => precios.find((p) => p.clave === clave))
+        .filter(Boolean);
+
+      if (filas.length === 0) return "";
+
+      const filasHtml = filas
+        .map(
+          (p) => `
+            <div class="precio-card flex items-center justify-between gap-3" data-clave="${p.clave}">
+              <div class="min-w-0">
+                <p class="text-sm text-indigo-950 font-medium truncate">${p.descripcion}</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-slate-400 text-sm">$</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  class="input-precio w-24 bg-slate-50 border border-slate-200 text-indigo-950 text-sm rounded-lg p-2 text-right focus:outline-none focus:border-indigo-500"
+                  value="${p.precio}"
+                />
+                <span class="guardado-ok hidden text-xs text-emerald-600 font-medium">✅</span>
+              </div>
+            </div>
+          `,
+        )
+        .join("");
+
+      return `
+        <div>
+          <h2 class="font-serif text-lg text-indigo-950 font-medium mb-3">${grupo.titulo}</h2>
+          <div class="space-y-2">${filasHtml}</div>
+        </div>
+      `;
+    }).join("");
+
+    // Guardar al perder el foco (blur) o con Enter
+    cont.querySelectorAll("[data-clave]").forEach((card) => {
+      const clave = card.getAttribute("data-clave");
+      const input = card.querySelector(".input-precio");
+      const guardadoOk = card.querySelector(".guardado-ok");
+
+      const guardar = async () => {
+        const nuevoPrecio = parseFloat(input.value);
+        if (isNaN(nuevoPrecio) || nuevoPrecio < 0) return;
+
+        const { error } = await supabase
+          .from("precios_cotizador")
+          .update({ precio: nuevoPrecio, updated_at: new Date().toISOString() })
+          .eq("clave", clave);
+
+        if (error) {
+          alert(`No se pudo guardar el precio: ${error.message}`);
+          return;
+        }
+
+        const precioLocal = precios.find((p) => p.clave === clave);
+        if (precioLocal) precioLocal.precio = nuevoPrecio;
+
+        guardadoOk.classList.remove("hidden");
+        setTimeout(() => guardadoOk.classList.add("hidden"), 1500);
+      };
+
+      input.addEventListener("blur", guardar);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") input.blur();
+      });
+    });
+  }
+
+  async function cargarPrecios() {
+    const { data, error } = await supabase
+      .from("precios_cotizador")
+      .select("*")
+      .order("clave", { ascending: true });
+
+    document.getElementById("cargando").classList.add("hidden");
+
+    if (error) {
+      alert(`No se pudieron cargar los precios: ${error.message}`);
+      return;
+    }
+
+    precios = data || [];
+    document.getElementById("grupos").classList.remove("hidden");
+    renderGrupos();
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      window.location.href = "/admin/login";
+      return;
+    }
+
+    await cargarPrecios();
+  });
+</script>
