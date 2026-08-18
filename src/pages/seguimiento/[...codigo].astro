@@ -86,8 +86,12 @@ export function getStaticPaths() {
       return;
     }
 
-    document.getElementById("tituloCodigo").innerHTML =
-      `Pedido <span class="italic text-indigo-600">#${codigo}</span>`;
+    const tituloCodigo = document.getElementById("tituloCodigo");
+    tituloCodigo.textContent = "Pedido ";
+    const spanCodigo = document.createElement("span");
+    spanCodigo.className = "italic text-indigo-600";
+    spanCodigo.textContent = `#${codigo}`;
+    tituloCodigo.appendChild(spanCodigo);
 
     const { data, error } = await supabase.rpc("get_order_public", {
       p_order_code: codigo,

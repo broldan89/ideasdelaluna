@@ -54,6 +54,18 @@
   const CSV_URL_PROMOCIONES =
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRVnI_RqxCSt1wAfQthb5aG1m1NVIbiyjF6rovbmM0hUk2ZoNrLSWkDIlTsRTn2B3PbUXv_NFq8l3q/pub?gid=116458534&single=true&output=csv";
 
+  // Defensa en profundidad: aunque hoy solo Natalia edita esta planilla,
+  // escapamos igual por si algún día se copia contenido de otro lado.
+  function escapeHtml(texto) {
+    if (texto === null || texto === undefined) return "";
+    return String(texto)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
   function parsearCSV(texto) {
     const filas = [];
     let fila = [];
@@ -143,19 +155,19 @@
             </div>
 
             <h3 class="font-serif text-indigo-950 font-medium text-base leading-tight group-hover:text-indigo-600 transition-colors">
-              ${p.Titulo || ""}
+              ${escapeHtml(p.Titulo)}
             </h3>
 
             <p class="text-xs text-slate-600 mt-1 font-light leading-relaxed">
-              ${p.Descripcion || ""}
+              ${escapeHtml(p.Descripcion)}
             </p>
           `;
 
           const claseCard =
             "group block flex-1 min-w-[260px] max-w-sm bg-white/90 backdrop-blur-md border border-indigo-100/80 rounded-xl p-4 hover:border-pink-300 hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden";
 
-          if (p.Link) {
-            return `<a href="${p.Link}" target="_blank" class="${claseCard}">${contenido}</a>`;
+          if (p.Link && /^https?:\/\//i.test(p.Link.trim())) {
+            return `<a href="${escapeHtml(p.Link)}" target="_blank" rel="noopener noreferrer" class="${claseCard}">${contenido}</a>`;
           }
           return `<div class="${claseCard}">${contenido}</div>`;
         })

@@ -217,6 +217,21 @@ import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.
   // @ts-nocheck
   import { supabase } from "../../lib/supabase.js";
 
+  // Evita XSS: cualquier texto que venga de un pedido (nombre de archivo del
+  // cliente, detalle, motivo de demora) pasa por acá antes de insertarse en
+  // el HTML. Sin esto, alguien podría subir un archivo con un nombre malicioso
+  // (ej: <img src=x onerror=robarSesion()>.pdf) y ejecutar código en la
+  // sesión del admin que abra el panel.
+  function escapeHtml(texto) {
+    if (texto === null || texto === undefined) return "";
+    return String(texto)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
   const ESTADOS = [
     "Pendiente de Pago",
     "Pago Confirmado",
@@ -417,7 +432,7 @@ import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.
         const detalle = (p.subproducts || [])
           .map(
             (d) =>
-              `<span class="text-slate-500">${d.label}:</span> <span class="font-medium text-indigo-950">${d.value}</span>`,
+              `<span class="text-slate-500">${escapeHtml(d.label)}:</span> <span class="font-medium text-indigo-950">${escapeHtml(d.value)}</span>`,
           )
           .join(" &nbsp;•&nbsp; ");
 
@@ -431,14 +446,14 @@ import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.
             <div class="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p class="font-serif text-indigo-950 font-medium text-base">
-                  ${p.product_title || "Pedido"}
-                  ${p.order_code ? `<span class="text-xs text-indigo-400 font-sans font-normal ml-1">#${p.order_code}</span>` : ""}
+                  ${escapeHtml(p.product_title) || "Pedido"}
+                  ${p.order_code ? `<span class="text-xs text-indigo-400 font-sans font-normal ml-1">#${escapeHtml(p.order_code)}</span>` : ""}
                 </p>
                 <p class="text-xs text-slate-500 mt-1">${detalle}</p>
                 <p class="text-sm font-semibold text-indigo-950 mt-2">$${Number(p.total_price || 0).toLocaleString("es-AR")}</p>
               </div>
               <span class="text-[10px] font-semibold uppercase tracking-wider border rounded-full px-2.5 py-1 ${badgeColor(p.status)}">
-                ${p.status || "Sin estado"}
+                ${escapeHtml(p.status) || "Sin estado"}
               </span>
             </div>
 
@@ -456,10 +471,10 @@ import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.
                 type="text"
                 placeholder="Motivo de la demora (opcional)"
                 class="input-motivo bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg p-2 focus:outline-none flex-1 min-w-[160px] ${p.delayed ? "" : "hidden"}"
-                value="${p.delay_reason ? p.delay_reason.replace(/"/g, "&quot;") : ""}"
+                value="${escapeHtml(p.delay_reason)}"
               />
 
-              ${p.pdf_url ? `<a href="${p.pdf_url}" target="_blank" class="text-xs font-medium bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg px-3 py-2 active:scale-95 transition-all">⬇️ Descargar archivo</a>` : ""}
+              ${p.pdf_url ? `<a href="${p.pdf_url}" target="_blank" rel="noopener noreferrer" class="text-xs font-medium bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg px-3 py-2 active:scale-95 transition-all">⬇️ Descargar archivo</a>` : ""}
 
               ${p.customer_phone ? `<button class="btn-notificar text-xs font-medium bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg px-3 py-2 active:scale-95 transition-all">📲 Notificar por WhatsApp</button>` : ""}
 
