@@ -160,7 +160,7 @@
               for="inputCopias"
               class="block text-[11px] sm:text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
             >
-              5. Cantidad de Copias
+              6. Cantidad de Copias
             </label>
             <input
               type="number"
@@ -171,19 +171,19 @@
             />
           </div>
 
-          <!-- 6. TELÉFONO DE CONTACTO -->
+          <!-- 7. TELÉFONO DE CONTACTO -->
           <div>
             <label
               for="inputTelefono"
               class="block text-[11px] sm:text-xs font-semibold text-indigo-950 uppercase tracking-wider mb-1.5"
             >
-              6. Tu WhatsApp (para avisarte del estado)
+              7. Tu WhatsApp (para avisarte del estado)
             </label>
             <input
               type="tel"
               id="inputTelefono"
               placeholder="Ej: 3411234567"
-              class="w-full bg-slate-50 border border-slate-200 text-indigo-950 text-xs rounded-xl p-2.5 focus:outline-none font-medium"
+              class="w-full bg-slate-50 border border-slate-200 text-indigo-950 text-xs rounded-xl p-2.5 focus:outline-none font-medium transition-colors"
             />
           </div>
         </div>
@@ -261,8 +261,6 @@
   // @ts-nocheck
   import { supabase } from "../lib/supabase.js";
 
-  // Tabla de precios por defecto en caso de fallo de red (mismos valores que
-  // están sembrados en la tabla precios_cotizador de Supabase)
   let tablaPrecios = {
     simple_bn_base: 150,
     simple_bn_medio: 120,
@@ -276,12 +274,10 @@
     doble_color_base: 270,
     doble_color_medio: 250,
     doble_color_alto: 200,
-    anillado_base: 3000, // 1 a 9 copias
-    anillado_bulk: 2500, // 10+ copias
+    anillado_base: 3000,
+    anillado_bulk: 2500,
   };
 
-  // Lista de papeles disponibles, cargada en vivo desde Supabase.
-  // P01 (Obra 70g A4) es el estándar por defecto en caso de fallo de red.
   let listaPapeles = [
     {
       codigo: "P01",
@@ -294,10 +290,10 @@
 
   let estadoCotizador = {
     paginas: 0,
-    modalidad: "simple", // 'simple' | 'doble'
-    color: "bn", // 'bn' | 'color'
-    encuadernacion: "ninguno", // 'ninguno' | 'anillado'
-    idPapel: "P01", // Papel base utilizado
+    modalidad: "simple",
+    color: "bn",
+    encuadernacion: "ninguno",
+    idPapel: "P01",
     copias: 1,
     nombreArchivo: "",
     archivoUrl: "",
@@ -305,16 +301,12 @@
     totalCalculado: 0,
   };
 
-  // Carga los precios en vivo desde Supabase (tabla precios_cotizador).
-  // Si falla la conexión, se sigue usando la tabla local de arriba.
   async function sincronizarPrecios() {
     if (!supabase) return;
-
     try {
       const { data, error } = await supabase
         .from("precios_cotizador")
         .select("clave, precio");
-
       if (!error && data) {
         const nuevaTabla = {};
         data.forEach((fila) => {
@@ -322,15 +314,11 @@
         });
         tablaPrecios = { ...tablaPrecios, ...nuevaTabla };
       }
-    } catch (e) {
-      // Sin conexión: seguimos con los valores locales por defecto
-    }
+    } catch (e) {}
   }
 
-  // Carga la lista de papeles en vivo desde Supabase (tabla papeles_cotizador).
   async function sincronizarPapeles() {
     if (!supabase) return;
-
     try {
       const { data, error } = await supabase
         .from("papeles_cotizador")
@@ -338,13 +326,10 @@
         .eq("formato", "A4")
         .order("es_estandar", { ascending: false })
         .order("precio_hoja", { ascending: true });
-
       if (!error && data && data.length > 0) {
         listaPapeles = data;
       }
-    } catch (e) {
-      // Sin conexión: seguimos con el papel estándar por defecto
-    }
+    } catch (e) {}
   }
 
   function obtenerPapelPorCodigo(codigo) {
@@ -358,7 +343,6 @@
   function poblarSelectorPapel() {
     const select = document.getElementById("selectPapel");
     if (!select) return;
-
     select.innerHTML = listaPapeles
       .map((p) => {
         const etiqueta = p.es_estandar
@@ -367,50 +351,38 @@
         return `<option value="${p.codigo}">${etiqueta}</option>`;
       })
       .join("");
-
     select.value = estadoCotizador.idPapel;
   }
 
-  // Determina el precio por hoja según modalidad, color y el tramo de
-  // volumen (hojas totales del pedido completo: páginas × copias).
   function obtenerPrecioImpresion(modalidad, color, hojasTotales) {
     let tramo = "base";
     if (hojasTotales > 500) tramo = "alto";
     else if (hojasTotales >= 100) tramo = "medio";
-
     const clave = `${modalidad}_${color}_${tramo}`;
     return tablaPrecios[clave] ?? tablaPrecios[`${modalidad}_${color}_base`];
   }
 
-  // Sube el archivo a Supabase Storage y devuelve la URL pública, o null si falla
   async function subirArchivo(file) {
     if (!supabase) return null;
-
     try {
       const ext = file.name.split(".").pop();
       const nombreLimpio = file.name.replace(/[^a-zA-Z0-9]/g, "_");
       const path = `pdf_${Date.now()}_${nombreLimpio}.${ext}`;
-
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("pdfs-cotizador")
         .upload(path, file, { cacheControl: "3600", upsert: true });
-
       if (uploadError) {
         alert(
-          `Atención: El archivo no se pudo subir a la nube (${uploadError.message}). Volvé a intentar.`,
+          `Atención: El archivo no se pudo subir a la nube (${uploadError.message}).`,
         );
         return null;
       }
-
       const { data: publicUrlData } = supabase.storage
         .from("pdfs-cotizador")
         .getPublicUrl(uploadData.path);
-
       return publicUrlData?.publicUrl || null;
     } catch (e) {
-      alert(
-        "Atención: El archivo no se pudo subir a la nube. Volvé a intentar.",
-      );
+      alert("Atención: El archivo no se pudo subir a la nube.");
       return null;
     }
   }
@@ -432,7 +404,6 @@
       document.getElementById("resCostoHoja").textContent = "$0";
       document.getElementById("resEncuadernacion").textContent = "$0";
       document.getElementById("totalPrecio").textContent = "$0";
-
       const btn = document.getElementById("btnEnviarWhatsApp");
       btn.disabled = true;
       btn.className =
@@ -440,14 +411,8 @@
       return;
     }
 
-    // 1. Cálculo de hojas físicas necesarias
     const hojas = modalidad === "doble" ? Math.ceil(paginas / 2) : paginas;
     const hojasTotales = hojas * copias;
-
-    // 2. Costo por hoja: el precio del servicio de impresión (según tramo
-    //    de volumen) SIEMPRE se cobra, y el papel elegido se suma arriba.
-    //    El papel estándar (Obra) no agrega nada extra, ya está incluido;
-    //    cualquier otro papel especial suma la diferencia contra el estándar.
     const papelSeleccionado = obtenerPapelPorCodigo(idPapel);
     const papelEstandar =
       listaPapeles.find((p) => p.es_estandar) || papelSeleccionado;
@@ -455,27 +420,18 @@
       ? 0
       : Number(papelSeleccionado.precio_hoja) -
         Number(papelEstandar.precio_hoja);
-
     const costoServicioImpresion =
       obtenerPrecioImpresion(modalidad, color, hojasTotales) + extraPorPapel;
-
-    // Costo total de impresión (ya contempla todas las copias)
     const costoImpresionTotal = hojasTotales * costoServicioImpresion;
-
-    // 3. Costo de Anillado / Encuadernación (tramo por cantidad de copias)
     let costoAnilladoUnitario = 0;
     if (encuadernacion === "anillado") {
       costoAnilladoUnitario =
         copias >= 10 ? tablaPrecios.anillado_bulk : tablaPrecios.anillado_base;
     }
-
-    // 4. Totales generales del pedido
     const costoAnilladoTotal = costoAnilladoUnitario * copias;
     const totalFinal = costoImpresionTotal + costoAnilladoTotal;
-
     estadoCotizador.totalCalculado = totalFinal;
 
-    // Actualización de la interfaz
     document.getElementById("resPaginas").textContent = `${paginas} págs`;
     document.getElementById("resHojas").textContent = `${hojas} hojas`;
     document.getElementById("resCostoHoja").textContent =
@@ -485,11 +441,38 @@
     document.getElementById("totalPrecio").textContent =
       `$${totalFinal.toLocaleString("es-AR")}`;
 
-    // Habilitación del botón WhatsApp
     const btn = document.getElementById("btnEnviarWhatsApp");
     btn.disabled = false;
     btn.className =
       "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-full text-xs tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer";
+  }
+
+  function mostrarToast(mensaje, tipo = "info", duracion = 3000) {
+    const toastAnterior = document.querySelector(".toast-flotante");
+    if (toastAnterior) toastAnterior.remove();
+    const toast = document.createElement("div");
+    toast.className = `toast-flotante fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-xl text-sm font-medium shadow-lg z-50 transition-all duration-300 max-w-[90vw] text-center ${
+      tipo === "success"
+        ? "bg-emerald-600 text-white"
+        : tipo === "error"
+          ? "bg-red-600 text-white"
+          : tipo === "warning"
+            ? "bg-amber-600 text-white"
+            : "bg-indigo-600 text-white"
+    }`;
+    toast.textContent = mensaje;
+    toast.style.opacity = "0";
+    toast.style.transform = "translate(-50%, 20px)";
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => {
+      toast.style.opacity = "1";
+      toast.style.transform = "translate(-50%, 0)";
+    });
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      toast.style.transform = "translate(-50%, 20px)";
+      setTimeout(() => toast.remove(), 300);
+    }, duracion);
   }
 
   function inicializarEventos() {
@@ -502,11 +485,9 @@
     const inputTelefono = document.getElementById("inputTelefono");
     const btnWhatsApp = document.getElementById("btnEnviarWhatsApp");
 
-    // Manejo de archivo subido
     inputPdf.addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-
       estadoCotizador.nombreArchivo = file.name;
       estadoCotizador.archivoUrl = "";
       document.getElementById("fileName").textContent = file.name;
@@ -532,7 +513,6 @@
         estadoCotizador.paginas = 1;
       }
 
-      // Subida a Supabase Storage
       document.getElementById("fileStatus").textContent =
         "☁️ Subiendo a la nube...";
       const btnMientrasSube = document.getElementById("btnEnviarWhatsApp");
@@ -550,11 +530,9 @@
 
       document.getElementById("fileStatus").textContent =
         `${(file.size / (1024 * 1024)).toFixed(2)} MB — subido ✅`;
-
       calcularTotal();
     });
 
-    // Alternar Modalidad (Simple / Doble)
     document.querySelectorAll(".opt-impresion").forEach((btn) => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".opt-impresion").forEach((b) => {
@@ -573,13 +551,11 @@
           "text-indigo-950",
         );
         btn.classList.remove("border-slate-200", "bg-white", "text-slate-600");
-
         estadoCotizador.modalidad = btn.dataset.type;
         calcularTotal();
       });
     });
 
-    // Alternar Color (BN / Color)
     document.querySelectorAll(".opt-color").forEach((btn) => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".opt-color").forEach((b) => {
@@ -598,50 +574,66 @@
           "text-indigo-950",
         );
         btn.classList.remove("border-slate-200", "bg-white", "text-slate-600");
-
         estadoCotizador.color = btn.dataset.color;
         calcularTotal();
       });
     });
 
-    // Papel
     selectPapel.addEventListener("change", (e) => {
       estadoCotizador.idPapel = e.target.value;
       calcularTotal();
     });
 
-    // Encuadernación
     selectEncuadernacion.addEventListener("change", (e) => {
       estadoCotizador.encuadernacion = e.target.value;
       calcularTotal();
     });
 
-    // Copias
     inputCopias.addEventListener("input", (e) => {
       const val = parseInt(e.target.value);
       estadoCotizador.copias = isNaN(val) || val < 1 ? 1 : val;
       calcularTotal();
     });
 
-    // Teléfono de contacto
     inputTelefono.addEventListener("input", (e) => {
       estadoCotizador.telefono = e.target.value.replace(/[^0-9]/g, "");
     });
 
-    // Enviar Pedido a WhatsApp
+    // Enviar Pedido a WhatsApp (VERSIÓN SIMPLIFICADA)
     btnWhatsApp.addEventListener("click", async () => {
-      if (estadoCotizador.paginas <= 0 || !estadoCotizador.archivoUrl) return;
-
-      if (estadoCotizador.telefono.length < 8) {
-        alert(
-          "Ingresá tu número de WhatsApp para poder avisarte del estado de tu pedido.",
+      if (estadoCotizador.paginas <= 0 || !estadoCotizador.archivoUrl) {
+        mostrarToast("⚠️ Subí un archivo primero", "error");
+        const dropzone = document.getElementById("dropzone");
+        dropzone.classList.add(
+          "animate-shake",
+          "border-red-400",
+          "bg-red-50/30",
         );
-        inputTelefono.focus();
+        setTimeout(() => {
+          dropzone.classList.remove(
+            "animate-shake",
+            "border-red-400",
+            "bg-red-50/30",
+          );
+        }, 3000);
         return;
       }
 
+      if (estadoCotizador.telefono.length < 8) {
+        mostrarToast("📱 Ingresá tu número de WhatsApp", "error");
+        inputTelefono.focus();
+        inputTelefono.classList.add("border-red-400", "bg-red-50");
+        setTimeout(() => {
+          inputTelefono.classList.remove("border-red-400", "bg-red-50");
+        }, 3000);
+        return;
+      }
+
+      const btnOriginalHTML = btnWhatsApp.innerHTML;
       btnWhatsApp.disabled = true;
-      btnWhatsApp.textContent = "⏳ Generando pedido...";
+      btnWhatsApp.innerHTML = "⏳ Generando pedido...";
+      btnWhatsApp.className =
+        "w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-full text-xs tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-wait";
 
       let codigoPedido = "";
 
@@ -691,23 +683,13 @@
             .select("order_code")
             .single();
 
-          if (!error && data) {
-            codigoPedido = data.order_code;
-          } else if (error) {
-            alert(
-              `Atención: El pedido no se pudo guardar en el sistema (${error.message}). El mensaje de WhatsApp se va a enviar igual, pero avisá para registrar la orden manualmente.`,
-            );
-          }
+          if (!error && data) codigoPedido = data.order_code;
         } catch (e) {
-          alert(
-            "Atención: El pedido no se pudo guardar en el sistema. El mensaje de WhatsApp se va a enviar igual, pero avisá para registrar la orden manualmente.",
-          );
+          console.warn("Error guardando en Supabase:", e);
         }
       }
 
-      btnWhatsApp.disabled = false;
-      btnWhatsApp.innerHTML = "<span>💬</span> Encargar por WhatsApp";
-
+      const papelElegido = obtenerPapelPorCodigo(estadoCotizador.idPapel);
       const encabezadoCodigo = codigoPedido ? ` *#${codigoPedido}*` : "";
       const lineaSeguimiento = codigoPedido
         ? `\n• *Seguí tu pedido:* https://ideasdelaluna.netlify.app/seguimiento/${codigoPedido}`
@@ -723,8 +705,31 @@
 • *Copias:* ${estadoCotizador.copias}
 • *Total Estimado:* $${estadoCotizador.totalCalculado.toLocaleString("es-AR")}${lineaSeguimiento}`;
 
-      const url = `https://api.whatsapp.com/send?phone=5493412141732&text=${encodeURIComponent(mensaje)}`;
-      window.open(url, "_blank");
+      window.open(
+        `https://api.whatsapp.com/send?phone=5493412141732&text=${encodeURIComponent(mensaje)}`,
+        "_blank",
+      );
+
+      btnWhatsApp.innerHTML = "✅ ¡Pedido enviado!";
+      btnWhatsApp.className =
+        "w-full bg-emerald-600 text-white font-semibold py-3 px-4 rounded-full text-xs tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-default";
+
+      if (codigoPedido) {
+        mostrarToast(`✅ ¡Pedido #${codigoPedido} creado!`, "success", 5000);
+      } else {
+        mostrarToast(
+          "💬 ¡Pedido enviado! Revisá tu WhatsApp.",
+          "success",
+          4000,
+        );
+      }
+
+      setTimeout(() => {
+        btnWhatsApp.disabled = false;
+        btnWhatsApp.innerHTML = btnOriginalHTML;
+        btnWhatsApp.className =
+          "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-full text-xs tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer";
+      }, 8000);
     });
   }
 
