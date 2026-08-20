@@ -1,4 +1,5 @@
 ---
+// src/pages/admin/promociones.astro
 import Layout from "../../layouts/Layout.astro";
 ---
 
@@ -139,12 +140,24 @@ import Layout from "../../layouts/Layout.astro";
 
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1"
-            >Descripción</label
+            >Descripción Corta (Vista previa de la tarjeta)</label
           >
           <textarea
             id="descripcion"
-            rows="3"
-            placeholder="Detalles de la promoción..."
+            rows="2"
+            placeholder="Resumen para la tarjeta..."
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1"
+            >Descripción Detallada (Para la ventana emergente / botón 'Ver →')</label
+          >
+          <textarea
+            id="descripcionDetallada"
+            rows="4"
+            placeholder="Escribí los términos, condiciones o información extendida..."
             class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
           ></textarea>
         </div>
@@ -277,7 +290,6 @@ import Layout from "../../layouts/Layout.astro";
   // @ts-nocheck
   import { supabase } from "../../lib/supabase.js";
 
-  // ============== UTILIDADES ==============
   function escapeHtml(texto) {
     if (!texto) return "";
     return String(texto)
@@ -329,7 +341,6 @@ import Layout from "../../layouts/Layout.astro";
     return `Hasta ${fin}`;
   }
 
-  // ============== CRUD ==============
   async function cargarPromociones() {
     const tbody = document.getElementById("tablaPromociones");
 
@@ -402,6 +413,8 @@ import Layout from "../../layouts/Layout.astro";
       document.getElementById("promocionId").value = promo.id;
       document.getElementById("titulo").value = promo.titulo || "";
       document.getElementById("descripcion").value = promo.descripcion || "";
+      document.getElementById("descripcionDetallada").value =
+        promo.descripcion_detallada || "";
       document.getElementById("link").value = promo.link || "";
       document.getElementById("imagenUrl").value = promo.imagen_url || "";
       document.getElementById("activa").checked = promo.activa !== false;
@@ -435,6 +448,8 @@ import Layout from "../../layouts/Layout.astro";
     const data = {
       titulo: document.getElementById("titulo").value.trim(),
       descripcion: document.getElementById("descripcion").value.trim() || null,
+      descripcion_detallada:
+        document.getElementById("descripcionDetallada").value.trim() || null,
       link: document.getElementById("link").value.trim() || null,
       imagen_url: document.getElementById("imagenUrl").value.trim() || null,
       activa: document.getElementById("activa").checked,
@@ -510,13 +525,9 @@ import Layout from "../../layouts/Layout.astro";
     }
   }
 
-  // Los onclick del HTML generado necesitan estas funciones en window,
-  // porque este <script> se procesa como módulo ES (las funciones
-  // declaradas adentro no quedan visibles en el scope global del navegador).
   window.editarPromocion = editarPromocion;
   window.eliminarPromocion = eliminarPromocion;
 
-  // ============== LOGOUT ==============
   async function logout() {
     await supabase.auth.signOut();
     window.location.href = "/admin/login";
@@ -531,26 +542,20 @@ import Layout from "../../layouts/Layout.astro";
     ]);
   }
 
-  // ============== INIT ==============
   document.addEventListener("DOMContentLoaded", async () => {
-    // Verificar sesión
     let session = null;
     try {
       const resultado = await conTimeout(supabase.auth.getSession(), 8000);
       session = resultado.data.session;
-    } catch (e) {
-      // Si tarda demasiado, mandamos al login en vez de quedarnos colgados
-    }
+    } catch (e) {}
 
     if (!session) {
       window.location.href = "/admin/login";
       return;
     }
 
-    // Cargar promociones
     await cargarPromociones();
 
-    // Event listeners
     document
       .getElementById("btnNuevaPromocion")
       .addEventListener("click", () => abrirModal(null));
@@ -565,12 +570,10 @@ import Layout from "../../layouts/Layout.astro";
       .getElementById("formPromocion")
       .addEventListener("submit", guardarPromocion);
 
-    // Cerrar modal al hacer click fuera
     document.getElementById("modalPromocion").addEventListener("click", (e) => {
       if (e.target === e.currentTarget) cerrarModal();
     });
 
-    // Cerrar modal con Escape
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") cerrarModal();
     });

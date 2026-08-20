@@ -1,4 +1,5 @@
 ---
+// src/pages/index.astro
 import Layout from "../layouts/Layout.astro";
 import TopBar from "../components/TopBar.astro";
 import Navbar from "../components/Navbar.astro";
@@ -796,6 +797,52 @@ import GalleryModal from "../components/GalleryModal.astro";
     </div>
   </div>
 
+  <!-- Modal Detalle Promoción -->
+  <div
+    id="modal-detalle-promo"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300"
+  >
+    <div
+      class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full text-slate-800 shadow-2xl relative overflow-hidden border border-indigo-100"
+    >
+      <button
+        id="close-promo-modal"
+        class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer"
+      >
+        ✕
+      </button>
+
+      <div class="mb-4">
+        <span
+          class="text-[10px] font-bold tracking-wider text-pink-700 uppercase bg-pink-100 border border-pink-200/60 px-3 py-1 rounded-full"
+        >
+          🔥 Beneficio Exclusivo
+        </span>
+        <h3
+          id="modal-promo-titulo"
+          class="text-2xl font-serif font-medium mt-3 text-indigo-950"
+        >
+        </h3>
+      </div>
+
+      <div
+        id="modal-promo-body"
+        class="text-slate-600 text-sm leading-relaxed whitespace-pre-line max-h-[50vh] overflow-y-auto pr-1"
+      >
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-indigo-50 flex justify-end">
+        <button
+          type="button"
+          id="btn-cerrar-promo-footer"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+        >
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+
   <GalleryModal />
 </Layout>
 
@@ -823,6 +870,27 @@ import GalleryModal from "../components/GalleryModal.astro";
       }
     });
   }
+
+  // Lógica de Cierre del Modal de Promociones
+  const promoModal = document.getElementById("modal-detalle-promo");
+  const closePromoBtn = document.getElementById("close-promo-modal");
+  const closePromoFooter = document.getElementById("btn-cerrar-promo-footer");
+
+  const cerrarModalPromo = () => {
+    if (promoModal) {
+      promoModal.classList.add("hidden");
+      promoModal.classList.remove("flex");
+    }
+  };
+
+  closePromoBtn?.addEventListener("click", cerrarModalPromo);
+  closePromoFooter?.addEventListener("click", cerrarModalPromo);
+
+  promoModal?.addEventListener("click", (e) => {
+    if (e.target === promoModal) {
+      cerrarModalPromo();
+    }
+  });
 </script>
 
 <style>
