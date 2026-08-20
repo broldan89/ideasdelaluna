@@ -1,0 +1,578 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Gestión de Promociones | Ideas de la Luna" pwa={true}>
+  <div
+    class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-indigo-50 pt-[env(safe-area-inset-top)]"
+  >
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div>
+        <span
+          class="text-[10px] sm:text-xs font-semibold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-2.5 py-1 rounded-full"
+        >
+          Panel privado
+        </span>
+        <h1
+          class="text-xl sm:text-3xl font-serif text-indigo-950 font-medium mt-2 sm:mt-3"
+        >
+          Gestión de Promociones
+        </h1>
+        <p class="text-sm text-slate-500 mt-1">
+          ✨ Administrá las promociones fuera de órbita
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a
+          href="/admin"
+          class="text-xs font-medium text-slate-500 hover:text-indigo-600 active:scale-95 border border-slate-200 hover:border-indigo-300 rounded-full px-3 sm:px-4 py-2 transition-all"
+        >
+          ← Pedidos
+        </a>
+        <button
+          id="btnLogout"
+          class="text-xs font-medium text-slate-500 hover:text-indigo-600 active:scale-95 border border-slate-200 hover:border-indigo-300 rounded-full px-3 sm:px-4 py-2 transition-all"
+        >
+          Salir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="max-w-7xl mx-auto px-4 py-6 sm:py-10 pb-28 sm:pb-16">
+    <!-- Botón Nueva Promoción -->
+    <div class="flex justify-end mb-6">
+      <button
+        id="btnNuevaPromocion"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-all active:scale-95 flex items-center gap-2 shadow-sm hover:shadow-md"
+      >
+        <span>➕</span> Nueva Promoción
+      </button>
+    </div>
+
+    <!-- Tabla de promociones -->
+    <div
+      class="bg-white border border-indigo-50 rounded-xl overflow-hidden shadow-sm"
+    >
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-indigo-50/50">
+            <tr>
+              <th
+                class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider"
+                >Estado</th
+              >
+              <th
+                class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider"
+                >Título</th
+              >
+              <th
+                class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider hidden sm:table-cell"
+                >Vigencia</th
+              >
+              <th
+                class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider hidden md:table-cell"
+                >Orden</th
+              >
+              <th
+                class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider"
+                >Acciones</th
+              >
+            </tr>
+          </thead>
+          <tbody id="tablaPromociones" class="divide-y divide-indigo-50">
+            <tr>
+              <td
+                colspan="5"
+                class="px-4 py-8 text-center text-slate-400 text-sm"
+              >
+                <span class="inline-block animate-pulse"
+                  >Cargando promociones...</span
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div
+    id="modalPromocion"
+    class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4"
+  >
+    <div
+      class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+    >
+      <div
+        class="sticky top-0 bg-white z-10 px-6 py-4 border-b border-indigo-50 flex items-center justify-between"
+      >
+        <h2
+          id="modalTitulo"
+          class="text-xl font-serif text-indigo-950 font-medium"
+        >
+          Nueva Promoción
+        </h2>
+        <button
+          id="btnCerrarModal"
+          class="text-slate-400 hover:text-slate-600 text-2xl leading-none"
+          >&times;</button
+        >
+      </div>
+
+      <form id="formPromocion" class="px-6 py-4 space-y-4">
+        <input type="hidden" id="promocionId" />
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1"
+            >Título <span class="text-red-500">*</span></label
+          >
+          <input
+            type="text"
+            id="titulo"
+            required
+            placeholder="Ej: 🎉 Promoción de Lanzamiento"
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1"
+            >Descripción</label
+          >
+          <textarea
+            id="descripcion"
+            rows="3"
+            placeholder="Detalles de la promoción..."
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1"
+            >Link (opcional)</label
+          >
+          <input
+            type="url"
+            id="link"
+            placeholder="https://ejemplo.com/promo"
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1"
+            >URL de Imagen (opcional)</label
+          >
+          <input
+            type="url"
+            id="imagenUrl"
+            placeholder="https://ejemplo.com/imagen.jpg"
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Fecha Inicio</label
+            >
+            <input
+              type="date"
+              id="fechaInicio"
+              class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Fecha Fin</label
+            >
+            <input
+              type="date"
+              id="fechaFin"
+              class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-6">
+          <div class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="activa"
+              checked
+              class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
+            />
+            <label for="activa" class="text-sm text-slate-700">Activa</label>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Orden</label
+            >
+            <input
+              type="number"
+              id="orden"
+              value="0"
+              min="0"
+              class="w-20 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-indigo-50 flex justify-end gap-3">
+          <button
+            type="button"
+            id="btnCancelarModal"
+            class="px-5 py-2.5 text-sm font-medium text-slate-600 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors active:scale-95"
+          >
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .promo-row:hover {
+    background-color: #f8fafc;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .status-badge.activa {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+
+  .status-badge.inactiva {
+    background-color: #f1f5f9;
+    color: #64748b;
+  }
+
+  .status-badge.vencida {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+</style>
+
+<script>
+  // @ts-nocheck
+  import { supabase } from "../../lib/supabase.js";
+
+  // ============== UTILIDADES ==============
+  function escapeHtml(texto) {
+    if (!texto) return "";
+    return String(texto)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function formatFecha(fecha) {
+    if (!fecha) return "—";
+    try {
+      const d = new Date(fecha + "T00:00:00");
+      return d.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    } catch {
+      return fecha;
+    }
+  }
+
+  function getEstadoBadge(promo) {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    if (!promo.activa) {
+      return '<span class="status-badge inactiva">⏸ Inactiva</span>';
+    }
+
+    if (promo.fecha_fin) {
+      const fechaFin = new Date(promo.fecha_fin + "T00:00:00");
+      if (fechaFin < hoy) {
+        return '<span class="status-badge vencida">⏰ Vencida</span>';
+      }
+    }
+
+    return '<span class="status-badge activa">✅ Activa</span>';
+  }
+
+  function getVigencia(promo) {
+    if (!promo.fecha_inicio && !promo.fecha_fin) return "Sin fecha";
+    const inicio = formatFecha(promo.fecha_inicio);
+    const fin = formatFecha(promo.fecha_fin);
+    if (promo.fecha_inicio && promo.fecha_fin) return `${inicio} → ${fin}`;
+    if (promo.fecha_inicio) return `Desde ${inicio}`;
+    return `Hasta ${fin}`;
+  }
+
+  // ============== CRUD ==============
+  async function cargarPromociones() {
+    const tbody = document.getElementById("tablaPromociones");
+
+    try {
+      const { data: promociones, error } = await supabase
+        .from("promociones")
+        .select("*")
+        .order("orden", { ascending: true, nullsLast: true });
+
+      if (error) throw error;
+
+      if (!promociones || promociones.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="px-4 py-8 text-center text-slate-400 text-sm">
+              No hay promociones aún. ¡Creá la primera!
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = promociones
+        .map(
+          (p) => `
+        <tr class="promo-row transition-colors">
+          <td class="px-4 py-3 whitespace-nowrap">
+            ${getEstadoBadge(p)}
+          </td>
+          <td class="px-4 py-3">
+            <div class="font-medium text-indigo-950">${escapeHtml(p.titulo)}</div>
+            ${p.descripcion ? `<div class="text-xs text-slate-400 truncate max-w-[200px]">${escapeHtml(p.descripcion)}</div>` : ""}
+          </td>
+          <td class="px-4 py-3 text-sm text-slate-600 hidden sm:table-cell">
+            ${getVigencia(p)}
+          </td>
+          <td class="px-4 py-3 text-sm text-slate-600 hidden md:table-cell">
+            ${p.orden ?? "—"}
+          </td>
+          <td class="px-4 py-3 text-right whitespace-nowrap">
+            <button onclick="editarPromocion('${p.id}')" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium mr-3 transition-colors">
+              ✏️ Editar
+            </button>
+            <button onclick="eliminarPromocion('${p.id}')" class="text-red-500 hover:text-red-700 text-sm font-medium transition-colors">
+              🗑️ Eliminar
+            </button>
+          </td>
+        </tr>
+      `,
+        )
+        .join("");
+    } catch (error) {
+      console.error("Error cargando promociones:", error);
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="px-4 py-8 text-center text-red-400 text-sm">
+            ❌ Error al cargar las promociones: ${error.message}
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  function abrirModal(promo = null) {
+    const modal = document.getElementById("modalPromocion");
+    const titulo = document.getElementById("modalTitulo");
+
+    if (promo) {
+      titulo.textContent = "✏️ Editar Promoción";
+      document.getElementById("promocionId").value = promo.id;
+      document.getElementById("titulo").value = promo.titulo || "";
+      document.getElementById("descripcion").value = promo.descripcion || "";
+      document.getElementById("link").value = promo.link || "";
+      document.getElementById("imagenUrl").value = promo.imagen_url || "";
+      document.getElementById("activa").checked = promo.activa !== false;
+      document.getElementById("fechaInicio").value = promo.fecha_inicio || "";
+      document.getElementById("fechaFin").value = promo.fecha_fin || "";
+      document.getElementById("orden").value = promo.orden ?? 0;
+    } else {
+      titulo.textContent = "➕ Nueva Promoción";
+      document.getElementById("formPromocion").reset();
+      document.getElementById("promocionId").value = "";
+      document.getElementById("activa").checked = true;
+      document.getElementById("orden").value = 0;
+    }
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.style.overflow = "hidden";
+  }
+
+  function cerrarModal() {
+    const modal = document.getElementById("modalPromocion");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.body.style.overflow = "";
+  }
+
+  async function guardarPromocion(e) {
+    e.preventDefault();
+
+    const id = document.getElementById("promocionId").value;
+    const data = {
+      titulo: document.getElementById("titulo").value.trim(),
+      descripcion: document.getElementById("descripcion").value.trim() || null,
+      link: document.getElementById("link").value.trim() || null,
+      imagen_url: document.getElementById("imagenUrl").value.trim() || null,
+      activa: document.getElementById("activa").checked,
+      fecha_inicio: document.getElementById("fechaInicio").value || null,
+      fecha_fin: document.getElementById("fechaFin").value || null,
+      orden: parseInt(document.getElementById("orden").value) || 0,
+    };
+
+    if (!data.titulo) {
+      alert("El título es obligatorio");
+      return;
+    }
+
+    if (
+      data.fecha_inicio &&
+      data.fecha_fin &&
+      data.fecha_inicio > data.fecha_fin
+    ) {
+      alert("La fecha de inicio no puede ser posterior a la fecha de fin");
+      return;
+    }
+
+    try {
+      let result;
+      if (id) {
+        result = await supabase.from("promociones").update(data).eq("id", id);
+      } else {
+        result = await supabase.from("promociones").insert([data]);
+      }
+
+      if (result.error) throw result.error;
+
+      cerrarModal();
+      await cargarPromociones();
+    } catch (error) {
+      alert("Error al guardar: " + error.message);
+    }
+  }
+
+  async function editarPromocion(id) {
+    try {
+      const { data, error } = await supabase
+        .from("promociones")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) throw error;
+      abrirModal(data);
+    } catch (error) {
+      alert("Error al cargar: " + error.message);
+    }
+  }
+
+  async function eliminarPromocion(id) {
+    if (
+      !confirm(
+        "¿Seguro que querés eliminar esta promoción? Esta acción no se puede deshacer.",
+      )
+    )
+      return;
+
+    try {
+      const { error } = await supabase
+        .from("promociones")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+      await cargarPromociones();
+    } catch (error) {
+      alert("Error al eliminar: " + error.message);
+    }
+  }
+
+  // Los onclick del HTML generado necesitan estas funciones en window,
+  // porque este <script> se procesa como módulo ES (las funciones
+  // declaradas adentro no quedan visibles en el scope global del navegador).
+  window.editarPromocion = editarPromocion;
+  window.eliminarPromocion = eliminarPromocion;
+
+  // ============== LOGOUT ==============
+  async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = "/admin/login";
+  }
+
+  function conTimeout(promesa, ms) {
+    return Promise.race([
+      promesa,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("timeout")), ms),
+      ),
+    ]);
+  }
+
+  // ============== INIT ==============
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Verificar sesión
+    let session = null;
+    try {
+      const resultado = await conTimeout(supabase.auth.getSession(), 8000);
+      session = resultado.data.session;
+    } catch (e) {
+      // Si tarda demasiado, mandamos al login en vez de quedarnos colgados
+    }
+
+    if (!session) {
+      window.location.href = "/admin/login";
+      return;
+    }
+
+    // Cargar promociones
+    await cargarPromociones();
+
+    // Event listeners
+    document
+      .getElementById("btnNuevaPromocion")
+      .addEventListener("click", () => abrirModal(null));
+    document.getElementById("btnLogout").addEventListener("click", logout);
+    document
+      .getElementById("btnCerrarModal")
+      .addEventListener("click", cerrarModal);
+    document
+      .getElementById("btnCancelarModal")
+      .addEventListener("click", cerrarModal);
+    document
+      .getElementById("formPromocion")
+      .addEventListener("submit", guardarPromocion);
+
+    // Cerrar modal al hacer click fuera
+    document.getElementById("modalPromocion").addEventListener("click", (e) => {
+      if (e.target === e.currentTarget) cerrarModal();
+    });
+
+    // Cerrar modal con Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") cerrarModal();
+    });
+  });
+</script>

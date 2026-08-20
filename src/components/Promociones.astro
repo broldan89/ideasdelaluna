@@ -1,7 +1,9 @@
 ---
-// Banner de Promociones — Estilo Pastel Mágico
+// Este es el componente Astro (la parte del servidor)
+// Acá no va nada de JavaScript, solo la estructura HTML
 ---
 
+<!-- Banner de Promociones — Estilo Pastel Mágico -->
 <section
   id="seccionPromociones"
   class="hidden max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-2"
@@ -50,14 +52,13 @@
 
 <script>
   // @ts-nocheck
+  // Reusa el cliente de Supabase compartido de todo el sitio — evita crear
+  // una segunda instancia (eso genera el warning "Multiple GoTrueClient
+  // instances" y puede producir comportamiento inconsistente de sesión).
+  import { supabase } from "../lib/supabase.js";
 
-  const CSV_URL_PROMOCIONES =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRVnI_RqxCSt1wAfQthb5aG1m1NVIbiyjF6rovbmM0hUk2ZoNrLSWkDIlTsRTn2B3PbUXv_NFq8l3q/pub?gid=116458534&single=true&output=csv";
-
-  // Defensa en profundidad: aunque hoy solo Natalia edita esta planilla,
-  // escapamos igual por si algún día se copia contenido de otro lado.
   function escapeHtml(texto) {
-    if (texto === null || texto === undefined) return "";
+    if (!texto) return "";
     return String(texto)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -66,116 +67,65 @@
       .replace(/'/g, "&#39;");
   }
 
-  function parsearCSV(texto) {
-    const filas = [];
-    let fila = [];
-    let campo = "";
-    let dentroComillas = false;
-
-    for (let i = 0; i < texto.length; i++) {
-      const c = texto[i];
-
-      if (dentroComillas) {
-        if (c === '"' && texto[i + 1] === '"') {
-          campo += '"';
-          i++;
-        } else if (c === '"') {
-          dentroComillas = false;
-        } else {
-          campo += c;
-        }
-      } else {
-        if (c === '"') {
-          dentroComillas = true;
-        } else if (c === ",") {
-          fila.push(campo);
-          campo = "";
-        } else if (c === "\n" || c === "\r") {
-          if (c === "\r" && texto[i + 1] === "\n") i++;
-          fila.push(campo);
-          filas.push(fila);
-          fila = [];
-          campo = "";
-        } else {
-          campo += c;
-        }
-      }
-    }
-    if (campo.length > 0 || fila.length > 0) {
-      fila.push(campo);
-      filas.push(fila);
-    }
-    return filas.filter((f) => f.some((c) => c.trim() !== ""));
-  }
-
-  function esActiva(promo, hoy) {
-    const activa = (promo.Activa || "").trim().toUpperCase();
-    if (activa !== "SI" && activa !== "SÍ" && activa !== "TRUE") return false;
-
-    if (promo.FechaInicio) {
-      const inicio = new Date(promo.FechaInicio);
-      if (!isNaN(inicio) && hoy < inicio) return false;
-    }
-    if (promo.FechaFin) {
-      const fin = new Date(promo.FechaFin);
-      if (!isNaN(fin) && hoy > fin) return false;
-    }
-    return true;
-  }
-
-  document.addEventListener("DOMContentLoaded", async () => {
+  async function cargarPromociones() {
     try {
-      const response = await fetch(CSV_URL_PROMOCIONES);
-      const texto = await response.text();
-      const filas = parsearCSV(texto);
+      const hoy = new Date().toISOString().split("T")[0];
 
-      if (filas.length < 2) return;
+      const { data: promociones, error } = await supabase
+        .from("promociones")
+        .select("*")
+        .eq("activa", true)
+        .or(`fecha_inicio.is.null,fecha_inicio.lte.${hoy}`)
+        .or(`fecha_fin.is.null,fecha_fin.gte.${hoy}`)
+        .order("orden", { ascending: true })
+        .limit(6);
 
-      const encabezados = filas[0].map((h) => h.trim());
-      const promociones = filas.slice(1).map((fila) => {
-        const obj = {};
-        encabezados.forEach((h, i) => (obj[h] = (fila[i] || "").trim()));
-        return obj;
-      });
+      if (error) {
+        console.error("Error Supabase:", error);
+        return;
+      }
 
-      const hoy = new Date();
-      const activas = promociones.filter((p) => esActiva(p, hoy));
-
-      if (activas.length === 0) return;
+      if (!promociones || promociones.length === 0) {
+        document.getElementById("seccionPromociones")?.classList.add("hidden");
+        return;
+      }
 
       const cont = document.getElementById("listaPromociones");
-      cont.innerHTML = activas
+      cont.innerHTML = promociones
         .map((p) => {
           const contenido = `
             <div class="flex items-center justify-between gap-2 mb-2">
               <span class="text-[9px] font-bold tracking-wider text-pink-700 uppercase bg-pink-100 border border-pink-200/60 px-2 py-0.5 rounded-full">
                 🔥 Promo
               </span>
-              ${p.Link ? '<span class="text-[11px] text-indigo-600 font-medium group-hover:translate-x-0.5 transition-transform">Ver →</span>' : ""}
+              ${p.link ? '<span class="text-[11px] text-indigo-600 font-medium group-hover:translate-x-0.5 transition-transform">Ver →</span>' : ""}
             </div>
 
             <h3 class="font-serif text-indigo-950 font-medium text-base leading-tight group-hover:text-indigo-600 transition-colors">
-              ${escapeHtml(p.Titulo)}
+              ${escapeHtml(p.titulo)}
             </h3>
 
             <p class="text-xs text-slate-600 mt-1 font-light leading-relaxed">
-              ${escapeHtml(p.Descripcion)}
+              ${escapeHtml(p.descripcion)}
             </p>
           `;
 
           const claseCard =
             "group block flex-1 min-w-[260px] max-w-sm bg-white/90 backdrop-blur-md border border-indigo-100/80 rounded-xl p-4 hover:border-pink-300 hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden";
 
-          if (p.Link && /^https?:\/\//i.test(p.Link.trim())) {
-            return `<a href="${escapeHtml(p.Link)}" target="_blank" rel="noopener noreferrer" class="${claseCard}">${contenido}</a>`;
+          if (p.link && /^https?:\/\//i.test(p.link.trim())) {
+            return `<a href="${escapeHtml(p.link)}" target="_blank" rel="noopener noreferrer" class="${claseCard}">${contenido}</a>`;
           }
           return `<div class="${claseCard}">${contenido}</div>`;
         })
         .join("");
 
       document.getElementById("seccionPromociones").classList.remove("hidden");
-    } catch (e) {
-      // Oculto por defecto si falla la carga
+    } catch (error) {
+      console.error("Error cargando promociones:", error);
+      document.getElementById("seccionPromociones")?.classList.add("hidden");
     }
-  });
+  }
+
+  document.addEventListener("DOMContentLoaded", cargarPromociones);
 </script>
