@@ -797,46 +797,105 @@ import GalleryModal from "../components/GalleryModal.astro";
     </div>
   </div>
 
+  <!-- Modal de Detalle de Promoción con Formulario -->
   <div
     id="modal-detalle-promo"
-    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300"
+    class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
   >
     <div
-      class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full text-slate-800 shadow-2xl relative overflow-hidden border border-indigo-100 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"
+      class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-xl border border-indigo-50 relative animate-fade-in"
     >
+      <!-- Botón Cerrar -->
       <button
-        id="close-promo-modal"
-        class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100/80 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer z-10"
+        id="btn-cerrar-modal-promo"
+        type="button"
+        class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg p-1 transition-colors cursor-pointer"
       >
         ✕
       </button>
 
-      <div class="mb-4 relative z-10">
+      <!-- Header Modal -->
+      <div class="mb-3">
         <span
-          class="text-[10px] font-bold tracking-wider text-pink-700 uppercase bg-pink-100 border border-pink-200/60 px-3 py-1 rounded-full"
+          class="text-[10px] font-bold tracking-wider text-pink-700 uppercase bg-pink-100 border border-pink-200/60 px-2.5 py-0.5 rounded-full"
         >
-          🔥 Beneficio Exclusivo
+          🔥 BENEFICIO EXCLUSIVO
         </span>
         <h3
           id="modal-promo-titulo"
-          class="text-2xl font-serif font-medium mt-3 text-indigo-950"
+          class="font-serif text-indigo-950 text-xl font-medium mt-2 leading-tight"
         >
         </h3>
       </div>
 
+      <!-- Contenido de la promo -->
       <div
         id="modal-promo-body"
-        class="text-slate-600 text-sm leading-relaxed whitespace-pre-line max-h-[50vh] overflow-y-auto pr-1 relative z-10"
+        class="text-xs text-slate-600 font-light leading-relaxed mb-4 bg-slate-50/80 p-3.5 rounded-2xl border border-slate-100 whitespace-pre-line"
       >
       </div>
 
-      <div
-        class="mt-6 pt-4 border-t border-indigo-100/80 flex flex-col sm:flex-row items-center justify-end gap-3 relative z-10"
+      <!-- Formulario de datos para la orden -->
+      <div class="space-y-2.5 pt-3 border-t border-slate-100">
+        <p
+          class="text-[11px] font-semibold text-indigo-950 uppercase tracking-wider"
+        >
+          Completá tus datos para encargar:
+        </p>
+
+        <div>
+          <label class="block text-[10px] font-medium text-slate-600 mb-0.5">
+            Nombre y Apellido <span class="text-pink-500">*</span>
+          </label>
+          <input
+            id="promo-cliente-nombre"
+            type="text"
+            placeholder="Ej: María Pérez"
+            class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 transition-colors bg-white text-slate-800"
+          />
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-medium text-slate-600 mb-0.5">
+            Teléfono / WhatsApp <span class="text-pink-500">*</span>
+          </label>
+          <input
+            id="promo-cliente-telefono"
+            type="tel"
+            placeholder="Ej: 3412141732"
+            class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 transition-colors bg-white text-slate-800"
+          />
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-medium text-slate-600 mb-0.5">
+            Dirección <span class="text-slate-400 font-normal"
+              >(Opcional para envíos)</span
+            >
+          </label>
+          <input
+            id="promo-cliente-direccion"
+            type="text"
+            placeholder="Ej: Pellegrini 1234, Rosario"
+            class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 transition-colors bg-white text-slate-800"
+          />
+        </div>
+      </div>
+
+      <!-- Alerta de error -->
+      <p
+        id="msg-error-promo"
+        class="hidden text-[11px] text-red-500 mt-2 font-medium"
       >
+        ⚠️ Por favor, ingresá tu nombre y teléfono para continuar.
+      </p>
+
+      <!-- Botón de acción -->
+      <div class="mt-4">
         <button
-          type="button"
           id="btn-pedir-whatsapp"
-          class="w-full sm:w-auto inline-flex items-center justify-center bg-[#10B981] hover:bg-[#059669] text-white text-xs font-semibold px-5 py-3 rounded-xl transition-all shadow-sm cursor-pointer gap-2"
+          type="button"
+          class="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold py-3 px-4 rounded-xl shadow-sm transition-all cursor-pointer"
         >
           <span>💬</span> Realizar Pedido por WhatsApp
         </button>
