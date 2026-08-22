@@ -1,5 +1,5 @@
 ---
-// src/components/Promociones.astro
+
 ---
 
 <!-- Banner de Promociones — Estilo Pastel Mágico -->
@@ -151,4 +151,69 @@
   }
 
   document.addEventListener("DOMContentLoaded", cargarPromociones);
+
+  // Función para generar un número de seguimiento único (ej: IDL-8F3K2)
+  function generarTrackingCode() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let code = "";
+    for (let i = 0; i < 5; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return `IDL-${code}`;
+  }
+
+  // Escuchador de evento en el botón de WhatsApp dentro del modal
+  document
+    .getElementById("btn-pedir-whatsapp")
+    ?.addEventListener("click", async () => {
+      const btn = document.getElementById("btn-pedir-whatsapp");
+      const modalTitulo =
+        document.getElementById("modal-promo-titulo")?.textContent || "";
+      const modalBody =
+        document.getElementById("modal-promo-body")?.textContent || "";
+
+      if (!modalTitulo) return;
+
+      btn.disabled = true;
+      btn.innerText = "Generando orden...";
+
+      const trackingCode = generarTrackingCode();
+
+      try {
+        // 1. Guardar la Orden de Trabajo en la tabla 'pedidos' o 'ordenes' en Supabase
+        const { data, error } = await supabase.from("orders").insert([
+          {
+            product_title: `Promo: ${modalTitulo}`,
+            subproducts: [{ label: "Detalle de Promo", value: modalBody }],
+            total_price: 0, // Se ajusta si la promo incluye un valor fijo
+            customer_phone: "",
+            status: "Pendiente de Pago",
+            customer_name: "Cliente Web (Promoción)",
+          },
+        ]);
+
+        if (error) {
+          console.error("Error al registrar el pedido:", error);
+        }
+
+        // 2. Armar mensaje personalizado para WhatsApp
+        const mensajeWA = encodeURIComponent(
+          `Hola! Quisiera realizar el pedido de la *${modalTitulo}*.\n\n` +
+            `📌 *Número de seguimiento:* ${trackingCode}\n` +
+            `🎨 Quisiera personalizar el diseño de mi pedido.`,
+        );
+
+        const telefono = "5493412141732"; // Número de WhatsApp de la imprenta
+        const urlWA = `https://api.whatsapp.com/send?phone=${telefono}&text=${mensajeWA}`;
+
+        // 3. Abrir WhatsApp y cerrar modal
+        window.open(urlWA, "_blank");
+        document.getElementById("modal-detalle-promo")?.classList.add("hidden");
+      } catch (err) {
+        console.error("Error en la solicitud:", err);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>💬</span> Realizar Pedido por WhatsApp`;
+      }
+    });
 </script>

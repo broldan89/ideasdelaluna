@@ -797,22 +797,21 @@ import GalleryModal from "../components/GalleryModal.astro";
     </div>
   </div>
 
-  <!-- Modal Detalle Promoción -->
   <div
     id="modal-detalle-promo"
     class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300"
   >
     <div
-      class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full text-slate-800 shadow-2xl relative overflow-hidden border border-indigo-100"
+      class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full text-slate-800 shadow-2xl relative overflow-hidden border border-indigo-100 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"
     >
       <button
         id="close-promo-modal"
-        class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer"
+        class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100/80 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer z-10"
       >
         ✕
       </button>
 
-      <div class="mb-4">
+      <div class="mb-4 relative z-10">
         <span
           class="text-[10px] font-bold tracking-wider text-pink-700 uppercase bg-pink-100 border border-pink-200/60 px-3 py-1 rounded-full"
         >
@@ -827,17 +826,19 @@ import GalleryModal from "../components/GalleryModal.astro";
 
       <div
         id="modal-promo-body"
-        class="text-slate-600 text-sm leading-relaxed whitespace-pre-line max-h-[50vh] overflow-y-auto pr-1"
+        class="text-slate-600 text-sm leading-relaxed whitespace-pre-line max-h-[50vh] overflow-y-auto pr-1 relative z-10"
       >
       </div>
 
-      <div class="mt-6 pt-4 border-t border-indigo-50 flex justify-end">
+      <div
+        class="mt-6 pt-4 border-t border-indigo-100/80 flex flex-col sm:flex-row items-center justify-end gap-3 relative z-10"
+      >
         <button
           type="button"
-          id="btn-cerrar-promo-footer"
-          class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+          id="btn-pedir-whatsapp"
+          class="w-full sm:w-auto inline-flex items-center justify-center bg-[#10B981] hover:bg-[#059669] text-white text-xs font-semibold px-5 py-3 rounded-xl transition-all shadow-sm cursor-pointer gap-2"
         >
-          Entendido
+          <span>💬</span> Realizar Pedido por WhatsApp
         </button>
       </div>
     </div>
