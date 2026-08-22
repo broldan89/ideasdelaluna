@@ -49,105 +49,142 @@
   </div>
 </section>
 
-<!-- Modal de Detalle de Promoción y Captura de Datos -->
+<!-- Modal de Detalle de Promoción con Formulario en 2 Columnas -->
 <div
   id="modal-detalle-promo"
-  class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
+  class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300"
 >
   <div
-    class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-indigo-50 relative animate-fade-in"
+    class="bg-white rounded-3xl p-6 sm:p-8 max-w-3xl w-full text-slate-800 shadow-2xl relative overflow-hidden border border-indigo-100 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"
   >
+    <!-- Botón Cerrar -->
     <button
       id="btn-cerrar-modal-promo"
       type="button"
-      class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg p-1"
+      class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100/80 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer z-20"
     >
       ✕
     </button>
 
-    <div class="mb-4">
+    <!-- Header del Modal -->
+    <div class="mb-4 relative z-10">
       <span
-        class="text-[10px] font-bold tracking-wider text-pink-700 uppercase bg-pink-100 border border-pink-200/60 px-2.5 py-0.5 rounded-full"
+        class="text-[10px] font-bold tracking-wider text-pink-700 uppercase bg-pink-100 border border-pink-200/60 px-3 py-1 rounded-full"
       >
         🔥 Detalle de Promoción
       </span>
       <h3
         id="modal-promo-titulo"
-        class="font-serif text-indigo-950 text-xl font-medium mt-2"
+        class="text-2xl font-serif font-medium mt-3 text-indigo-950 leading-tight"
       >
       </h3>
     </div>
 
-    <p
-      id="modal-promo-body"
-      class="text-xs text-slate-600 font-light leading-relaxed mb-5 bg-slate-50/80 p-3 rounded-xl border border-slate-100"
-    >
-    </p>
-
-    <!-- Formulario rápido de datos de contacto -->
-    <div class="space-y-3 pt-3 border-t border-slate-100">
-      <p
-        class="text-[11px] font-semibold text-indigo-950 uppercase tracking-wider"
+    <!-- Grid de 2 Columnas para Escritorio -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+      <!-- Columna Izquierda: Descripción de la Promoción -->
+      <div
+        class="flex flex-col justify-between bg-indigo-50/50 p-4 sm:p-5 rounded-2xl border border-indigo-100/80"
       >
-        Datos para el pedido
-      </p>
-
-      <div>
-        <label class="block text-[11px] font-medium text-slate-600 mb-1">
-          Nombre y Apellido <span class="text-pink-500">*</span>
-        </label>
-        <input
-          id="promo-cliente-nombre"
-          type="text"
-          placeholder="Ej: Maria Perez"
-          class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 transition-colors"
-          required
-        />
-      </div>
-
-      <div>
-        <label class="block text-[11px] font-medium text-slate-600 mb-1">
-          Teléfono / WhatsApp <span class="text-pink-500">*</span>
-        </label>
-        <input
-          id="promo-cliente-telefono"
-          type="tel"
-          placeholder="Ej: 3412141732"
-          class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 transition-colors"
-          required
-        />
-      </div>
-
-      <div>
-        <label class="block text-[11px] font-medium text-slate-600 mb-1">
-          Dirección / Localidad <span class="text-slate-400 font-normal"
-            >(Opcional)</span
+        <div>
+          <h4
+            class="text-xs font-bold uppercase tracking-wider text-indigo-900 mb-2"
           >
-        </label>
-        <input
-          id="promo-cliente-direccion"
-          type="text"
-          placeholder="Ej: Av. Pellegrini 1234, Rosario"
-          class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 transition-colors"
-        />
+            Incluye
+          </h4>
+          <div
+            id="modal-promo-body"
+            class="text-slate-600 text-sm leading-relaxed max-h-[35vh] md:max-h-[45vh] overflow-y-auto pr-1"
+          >
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-4 italic">
+          * Personalizamos la gráfica según la temática que elijas.
+        </p>
       </div>
-    </div>
 
-    <p
-      id="msg-error-promo"
-      class="hidden text-[11px] text-red-500 mt-2 font-medium"
-    >
-      Por favor, completá tu nombre y teléfono para continuar.
-    </p>
-
-    <div class="mt-5 flex justify-end gap-2">
-      <button
-        id="btn-pedir-whatsapp"
-        type="button"
-        class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2.5 px-4 rounded-xl shadow-sm transition-all cursor-pointer"
+      <!-- Columna Derecha: Formulario de Datos -->
+      <form
+        id="form-pedido-promo"
+        onsubmit="return false;"
+        class="flex flex-col justify-between space-y-4"
       >
-        <span>💬</span> Confirmar y Pedir por WhatsApp
-      </button>
+        <div>
+          <h4
+            class="text-xs font-bold uppercase tracking-wider text-indigo-950 mb-3"
+          >
+            Datos para el pedido
+          </h4>
+
+          <div class="space-y-3">
+            <div>
+              <label
+                for="promo-cliente-nombre"
+                class="block text-xs font-medium text-slate-700 mb-1"
+              >
+                Nombre y Apellido <span class="text-pink-600">*</span>
+              </label>
+              <input
+                type="text"
+                id="promo-cliente-nombre"
+                placeholder="Ej: María Pérez"
+                class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all bg-white text-slate-800"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                for="promo-cliente-telefono"
+                class="block text-xs font-medium text-slate-700 mb-1"
+              >
+                Teléfono / WhatsApp <span class="text-pink-600">*</span>
+              </label>
+              <input
+                type="tel"
+                id="promo-cliente-telefono"
+                placeholder="Ej: 3412141732"
+                class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all bg-white text-slate-800"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                for="promo-cliente-direccion"
+                class="block text-xs font-medium text-slate-700 mb-1"
+              >
+                Dirección / Localidad <span class="text-slate-400 font-normal"
+                  >(Opcional)</span
+                >
+              </label>
+              <input
+                type="text"
+                id="promo-cliente-direccion"
+                placeholder="Ej: Av. Pellegrini 1234, Rosario"
+                class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all bg-white text-slate-800"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerta de validación en tiempo real -->
+        <p
+          id="msg-error-promo"
+          class="hidden text-[11px] text-red-500 font-medium"
+        >
+          ⚠️ Por favor, ingresá un nombre válido y teléfono completo.
+        </p>
+
+        <button
+          type="button"
+          id="btn-pedir-whatsapp"
+          disabled
+          class="w-full inline-flex items-center justify-center bg-[#10B981] text-white text-xs font-semibold px-5 py-3.5 rounded-xl transition-all shadow-sm gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-300 hover:enabled:bg-[#059669] hover:enabled:shadow-md cursor-pointer mt-2"
+        >
+          <span>💬</span> Confirmar y Pedir por WhatsApp
+        </button>
+      </form>
     </div>
   </div>
 </div>
@@ -165,6 +202,72 @@
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
   }
+
+  // Función para formatear dinámicamente la lista de la promo y destacar el precio
+  function renderizarDetallePromo(textoRaw) {
+    const contenedor = document.getElementById("modal-promo-body");
+    if (!contenedor) return;
+
+    if (!textoRaw) {
+      contenedor.innerHTML = `<p class="text-xs text-slate-500 italic">Sin detalles adicionales disponibles.</p>`;
+      return;
+    }
+
+    // Separar el total si existe la palabra TOTAL
+    const partes = textoRaw.split(/TOTAL/i);
+    const textoItems = partes[0];
+    const precio = partes[1] ? `TOTAL ${partes[1].trim()}` : "";
+
+    // Separar los productos por comas, signos '+' o saltos de línea
+    const items = textoItems
+      .split(/,|\+|\n/)
+      .map((i) => i.trim())
+      .filter((i) => i.length > 0);
+
+    let html = `<ul class="space-y-2 mb-3">`;
+    items.forEach((item) => {
+      html += `
+        <li class="flex items-start gap-2 text-xs text-slate-700">
+          <span class="text-pink-500 font-bold mt-0.5">•</span>
+          <span>${escapeHtml(item)}</span>
+        </li>`;
+    });
+    html += `</ul>`;
+
+    if (precio) {
+      html += `
+        <div class="mt-3 pt-2.5 border-t border-indigo-100 flex justify-between items-center bg-indigo-50/60 p-2.5 rounded-xl">
+          <span class="text-[11px] font-semibold text-indigo-900 uppercase tracking-wider">Valor total:</span>
+          <span class="text-sm font-bold text-indigo-950 bg-white px-2.5 py-1 rounded-lg border border-indigo-200/60 shadow-sm">${escapeHtml(
+            precio.replace(/^:\s*/, ""),
+          )}</span>
+        </div>`;
+    }
+
+    contenedor.innerHTML = html;
+  }
+
+  const validarFormularioPromo = () => {
+    const inputNombre = document.getElementById("promo-cliente-nombre");
+    const inputTelefono = document.getElementById("promo-cliente-telefono");
+    const btnWhatsapp = document.getElementById("btn-pedir-whatsapp");
+    const msgError = document.getElementById("msg-error-promo");
+
+    if (!inputNombre || !inputTelefono || !btnWhatsapp) return false;
+
+    const nombreValido = inputNombre.value.trim().length >= 3;
+    const soloNumeros = inputTelefono.value.replace(/\D/g, "");
+    const telefonoValido = soloNumeros.length >= 7;
+
+    if (nombreValido && telefonoValido) {
+      btnWhatsapp.removeAttribute("disabled");
+      msgError?.classList.add("hidden");
+      return true;
+    } else {
+      btnWhatsapp.setAttribute("disabled", "true");
+      return false;
+    }
+  };
 
   async function cargarPromociones() {
     try {
@@ -236,15 +339,14 @@
 
           const modal = document.getElementById("modal-detalle-promo");
           const modalTitulo = document.getElementById("modal-promo-titulo");
-          const modalBody = document.getElementById("modal-promo-body");
           const msgError = document.getElementById("msg-error-promo");
 
           if (msgError) msgError.classList.add("hidden");
 
-          if (modal && modalTitulo && modalBody) {
+          if (modal && modalTitulo) {
             modalTitulo.textContent = titulo;
-            modalBody.textContent =
-              detalle || "Sin detalles adicionales disponibles.";
+            renderizarDetallePromo(detalle);
+            validarFormularioPromo();
             modal.classList.remove("hidden");
             modal.classList.add("flex");
           }
@@ -259,18 +361,33 @@
   document.addEventListener("DOMContentLoaded", () => {
     cargarPromociones();
 
+    const inputNombre = document.getElementById("promo-cliente-nombre");
+    const inputTelefono = document.getElementById("promo-cliente-telefono");
+
+    inputNombre?.addEventListener("input", validarFormularioPromo);
+    inputTelefono?.addEventListener("input", validarFormularioPromo);
+
     // Botón para cerrar el modal
     document
       .getElementById("btn-cerrar-modal-promo")
       ?.addEventListener("click", () => {
-        document.getElementById("modal-detalle-promo")?.classList.add("hidden");
-        document
-          .getElementById("modal-detalle-promo")
-          ?.classList.remove("flex");
+        const modal = document.getElementById("modal-detalle-promo");
+        modal?.classList.add("hidden");
+        modal?.classList.remove("flex");
+      });
+
+    document
+      .getElementById("modal-detalle-promo")
+      ?.addEventListener("click", (e) => {
+        const modal = document.getElementById("modal-detalle-promo");
+        if (e.target === modal) {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+        }
       });
   });
 
-  // Función para generar un número de seguimiento único (ej: IDL-W9NUF)
+  // Función para generar un número de seguimiento único
   function generarTrackingCode() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let code = "";
@@ -288,7 +405,7 @@
       const modalTitulo =
         document.getElementById("modal-promo-titulo")?.textContent || "";
       const modalBody =
-        document.getElementById("modal-promo-body")?.textContent || "";
+        document.getElementById("modal-promo-body")?.innerText || "";
 
       const nombreCliente =
         document.getElementById("promo-cliente-nombre")?.value.trim() || "";
@@ -298,8 +415,7 @@
         document.getElementById("promo-cliente-direccion")?.value.trim() || "";
       const msgError = document.getElementById("msg-error-promo");
 
-      // Validar campos obligatorios
-      if (!nombreCliente || !telefonoCliente) {
+      if (!validarFormularioPromo()) {
         if (msgError) msgError.classList.remove("hidden");
         return;
       }
@@ -313,7 +429,7 @@
       const linkSeguimiento = `https://ideasdelaluna.netlify.app/seguimiento/${trackingCode}`;
 
       try {
-        // 1. Guardar la Orden en Supabase con los datos completos del cliente
+        // Guardar la Orden en Supabase
         const { error } = await supabase.from("orders").insert([
           {
             order_code: trackingCode,
@@ -331,7 +447,7 @@
           console.error("Error al registrar el pedido en Supabase:", error);
         }
 
-        // 2. Armar mensaje detallado para WhatsApp
+        // Armar mensaje para WhatsApp
         let mensajeTexto = `Hola! Mi nombre es *${nombreCliente}*.\n`;
         mensajeTexto += `Quisiera realizar el pedido de la *${modalTitulo}*.\n\n`;
         mensajeTexto += `📌 *Número de seguimiento:* ${trackingCode}\n`;
@@ -347,7 +463,6 @@
         const telefonoEmpresa = "5493412141732";
         const urlWA = `https://api.whatsapp.com/send?phone=${telefonoEmpresa}&text=${mensajeWA}`;
 
-        // 3. Abrir WhatsApp y cerrar modal
         window.open(urlWA, "_blank");
 
         const modal = document.getElementById("modal-detalle-promo");
