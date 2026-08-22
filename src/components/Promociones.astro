@@ -1,5 +1,5 @@
 ---
-
+// Promociones.astro
 ---
 
 <!-- Banner de Promociones — Estilo Pastel Mágico -->
@@ -48,6 +48,109 @@
     </div>
   </div>
 </section>
+
+<!-- Modal de Detalle de Promoción y Captura de Datos -->
+<div
+  id="modal-detalle-promo"
+  class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
+>
+  <div
+    class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-indigo-50 relative animate-fade-in"
+  >
+    <button
+      id="btn-cerrar-modal-promo"
+      type="button"
+      class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg p-1"
+    >
+      ✕
+    </button>
+
+    <div class="mb-4">
+      <span
+        class="text-[10px] font-bold tracking-wider text-pink-700 uppercase bg-pink-100 border border-pink-200/60 px-2.5 py-0.5 rounded-full"
+      >
+        🔥 Detalle de Promoción
+      </span>
+      <h3
+        id="modal-promo-titulo"
+        class="font-serif text-indigo-950 text-xl font-medium mt-2"
+      >
+      </h3>
+    </div>
+
+    <p
+      id="modal-promo-body"
+      class="text-xs text-slate-600 font-light leading-relaxed mb-5 bg-slate-50/80 p-3 rounded-xl border border-slate-100"
+    >
+    </p>
+
+    <!-- Formulario rápido de datos de contacto -->
+    <div class="space-y-3 pt-3 border-t border-slate-100">
+      <p
+        class="text-[11px] font-semibold text-indigo-950 uppercase tracking-wider"
+      >
+        Datos para el pedido
+      </p>
+
+      <div>
+        <label class="block text-[11px] font-medium text-slate-600 mb-1">
+          Nombre y Apellido <span class="text-pink-500">*</span>
+        </label>
+        <input
+          id="promo-cliente-nombre"
+          type="text"
+          placeholder="Ej: Maria Perez"
+          class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 transition-colors"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-medium text-slate-600 mb-1">
+          Teléfono / WhatsApp <span class="text-pink-500">*</span>
+        </label>
+        <input
+          id="promo-cliente-telefono"
+          type="tel"
+          placeholder="Ej: 3412141732"
+          class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 transition-colors"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-medium text-slate-600 mb-1">
+          Dirección / Localidad <span class="text-slate-400 font-normal"
+            >(Opcional)</span
+          >
+        </label>
+        <input
+          id="promo-cliente-direccion"
+          type="text"
+          placeholder="Ej: Av. Pellegrini 1234, Rosario"
+          class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 transition-colors"
+        />
+      </div>
+    </div>
+
+    <p
+      id="msg-error-promo"
+      class="hidden text-[11px] text-red-500 mt-2 font-medium"
+    >
+      Por favor, completá tu nombre y teléfono para continuar.
+    </p>
+
+    <div class="mt-5 flex justify-end gap-2">
+      <button
+        id="btn-pedir-whatsapp"
+        type="button"
+        class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2.5 px-4 rounded-xl shadow-sm transition-all cursor-pointer"
+      >
+        <span>💬</span> Confirmar y Pedir por WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
 
 <script>
   // @ts-nocheck
@@ -134,6 +237,9 @@
           const modal = document.getElementById("modal-detalle-promo");
           const modalTitulo = document.getElementById("modal-promo-titulo");
           const modalBody = document.getElementById("modal-promo-body");
+          const msgError = document.getElementById("msg-error-promo");
+
+          if (msgError) msgError.classList.add("hidden");
 
           if (modal && modalTitulo && modalBody) {
             modalTitulo.textContent = titulo;
@@ -150,9 +256,21 @@
     }
   }
 
-  document.addEventListener("DOMContentLoaded", cargarPromociones);
+  document.addEventListener("DOMContentLoaded", () => {
+    cargarPromociones();
 
-  // Función para generar un número de seguimiento único (ej: IDL-8F3K2)
+    // Botón para cerrar el modal
+    document
+      .getElementById("btn-cerrar-modal-promo")
+      ?.addEventListener("click", () => {
+        document.getElementById("modal-detalle-promo")?.classList.add("hidden");
+        document
+          .getElementById("modal-detalle-promo")
+          ?.classList.remove("flex");
+      });
+  });
+
+  // Función para generar un número de seguimiento único (ej: IDL-W9NUF)
   function generarTrackingCode() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let code = "";
@@ -162,7 +280,7 @@
     return `IDL-${code}`;
   }
 
-  // Escuchador de evento en el botón de WhatsApp dentro del modal
+  // Escuchador del botón para enviar el pedido a WhatsApp
   document
     .getElementById("btn-pedir-whatsapp")
     ?.addEventListener("click", async () => {
@@ -172,48 +290,79 @@
       const modalBody =
         document.getElementById("modal-promo-body")?.textContent || "";
 
-      if (!modalTitulo) return;
+      const nombreCliente =
+        document.getElementById("promo-cliente-nombre")?.value.trim() || "";
+      const telefonoCliente =
+        document.getElementById("promo-cliente-telefono")?.value.trim() || "";
+      const direccionCliente =
+        document.getElementById("promo-cliente-direccion")?.value.trim() || "";
+      const msgError = document.getElementById("msg-error-promo");
+
+      // Validar campos obligatorios
+      if (!nombreCliente || !telefonoCliente) {
+        if (msgError) msgError.classList.remove("hidden");
+        return;
+      }
+
+      if (msgError) msgError.classList.add("hidden");
 
       btn.disabled = true;
-      btn.innerText = "Generando orden...";
+      btn.innerText = "Procesando pedido...";
 
       const trackingCode = generarTrackingCode();
+      const linkSeguimiento = `https://ideasdelaluna.netlify.app/seguimiento/${trackingCode}`;
 
       try {
-        // 1. Guardar la Orden de Trabajo en la tabla 'pedidos' o 'ordenes' en Supabase
-        const { data, error } = await supabase.from("orders").insert([
+        // 1. Guardar la Orden en Supabase con los datos completos del cliente
+        const { error } = await supabase.from("orders").insert([
           {
+            order_code: trackingCode,
             product_title: `Promo: ${modalTitulo}`,
             subproducts: [{ label: "Detalle de Promo", value: modalBody }],
-            total_price: 0, // Se ajusta si la promo incluye un valor fijo
-            customer_phone: "",
+            total_price: 0,
+            customer_name: nombreCliente,
+            customer_phone: telefonoCliente,
+            address: direccionCliente,
             status: "Pendiente de Pago",
-            customer_name: "Cliente Web (Promoción)",
           },
         ]);
 
         if (error) {
-          console.error("Error al registrar el pedido:", error);
+          console.error("Error al registrar el pedido en Supabase:", error);
         }
 
-        // 2. Armar mensaje personalizado para WhatsApp
-        const mensajeWA = encodeURIComponent(
-          `Hola! Quisiera realizar el pedido de la *${modalTitulo}*.\n\n` +
-            `📌 *Número de seguimiento:* ${trackingCode}\n` +
-            `🎨 Quisiera personalizar el diseño de mi pedido.`,
-        );
+        // 2. Armar mensaje detallado para WhatsApp
+        let mensajeTexto = `Hola! Mi nombre es *${nombreCliente}*.\n`;
+        mensajeTexto += `Quisiera realizar el pedido de la *${modalTitulo}*.\n\n`;
+        mensajeTexto += `📌 *Número de seguimiento:* ${trackingCode}\n`;
+        mensajeTexto += `🔗 *Link de seguimiento:* ${linkSeguimiento}\n`;
 
-        const telefono = "5493412141732"; // Número de WhatsApp de la imprenta
-        const urlWA = `https://api.whatsapp.com/send?phone=${telefono}&text=${mensajeWA}`;
+        if (direccionCliente) {
+          mensajeTexto += `📍 *Dirección:* ${direccionCliente}\n`;
+        }
+
+        mensajeTexto += `\n🎨 Quisiera personalizar el diseño de mi pedido.`;
+
+        const mensajeWA = encodeURIComponent(mensajeTexto);
+        const telefonoEmpresa = "5493412141732";
+        const urlWA = `https://api.whatsapp.com/send?phone=${telefonoEmpresa}&text=${mensajeWA}`;
 
         // 3. Abrir WhatsApp y cerrar modal
         window.open(urlWA, "_blank");
-        document.getElementById("modal-detalle-promo")?.classList.add("hidden");
+
+        const modal = document.getElementById("modal-detalle-promo");
+        modal?.classList.add("hidden");
+        modal?.classList.remove("flex");
+
+        // Limpiar inputs
+        document.getElementById("promo-cliente-nombre").value = "";
+        document.getElementById("promo-cliente-telefono").value = "";
+        document.getElementById("promo-cliente-direccion").value = "";
       } catch (err) {
-        console.error("Error en la solicitud:", err);
+        console.error("Error en el proceso:", err);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<span>💬</span> Realizar Pedido por WhatsApp`;
+        btn.innerHTML = `<span>💬</span> Confirmar y Pedir por WhatsApp`;
       }
     });
 </script>
