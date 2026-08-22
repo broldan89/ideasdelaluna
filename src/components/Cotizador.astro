@@ -253,7 +253,6 @@
   </div>
 </section>
 
-<!-- Librería para lectura de páginas PDF cliente -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
 ></script>
 
@@ -445,6 +444,21 @@
     btn.disabled = false;
     btn.className =
       "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-full text-xs tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer";
+
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: "calculate_quote",
+        quote_pages: paginas,
+        quote_sheets: hojas,
+        quote_modalidad: modalidad,
+        quote_color: color,
+        quote_paper: papelSeleccionado.nombre,
+        quote_binding: encuadernacion,
+        quote_copies: copias,
+        quote_total: totalFinal,
+        quote_currency: "ARS",
+      });
+    }
   }
 
   function mostrarToast(mensaje, tipo = "info", duracion = 3000) {
@@ -599,7 +613,6 @@
       estadoCotizador.telefono = e.target.value.replace(/[^0-9]/g, "");
     });
 
-    // Enviar Pedido a WhatsApp (VERSIÓN SIMPLIFICADA)
     btnWhatsApp.addEventListener("click", async () => {
       if (estadoCotizador.paginas <= 0 || !estadoCotizador.archivoUrl) {
         mostrarToast("⚠️ Subí un archivo primero", "error");
@@ -627,6 +640,18 @@
           inputTelefono.classList.remove("border-red-400", "bg-red-50");
         }, 3000);
         return;
+      }
+
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: "generate_lead",
+          lead_source: "Cotizador",
+          lead_phone: estadoCotizador.telefono,
+          lead_pages: estadoCotizador.paginas,
+          lead_total: estadoCotizador.totalCalculado,
+          lead_product: estadoCotizador.nombreArchivo,
+          lead_currency: "ARS",
+        });
       }
 
       const btnOriginalHTML = btnWhatsApp.innerHTML;

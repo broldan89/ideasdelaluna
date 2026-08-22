@@ -674,6 +674,7 @@ import GalleryModal from "../components/GalleryModal.astro";
             href="https://api.whatsapp.com/send?phone=5493412141732&text=Hola!%20Vi%20tu%20web%20y%20me%20gustar%C3%ADa%20hacerte%20una%20consulta."
             target="_blank"
             rel="noopener noreferrer"
+            id="footer-whatsapp-link"
             class="w-full sm:w-auto inline-flex items-center justify-center bg-[#10B981] hover:bg-[#059669] text-white font-semibold px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5 hover:-translate-y-0.5"
           >
             <span class="text-base">💬</span>
@@ -684,6 +685,7 @@ import GalleryModal from "../components/GalleryModal.astro";
             href="https://www.instagram.com/ideas.de.la.luna/"
             target="_blank"
             rel="noopener noreferrer"
+            id="footer-instagram-link"
             class="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-[#A855F7] to-[#EC4899] hover:opacity-95 text-white font-semibold px-8 py-3.5 rounded-full shadow-sm hover:shadow-md transition-all text-sm tracking-wide gap-2.5 hover:-translate-y-0.5"
           >
             <span class="text-base">📸</span>
@@ -698,7 +700,6 @@ import GalleryModal from "../components/GalleryModal.astro";
     </footer>
   </div>
 
-  <!-- Modal de Recursos PDF para Docentes -->
   <div
     id="pdf-modal"
     class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300"
@@ -788,6 +789,7 @@ import GalleryModal from "../components/GalleryModal.astro";
           <a
             href="/downloads/muestra-docente-ideas-de-la-luna.pdf"
             download
+            id="download-pdf-link"
             class="shrink-0 bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all"
           >
             Descargar Gratis
@@ -801,7 +803,7 @@ import GalleryModal from "../components/GalleryModal.astro";
 </Layout>
 
 <script>
-  // Script para Modal Docente (PDFs)
+  // Modal de PDF
   const openBtn = document.getElementById("btn-open-pdf-modal");
   const closeBtn = document.getElementById("close-modal");
   const modal = document.getElementById("pdf-modal");
@@ -825,6 +827,46 @@ import GalleryModal from "../components/GalleryModal.astro";
       }
     });
   }
+
+  // Tracking events
+  document.addEventListener("DOMContentLoaded", function () {
+    const whatsappFooter = document.getElementById("footer-whatsapp-link");
+    if (whatsappFooter) {
+      whatsappFooter.addEventListener("click", function () {
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: "click_whatsapp_footer",
+            link_location: "footer",
+          });
+        }
+      });
+    }
+
+    const instagramFooter = document.getElementById("footer-instagram-link");
+    if (instagramFooter) {
+      instagramFooter.addEventListener("click", function () {
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: "click_instagram",
+            link_location: "footer",
+          });
+        }
+      });
+    }
+
+    const downloadPdf = document.getElementById("download-pdf-link");
+    if (downloadPdf) {
+      downloadPdf.addEventListener("click", function () {
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: "download_pdf_docente",
+            file_name: "muestra-docente-ideas-de-la-luna.pdf",
+            file_category: "docente",
+          });
+        }
+      });
+    }
+  });
 </script>
 
 <style>

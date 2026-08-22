@@ -10,7 +10,6 @@
   <div
     class="relative rounded-3xl bg-gradient-to-br from-indigo-50/80 via-white to-pink-50/80 p-6 sm:p-8 border border-indigo-100/80 shadow-sm overflow-hidden"
   >
-    <!-- Luces pastel de fondo -->
     <div
       class="absolute -top-16 -left-16 w-52 h-52 bg-pink-100/50 rounded-full blur-2xl pointer-events-none"
     >
@@ -20,7 +19,6 @@
     >
     </div>
 
-    <!-- Encabezado -->
     <div
       class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-5 pb-3 border-b border-indigo-100/60 relative z-10"
     >
@@ -40,7 +38,6 @@
       </p>
     </div>
 
-    <!-- Contenedor dinámico de Promociones -->
     <div
       id="listaPromociones"
       class="flex flex-wrap justify-center gap-4 relative z-10"
@@ -57,7 +54,6 @@
   <div
     class="bg-white rounded-3xl p-6 sm:p-8 max-w-3xl w-full text-slate-800 shadow-2xl relative overflow-hidden border border-indigo-100 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"
   >
-    <!-- Botón Cerrar -->
     <button
       id="btn-cerrar-modal-promo"
       type="button"
@@ -66,7 +62,6 @@
       ✕
     </button>
 
-    <!-- Header del Modal -->
     <div class="mb-4 relative z-10">
       <span
         class="text-[10px] font-bold tracking-wider text-pink-700 uppercase bg-pink-100 border border-pink-200/60 px-3 py-1 rounded-full"
@@ -80,9 +75,7 @@
       </h3>
     </div>
 
-    <!-- Grid de 2 Columnas para Escritorio -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-      <!-- Columna Izquierda: Descripción de la Promoción -->
       <div
         class="flex flex-col justify-between bg-indigo-50/50 p-4 sm:p-5 rounded-2xl border border-indigo-100/80"
       >
@@ -103,7 +96,6 @@
         </p>
       </div>
 
-      <!-- Columna Derecha: Formulario de Datos -->
       <form
         id="form-pedido-promo"
         onsubmit="return false;"
@@ -168,7 +160,6 @@
           </div>
         </div>
 
-        <!-- Alerta de validación en tiempo real -->
         <p
           id="msg-error-promo"
           class="hidden text-[11px] text-red-500 font-medium"
@@ -203,7 +194,6 @@
       .replace(/'/g, "&#39;");
   }
 
-  // Función para formatear dinámicamente la lista de la promo y destacar el precio
   function renderizarDetallePromo(textoRaw) {
     const contenedor = document.getElementById("modal-promo-body");
     if (!contenedor) return;
@@ -213,12 +203,10 @@
       return;
     }
 
-    // Separar el total si existe la palabra TOTAL
     const partes = textoRaw.split(/TOTAL/i);
     const textoItems = partes[0];
     const precio = partes[1] ? `TOTAL ${partes[1].trim()}` : "";
 
-    // Separar los productos por comas, signos '+' o saltos de línea
     const items = textoItems
       .split(/,|\+|\n/)
       .map((i) => i.trim())
@@ -330,7 +318,6 @@
 
       document.getElementById("seccionPromociones")?.classList.remove("hidden");
 
-      // Asignación de eventos a botones "Ver ->"
       document.querySelectorAll(".btn-ver-detalle-promo").forEach((btn) => {
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
@@ -349,6 +336,15 @@
             validarFormularioPromo();
             modal.classList.remove("hidden");
             modal.classList.add("flex");
+
+            // 🔔 Evento: view_promo_detail
+            if (typeof window !== "undefined" && window.dataLayer) {
+              window.dataLayer.push({
+                event: "view_promo_detail",
+                promo_name: titulo,
+                promo_description: detalle,
+              });
+            }
           }
         });
       });
@@ -367,7 +363,6 @@
     inputNombre?.addEventListener("input", validarFormularioPromo);
     inputTelefono?.addEventListener("input", validarFormularioPromo);
 
-    // Botón para cerrar el modal
     document
       .getElementById("btn-cerrar-modal-promo")
       ?.addEventListener("click", () => {
@@ -387,7 +382,6 @@
       });
   });
 
-  // Función para generar un número de seguimiento único
   function generarTrackingCode() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let code = "";
@@ -397,7 +391,6 @@
     return `IDL-${code}`;
   }
 
-  // Escuchador del botón para enviar el pedido a WhatsApp
   document
     .getElementById("btn-pedir-whatsapp")
     ?.addEventListener("click", async () => {
@@ -422,6 +415,17 @@
 
       if (msgError) msgError.classList.add("hidden");
 
+      // 🔔 Evento: generate_lead (Promocion)
+      if (typeof window !== "undefined" && window.dataLayer) {
+        window.dataLayer.push({
+          event: "generate_lead",
+          lead_source: "Promocion",
+          lead_promo: modalTitulo,
+          lead_phone: telefonoCliente,
+          lead_name: nombreCliente,
+        });
+      }
+
       btn.disabled = true;
       btn.innerText = "Procesando pedido...";
 
@@ -429,7 +433,6 @@
       const linkSeguimiento = `https://ideasdelaluna.netlify.app/seguimiento/${trackingCode}`;
 
       try {
-        // Guardar la Orden en Supabase
         const { error } = await supabase.from("orders").insert([
           {
             order_code: trackingCode,
@@ -447,7 +450,6 @@
           console.error("Error al registrar el pedido en Supabase:", error);
         }
 
-        // Armar mensaje para WhatsApp
         let mensajeTexto = `Hola! Mi nombre es *${nombreCliente}*.\n`;
         mensajeTexto += `Quisiera realizar el pedido de la *${modalTitulo}*.\n\n`;
         mensajeTexto += `📌 *Número de seguimiento:* ${trackingCode}\n`;
@@ -469,7 +471,6 @@
         modal?.classList.add("hidden");
         modal?.classList.remove("flex");
 
-        // Limpiar inputs
         document.getElementById("promo-cliente-nombre").value = "";
         document.getElementById("promo-cliente-telefono").value = "";
         document.getElementById("promo-cliente-direccion").value = "";
