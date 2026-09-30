@@ -239,13 +239,15 @@ import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.
   }
 
   const ESTADOS = [
-    "Pendiente de Pago",
-    "Pago Confirmado",
-    "En Preparación",
-    "Listo para Retirar",
-    "Entregado",
-    "Cancelado",
-  ];
+  "Pendiente de Pago",
+  "Pago Confirmado",
+  "En proceso de diseño",
+  "Diseño aprobado",
+  "En Preparación",
+  "Listo para Retirar",
+  "Entregado",
+  "Cancelado"
+];
 
   const MENSAJES_POR_ESTADO = {
     "Pendiente de Pago": (p) =>
@@ -267,23 +269,23 @@ import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.
   let busquedaActual = "";
 
   function badgeColor(status) {
-    switch (status) {
-      case "Pendiente de Pago":
-        return "bg-amber-50 text-amber-700 border-amber-200";
-      case "Pago Confirmado":
-        return "bg-sky-50 text-sky-700 border-sky-200";
-      case "En Preparación":
-        return "bg-indigo-50 text-indigo-700 border-indigo-200";
-      case "Listo para Retirar":
-        return "bg-emerald-50 text-emerald-700 border-emerald-200";
-      case "Entregado":
-        return "bg-slate-100 text-slate-500 border-slate-200";
-      case "Cancelado":
-        return "bg-red-50 text-red-600 border-red-200";
-      default:
-        return "bg-slate-50 text-slate-600 border-slate-200";
-    }
+  switch (status) {
+    case "Pendiente de Pago":
+      return "bg-amber-50 text-amber-700 border-amber-200";
+    case "En proceso de diseño":
+    case "Diseño aprobado":
+    case "En Preparación":
+      return "bg-indigo-50 text-indigo-700 border-indigo-200";
+    case "Listo para Retirar":
+      return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    case "Entregado":
+      return "bg-slate-100 text-slate-500 border-slate-200";
+    case "Cancelado":
+      return "bg-red-50 text-red-600 border-red-200";
+    default:
+      return "bg-slate-50 text-slate-600 border-slate-200";
   }
+}
 
   function calcularMetricas() {
     const ahora = new Date();
