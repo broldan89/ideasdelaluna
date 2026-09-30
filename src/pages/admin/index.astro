@@ -596,7 +596,7 @@ import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.
       .select("*")
       .order("id", { ascending: false });
 
-    document.getElementById("cargando").classList.add("hidden");
+    document.getElementById("cargando")?.classList.add("hidden");
 
     if (error) {
       alert(`No se pudieron cargar los pedidos: ${error.message}`);
@@ -637,14 +637,14 @@ import NuevoPedidoPersonalizado from "../../components/NuevoPedidoPersonalizado.
 
     document
       .getElementById("btnLimpiar")
-      .addEventListener("click", limpiarArchivosViejos);
+      ?.addEventListener("click", limpiarArchivosViejos);
 
-    document.getElementById("btnLogout").addEventListener("click", async () => {
+    document.getElementById("btnLogout")?.addEventListener("click", async () => {
       await supabase.auth.signOut();
       window.location.href = "/admin/login";
     });
 
-    document.getElementById("inputBuscar").addEventListener("input", (e) => {
+    document.getElementById("inputBuscar")?.addEventListener("input", (e) => {
       busquedaActual = e.target.value;
       renderPedidos();
     });

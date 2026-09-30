@@ -73,8 +73,14 @@
     </div>
 
     <!-- Visualizador de Saldo Restante -->
-    <div id="infoSaldoCalculado" class="text-xs font-medium text-slate-600 hidden bg-slate-50 p-2 rounded-lg border border-slate-200">
-      Saldo restante a pagar: <strong id="outSaldoRestante" class="text-indigo-600">$0</strong>
+    <div
+      id="infoSaldoCalculado"
+      class="text-xs font-medium text-slate-600 hidden bg-slate-50 p-2 rounded-lg border border-slate-200"
+    >
+      Saldo restante a pagar: <strong
+        id="outSaldoRestante"
+        class="text-indigo-600">$0</strong
+      >
     </div>
 
     <div>
@@ -100,7 +106,7 @@
       >
         <option value="En proceso de diseño">🎨 En proceso de diseño</option>
         <option value="Diseño aprobado">✅ Diseño aprobado</option>
-        <option value="En producción">🖨️️ En producción</option>
+        <option value="En producción">🖨 En producción</option>
         <option value="Listo para retirar">📦 Listo para retirar</option>
         <option value="Entregado">🎉 Entregado</option>
       </select>
@@ -228,9 +234,10 @@
       const codigo = data.order_code;
       const linkSeguimiento = `https://ideasdelaluna.netlify.app/seguimiento/${codigo}`;
 
-      const textoPago = saldoRestante > 0 
-        ? `- *Abonado (Seña):* $${montoSena.toLocaleString("es-AR")}\n- *Saldo a cancelar:* $${saldoRestante.toLocaleString("es-AR")}`
-        : `- *Pago:* Completo ($${montoTotal.toLocaleString("es-AR")})`;
+      const textoPago =
+        saldoRestante > 0
+          ? `- *Abonado (Seña):* $${montoSena.toLocaleString("es-AR")}\n- *Saldo a cancelar:* $${saldoRestante.toLocaleString("es-AR")}`
+          : `- *Pago:* Completo ($${montoTotal.toLocaleString("es-AR")})`;
 
       const mensajeWA = `¡Hola! Ya registramos tu pedido personalizado (*#${codigo}*).
 
