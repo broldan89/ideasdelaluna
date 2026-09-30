@@ -27,19 +27,40 @@ export function getStaticPaths() {
     >
       <p id="cargando" class="text-sm text-slate-500">Buscando tu pedido...</p>
 
-      <div id="resultado" class="hidden">
-        <p
-          id="tituloPedido"
-          class="font-serif text-indigo-950 font-medium text-base mb-4"
-        >
-        </p>
-        <span
-          id="badgeEstado"
-          class="inline-block text-xs font-semibold uppercase tracking-wider border rounded-full px-3 py-1.5"
-        ></span>
+      <div id="resultado" class="hidden space-y-5">
+        <div>
+          <p
+            id="tituloPedido"
+            class="font-serif text-indigo-950 font-medium text-base mb-3"
+          >
+          </p>
+          <span
+            id="badgeEstado"
+            class="inline-block text-xs font-semibold uppercase tracking-wider border rounded-full px-3 py-1.5"
+          ></span>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 text-left space-y-2.5">
+          <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center">
+            Estado de Cuenta
+          </h3>
+          <div class="flex justify-between text-xs text-slate-600">
+            <span>Monto Total:</span>
+            <span id="outMontoTotal" class="font-semibold text-slate-800">$0</span>
+          </div>
+          <div class="flex justify-between text-xs text-slate-600">
+            <span>Abonado / Seña:</span>
+            <span id="outMontoSena" class="font-semibold text-emerald-600">$0</span>
+          </div>
+          <div class="border-t border-slate-200 pt-2 flex justify-between text-xs font-bold">
+            <span class="text-slate-700">Saldo restante:</span>
+            <span id="outSaldoRestante" class="text-indigo-600">$0</span>
+          </div>
+        </div>
+
         <p
           id="avisoDemora"
-          class="hidden text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-xl p-3 mt-4"
+          class="hidden text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-xl p-3"
         >
         </p>
       </div>
@@ -58,20 +79,19 @@ export function getStaticPaths() {
   // @ts-nocheck
   import { supabase } from "../../lib/supabase.js";
 
+  // Colores para los nuevos estados de producción
   function badgeColor(status) {
     switch (status) {
-      case "Pendiente de Pago":
-        return "bg-amber-50 text-amber-700 border-amber-200";
-      case "Pago Confirmado":
+      case "En proceso de diseño":
+        return "bg-purple-50 text-purple-700 border-purple-200";
+      case "Diseño aprobado":
         return "bg-sky-50 text-sky-700 border-sky-200";
-      case "En Preparación":
-        return "bg-indigo-50 text-indigo-700 border-indigo-200";
-      case "Listo para Retirar":
+      case "En producción":
+        return "bg-amber-50 text-amber-700 border-amber-200";
+      case "Listo para retirar":
         return "bg-emerald-50 text-emerald-700 border-emerald-200";
       case "Entregado":
         return "bg-slate-100 text-slate-500 border-slate-200";
-      case "Cancelado":
-        return "bg-red-50 text-red-600 border-red-200";
       default:
         return "bg-slate-50 text-slate-600 border-slate-200";
     }
@@ -93,9 +113,11 @@ export function getStaticPaths() {
     spanCodigo.textContent = `#${codigo}`;
     tituloCodigo.appendChild(spanCodigo);
 
-    const { data, error } = await supabase.rpc("get_order_public", {
-      p_order_code: codigo,
-    });
+    // Consulta enviando las columnas de montos
+    const { data, error } = await supabase
+      .from("orders")
+      .select("product_title, status, delayed, delay_reason, total_price, monto_total, monto_sena")
+      .eq("order_code", codigo);
 
     document.getElementById("cargando").classList.add("hidden");
 
@@ -113,6 +135,24 @@ export function getStaticPaths() {
     const badge = document.getElementById("badgeEstado");
     badge.textContent = pedido.status || "Sin estado";
     badge.className = `inline-block text-xs font-semibold uppercase tracking-wider border rounded-full px-3 py-1.5 ${badgeColor(pedido.status)}`;
+
+    // Montos y cálculo de saldo
+    const total = pedido.monto_total || pedido.total_price || 0;
+    const sena = pedido.monto_sena || 0;
+    const saldo = Math.max(0, total - sena);
+
+    document.getElementById("outMontoTotal").textContent = `$${total.toLocaleString("es-AR")}`;
+    document.getElementById("outMontoSena").textContent = `$${sena.toLocaleString("es-AR")}`;
+    
+    const elemSaldo = document.getElementById("outSaldoRestante");
+    elemSaldo.textContent = `$${saldo.toLocaleString("es-AR")}`;
+    
+    if (saldo === 0 && total > 0) {
+      elemSaldo.className = "text-emerald-600 font-bold";
+      elemSaldo.textContent = "¡Pago Completo!";
+    } else {
+      elemSaldo.className = "text-amber-600 font-bold";
+    }
 
     if (pedido.delayed) {
       const aviso = document.getElementById("avisoDemora");

@@ -28,31 +28,47 @@
       />
     </div>
 
+    <div>
+      <label class="block text-xs font-semibold text-slate-700 mb-1"
+        >WhatsApp del Cliente</label
+      >
+      <input
+        id="inputTelefonoAdmin"
+        type="text"
+        placeholder="Ej: 3412141732"
+        required
+        class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
+      />
+    </div>
+
     <div class="grid grid-cols-2 gap-3">
       <div>
         <label class="block text-xs font-semibold text-slate-700 mb-1"
-          >WhatsApp del Cliente</label
+          >Monto Total ($)</label
         >
         <input
-          id="inputTelefonoAdmin"
-          type="text"
-          placeholder="Ej: 3412141732"
-          required
-          class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
-        />
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-700 mb-1"
-          >Monto Acordado ($)</label
-        >
-        <input
-          id="inputMontoAdmin"
+          id="inputMontoTotalAdmin"
           type="number"
           placeholder="Ej: 18500"
           required
           class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
         />
       </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1"
+          >Monto Señado / Pagado ($)</label
+        >
+        <input
+          id="inputMontoSenaAdmin"
+          type="number"
+          placeholder="Ej: 9000"
+          class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
+        />
+      </div>
+    </div>
+
+    <div id="infoSaldoCalculado" class="text-xs font-medium text-slate-600 hidden bg-slate-50 p-2 rounded-lg border border-slate-200">
+      Saldo restante a pagar: <strong id="outSaldoRestante" class="text-indigo-600">$0</strong>
     </div>
 
     <div>
@@ -69,17 +85,17 @@
 
     <div>
       <label class="block text-xs font-semibold text-slate-700 mb-1"
-        >Estado Inicial</label
+        >Estado de Producción Inicial</label
       >
       <select
         id="selectEstadoAdmin"
         class="w-full text-xs border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
       >
-        <option value="Pendiente de Pago">Pendiente de Pago</option>
-        <option value="Pago Confirmado">Pago Confirmado</option>
-        <option value="En Preparación">En Preparación</option>
-        <option value="Listo para Retirar">Listo para Retirar</option>
-        <option value="Entregado">Entregado</option>
+        <option value="En proceso de diseño">🎨 En proceso de diseño</option>
+        <option value="Diseño aprobado">✅ Diseño aprobado</option>
+        <option value="En producción">🖨️ En producción</option>
+        <option value="Listo para retirar">📦 Listo para retirar</option>
+        <option value="Entregado">🎉 Entregado</option>
       </select>
     </div>
 
@@ -92,7 +108,6 @@
     </button>
   </form>
 
-  <!-- Resultado con mensaje para WhatsApp -->
   <div
     id="boxResultadoAdmin"
     class="hidden mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3"
@@ -117,7 +132,7 @@
       <textarea
         id="outMensajeWA"
         readonly
-        class="w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-white text-slate-700 h-24 font-mono"
+        class="w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-white text-slate-700 h-28 font-mono"
       ></textarea>
     </div>
 
@@ -133,10 +148,32 @@
 
 <script>
   // @ts-nocheck
-  import { supabase } from "../lib/supabase.js"; // Ajustá la ruta según tu estructura
+  import { supabase } from "../lib/supabase.js";
 
   const form = document.getElementById("formPedidoPersonalizado");
   const boxResultado = document.getElementById("boxResultadoAdmin");
+
+  const inputTotal = document.getElementById("inputMontoTotalAdmin");
+  const inputSena = document.getElementById("inputMontoSenaAdmin");
+  const infoSaldo = document.getElementById("infoSaldoCalculado");
+  const outSaldo = document.getElementById("outSaldoRestante");
+
+  // Calcular saldo en tiempo real en la pantalla
+  function actualizarSaldo() {
+    const total = parseFloat(inputTotal.value) || 0;
+    const sena = parseFloat(inputSena.value) || 0;
+    const saldo = total - sena;
+
+    if (total > 0) {
+      infoSaldo.classList.remove("hidden");
+      outSaldo.textContent = `$${Math.max(0, saldo).toLocaleString("es-AR")}`;
+    } else {
+      infoSaldo.classList.add("hidden");
+    }
+  }
+
+  inputTotal?.addEventListener("input", actualizarSaldo);
+  inputSena?.addEventListener("input", actualizarSaldo);
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -147,10 +184,12 @@
 
     const titulo = document.getElementById("inputTituloAdmin").value;
     const telefono = document.getElementById("inputTelefonoAdmin").value;
-    const monto =
-      parseFloat(document.getElementById("inputMontoAdmin").value) || 0;
+    const montoTotal = parseFloat(inputTotal.value) || 0;
+    const montoSena = parseFloat(inputSena.value) || 0;
     const detalles = document.getElementById("inputDetallesAdmin").value;
     const estado = document.getElementById("selectEstadoAdmin").value;
+
+    const saldoRestante = montoTotal - montoSena;
 
     try {
       const { data, error } = await supabase
@@ -161,7 +200,9 @@
             subproducts: detalles
               ? [{ label: "Detalles del trabajo", value: detalles }]
               : [],
-            total_price: monto,
+            total_price: montoTotal,
+            monto_total: montoTotal,
+            monto_sena: montoSena,
             customer_phone: telefono,
             status: estado,
             customer_name: "Carga Manual (Admin)",
@@ -180,33 +221,18 @@
       const codigo = data.order_code;
       const linkSeguimiento = `https://ideasdelaluna.netlify.app/seguimiento/${codigo}`;
 
+      const textoPago = saldoRestante > 0 
+        ? `- *Abonado (Seña):* $${montoSena.toLocaleString("es-AR")}\n- *Saldo a cancelar:* $${saldoRestante.toLocaleString("es-AR")}`
+        : `- *Pago:* Completo ($${montoTotal.toLocaleString("es-AR")})`;
+
       const mensajeWA = `¡Hola! Ya registramos tu pedido personalizado (*#${codigo}*).
 
-• *Trabajo:* ${titulo}
-• *Estado:* ${estado}
-• *Total acordado:* $${monto.toLocaleString("es-AR")}
+- *Trabajo:* ${titulo}
+- *Estado:* ${estado}
+- *Monto Total:* $${montoTotal.toLocaleString("es-AR")}
+${textoPago}
 
 Podés seguir el avance de tu pedido en tiempo real desde este enlace:
 ${linkSeguimiento}`;
 
-      document.getElementById("outCodigo").textContent = `#${codigo}`;
-      document.getElementById("outLink").href = linkSeguimiento;
-      document.getElementById("outMensajeWA").value = mensajeWA;
-
-      boxResultado.classList.remove("hidden");
-      form.reset();
-    } catch (err) {
-      alert("Error inesperado en el servidor.");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Generar Orden de Seguimiento";
-    }
-  });
-
-  document.getElementById("btnCopiarMsg")?.addEventListener("click", () => {
-    const txt = document.getElementById("outMensajeWA");
-    txt.select();
-    navigator.clipboard.writeText(txt.value);
-    alert("¡Mensaje copiado! Ya podés pegarlo en la conversación de WhatsApp.");
-  });
-</script>
+      document.getElementById
