@@ -634,7 +634,8 @@ ${nota}
 
     document.getElementById("btnLogout")?.addEventListener("click", async () => {
       await supabase.auth.signOut();
-      window.location.href = "/admin/login";
+      localStorage.removeItem("supabase.auth.token");
+      window.location.replace("/admin/login");
     });
 
     document.getElementById("inputBuscar")?.addEventListener("input", (e) => {
