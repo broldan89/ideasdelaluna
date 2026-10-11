@@ -1,6 +1,4 @@
 // Service Worker del Panel de Admin (Luna Admin PWA)
-// Alcance: solo /admin/* (se registra con scope explícito en Layout.astro)
-
 const CACHE_NAME = "luna-admin-v1";
 const APP_SHELL = [
   "/admin",
@@ -33,22 +31,21 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
+  // CRÍTICO: Si no es del mismo origen o NO es método GET (como los POST de Supabase/login), 
+  // salimos inmediatamente y dejamos que el navegador los maneje directo sin tocar nada.
   if (url.origin !== self.location.origin) return;
   if (event.request.method !== "GET") return;
 
-  // Si es una petición de navegación de páginas (HTML) o entra al panel,
-  // vamos directo a la red para evitar pantallas blancas y conflictos de sesión en Safari.
+  // Si es una navegación de página GET dentro del panel, vamos directo a la red 
+  // para evitar pantallas en blanco en Safari, pero SIN alterar peticiones de API o formularios POST.
   if (event.request.mode === 'navigate' || url.pathname.startsWith('/admin')) {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        // Si está offline, intenta devolver la página principal cacheada como fallback
-        return caches.match('/');
-      })
+      fetch(event.request).catch(() => caches.match('/admin/login'))
     );
     return;
   }
 
-  // Para assets estáticos (CSS, JS, imágenes), usamos la estrategia habitual
+  // Para assets estáticos (CSS, JS, imágenes), usamos caché con stale-while-revalidate
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const enRed = fetch(event.request)
