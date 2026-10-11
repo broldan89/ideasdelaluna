@@ -634,8 +634,17 @@ ${nota}
 
     document.getElementById("btnLogout")?.addEventListener("click", async () => {
       await supabase.auth.signOut();
-      localStorage.removeItem("supabase.auth.token");
-      window.location.replace("/admin/login");
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (let registration of registrations) {
+          await registration.unregister();
+        }
+      }
+
+      window.location.href = window.location.origin + "/admin/login";
     });
 
     document.getElementById("inputBuscar")?.addEventListener("input", (e) => {
