@@ -1,0 +1,99 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Clientes & WA Marketing | Ideas de la Luna" pwa={true}>
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <a href="/admin" class="text-xs font-semibold text-indigo-600 hover:underline">← Volver al Panel</a>
+        <h1 class="text-2xl font-serif font-bold text-indigo-950 mt-1">👥 Base de Clientes & Marketing</h1>
+        <p class="text-xs text-slate-500">Historial consolidado de clientes para fidelización y promociones por WhatsApp.</p>
+      </div>
+    </div>
+
+    <!-- Buscador de clientes -->
+    <input
+      type="text"
+      id="inputBuscarCliente"
+      placeholder="Buscar por cliente o teléfono..."
+      class="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-xl p-3 mb-6 focus:outline-none focus:border-indigo-500"
+    />
+
+    <div id="listaClientes" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+  </div>
+</Layout>
+
+<script>
+  // @ts-nocheck
+  import { supabase } from "../../lib/supabase.js";
+
+  let clientes = [];
+
+  async function cargarClientes() {
+    const { data, error } = await supabase
+      .from("customers")
+      .select("*")
+      .order("last_order_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    clientes = data || [];
+    renderClientes();
+  }
+
+  function renderClientes() {
+    const cont = document.getElementById("listaClientes");
+    const filtro = document.getElementById("inputBuscarCliente").value.toLowerCase();
+
+    const filtrados = clientes.filter(c => 
+      (c.name || '').toLowerCase().includes(filtro) || 
+      (c.phone || '').includes(filtro)
+    );
+
+    if (filtrados.length === 0) {
+      cont.innerHTML = `<p class="text-xs text-slate-500 col-span-2">No hay clientes registrados aún.</p>`;
+      return;
+    }
+
+    cont.innerHTML = filtrados.map(c => {
+      const tel = c.phone.replace(/[^0-9]/g, "");
+      const msgPromo = `¡Hola ${c.name || ''}! 🌟 Te escribimos de Ideas de la Luna. Tenemos promociones especiales pensadas para vos. ¡Consultanos para ver el catálogo actualizado!`;
+
+      return `
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="font-bold text-slate-800 text-base">${c.name || 'Cliente sin nombre'}</h3>
+              <p class="text-xs text-slate-500">📱 WA: ${c.phone}</p>
+            </div>
+            <span class="bg-indigo-50 text-indigo-700 font-bold text-xs px-2.5 py-1 rounded-full">
+              ${c.completed_orders_count || 1} pedido(s)
+            </span>
+          </div>
+
+          <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl flex justify-between">
+            <span>Total histórico invertido:</span>
+            <strong class="text-slate-900">$${Number(c.total_spent || 0).toLocaleString("es-AR")}</strong>
+          </div>
+
+          <a 
+            href="https://wa.me/${tel}?text=${encodeURIComponent(msgPromo)}" 
+            target="_blank"
+            class="block text-center w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs py-2.5 rounded-xl transition-all shadow-sm"
+          >
+            💬 Enviar Oferta Especial por WhatsApp
+          </a>
+        </div>
+      `;
+    }).join("");
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("inputBuscarCliente")?.addEventListener("input", renderClientes);
+    cargarClientes();
+  });
+</script>
