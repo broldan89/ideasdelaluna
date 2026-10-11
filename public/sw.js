@@ -33,11 +33,14 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // Solo intervenimos pedidos del propio sitio. Todo lo de Supabase (datos,
-  // login, storage) sigue directo a la red, sin cachear — los pedidos y
-  // estados siempre tienen que ser en vivo, nunca datos viejos guardados.
+  // Solo intervenimos pedidos del propio sitio. Todo lo de Supabase sigue directo a la red.
   if (url.origin !== self.location.origin) return;
   if (event.request.method !== "GET") return;
+
+  // NUNCA cachear ni intervenir ninguna ruta del panel de administración o login
+  if (url.pathname.startsWith('/admin')) {
+    return; // Pasa directo a la red sin pasar por el Service Worker y sus redirecciones
+  }
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
@@ -53,8 +56,7 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(() => cached);
 
-      // Stale-while-revalidate: muestra lo cacheado al instante si existe,
-      // y de fondo actualiza el caché para la próxima vez.
+      // Stale-while-revalidate
       return cached || enRed;
     }),
   );
