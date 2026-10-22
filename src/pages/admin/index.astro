@@ -365,6 +365,9 @@ ${nota}
         
         const totalAbonado = senaInicial + sumaPagosParciales;
         const saldo = Math.max(0, total - totalAbonado);
+        
+        // Normalizar fecha YYYY-MM-DD para el input type="date"
+        const fechaEntregaValue = p.delivery_date ? String(p.delivery_date).split("T")[0] : "";
 
         return `
           <div class="pedido-card" data-id="${p.id}">
@@ -376,14 +379,15 @@ ${nota}
                 </p>
                 <p class="text-xs text-slate-500 mt-1">${detalle}</p>
                 
-                <!-- Fecha de Entrega -->
+                <!-- Fecha de Entrega / Agenda -->
                 <div class="mt-2 flex items-center gap-2 text-xs text-slate-600 font-medium">
                   <span>📅 Entrega estimada:</span>
                   <input
                     type="date"
                     class="input-fecha bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs text-slate-700 outline-none focus:border-indigo-500"
-                    value="${p.delivery_date || ''}"
+                    value="${fechaEntregaValue}"
                   />
+                  <span class="fecha-saved-ok hidden text-[11px] text-emerald-600 font-bold">✅ Guardada</span>
                 </div>
 
                 <div class="mt-3 bg-slate-50 border border-slate-100 p-2.5 rounded-xl text-xs text-slate-600 font-medium space-y-1">
@@ -470,6 +474,7 @@ ${nota}
       const checkDemora = card.querySelector(".check-demora");
       const inputMotivo = card.querySelector(".input-motivo");
       const inputFecha = card.querySelector(".input-fecha");
+      const fechaSavedOk = card.querySelector(".fecha-saved-ok");
       const btnRecibo = card.querySelector(".btn-recibo");
       const btnBorrar = card.querySelector(".btn-borrar");
       const btnAgregarPago = card.querySelector(".btn-agregar-pago");
@@ -497,8 +502,14 @@ ${nota}
         guardarCambios({ status: selectEstado.value });
       });
 
-      inputFecha?.addEventListener("change", () => {
-        guardarCambios({ delivery_date: inputFecha.value || null });
+      // Guardado de fecha de entrega (agenda) con feedback visual
+      inputFecha?.addEventListener("change", async () => {
+        const nuevaFecha = inputFecha.value ? inputFecha.value : null;
+        const exito = await guardarCambios({ delivery_date: nuevaFecha });
+        if (exito && fechaSavedOk) {
+          fechaSavedOk.classList.remove("hidden");
+          setTimeout(() => fechaSavedOk.classList.add("hidden"), 2500);
+        }
       });
 
       checkDemora?.addEventListener("change", () => {
@@ -547,11 +558,14 @@ ${nota}
             const senaInicial = Number(pedido.monto_sena || 0);
             const sumaPagos = listaPagosNueva.reduce((s, item) => s + Number(item.monto || 0), 0);
             
-            if ((senaInicial + sumaPagos) >= total && pedido.customer_phone) {
-              alert("🎉 ¡Saldo completado al 100%! Se abrirá WhatsApp con el Recibo de Pago listo para enviar.");
-              const mensaje = armarReciboFormato(pedido);
-              const telefono = pedido.customer_phone.replace(/[^0-9]/g, "");
-              window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, "_blank");
+            // Ya no abrimos WhatsApp automáticamente. Solo mostramos un aviso sutil de saldo completado.
+            if ((senaInicial + sumaPagos) >= total) {
+              const spanOk = card.querySelector(".guardado-ok");
+              if (spanOk) {
+                spanOk.textContent = "✅ ¡Saldo completado!";
+                spanOk.classList.remove("hidden");
+                setTimeout(() => spanOk.classList.add("hidden"), 3000);
+              }
             }
           }
         });
